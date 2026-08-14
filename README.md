@@ -31,23 +31,35 @@ El archivo `app.js` ya incluye una matriz para futuros usuarios dedicados como:
 
 ## Consumo y estrategia
 
-- frontend estático puro
+- frontend estatico puro
 - polling controlado cada `20s`
 - sin realtime en esta primera fase
 - solo lectura
-- consultas pequeñas y limitadas
+- consultas pequenas y limitadas
 
-## Probar local
+## Verlo local
 
 ```powershell
 cd "C:\Users\ctrlreckcc\Desktop\erik proyectos\dms-unilever-visor-monitor"
 python -m http.server 4174
 ```
 
-Abrir:
+Abrir en el navegador:
 
 `http://localhost:4174`
 
-## Deploy
+## Verlo en linea
 
-Se puede desplegar como proyecto estático nuevo en la misma cuenta de Cloudflare.
+El repo ya incluye workflow de `GitHub Pages`.
+
+URL esperada:
+
+`https://llKirell.github.io/dms-unilever-visor-monitor/`
+
+Notas:
+
+- la primera publicacion depende de que GitHub Actions termine correctamente
+- si GitHub Pages pide activacion, en el repo entra a `Settings > Pages` y deja `Build and deployment` con `GitHub Actions`
+- las vistas usan `hash routes`, por ejemplo:
+  - `https://llKirell.github.io/dms-unilever-visor-monitor/#/rampas-voz`
+  - `https://llKirell.github.io/dms-unilever-visor-monitor/#/dashboard-web`
