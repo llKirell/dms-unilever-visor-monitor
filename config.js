@@ -1,0 +1,10 @@
+window.DMS_UNILEVER_MONITOR_CONFIG = {
+  SUPABASE_URL: 'https://ynskxuswgdgoqlqulvxj.supabase.co',
+  SUPABASE_ANON_KEY:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inluc2t4dXN3Z2Rnb3FscXVsdnhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODUzMTksImV4cCI6MjEwMTQ2MTMxOX0.4t-K8hVWzqAkoRbKeT54DB_nkYvQUYeCjbo7AQeDMw4',
+  CLIENTE_ID: 7,
+  CLIENTE_NOMBRE: 'Unilever',
+  APP_NAME: 'Visor Monitor Unilever',
+  DEFAULT_POLL_MS: 20000,
+  KIOSK_ROTATION_MS: 18000,
+};
