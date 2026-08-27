@@ -59,6 +59,28 @@ const EMBEDDED_MODE = window.DINET_EMBEDDED_SOURCE === 'dms-monitor';
 
 const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
 
+// Zona (LOCAL / PROVINCIA) de una fila. Usa r.tipo si ya trae la zona
+// (modo Excel); si no (modo monitor, donde tipo viene vacio), la infiere
+// desde el ubigeo o el destino. Ubigeo que empieza en 15 (Lima) o 07 (Callao)
+// = LOCAL; el resto = PROVINCIA.
+function deriveZone(row) {
+  const tipo = String(row?.tipo ?? '').trim().toUpperCase();
+  if (tipo === 'LOCAL' || tipo === 'PROVINCIA') return tipo;
+
+  const rawUbigeo = String(row?.ubigeo ?? '').trim();
+  if (rawUbigeo) return /^0*(15|07)/.test(rawUbigeo) ? 'LOCAL' : 'PROVINCIA';
+
+  const rawDestino = String(row?.destino ?? '');
+  const destinoNorm = norm(rawDestino);
+  if (destinoNorm.includes('provincia')) return 'PROVINCIA';
+  if (destinoNorm.includes('callao') || destinoNorm.includes('local')) return 'LOCAL';
+  // Ubigeo embebido en el destino, ej. "PE 150118 LURIGANCHO" o "150118 LIMA"
+  const m = rawDestino.match(/\b(\d{4,6})\b/);
+  if (m) return /^(15|07)/.test(m[1].padStart(6, '0')) ? 'LOCAL' : 'PROVINCIA';
+  if (destinoNorm.includes('lima')) return 'LOCAL';
+  return 'PROVINCIA';
+}
+
 function readCachedDashboardPayload() {
   try {
     const cached = localStorage.getItem(STORAGE_KEY);
@@ -1311,7 +1333,7 @@ const DashDinet = () => {
   };
 
   // â”€â”€ data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const rows = rawRows || MOCK_ROWS;
+  const rows = rawRows || (EMBEDDED_MODE ? [] : MOCK_ROWS);
   const sourceCounts = rows.reduce((acc, r) => {
     const s = getSourceValue(r);
     if (s) acc[s] = (acc[s] || 0) + 1;
@@ -1332,7 +1354,7 @@ const DashDinet = () => {
   ).map(r => r._date.getDate()))].sort((a, b) => a - b);
 
   const rowsBase = rowsWithDate.filter((r) => {
-    const z = String(r.tipo || '').toUpperCase();
+    const z = deriveZone(r);
     if (zoneFilter === 'Local' && z !== 'LOCAL') return false;
     if (zoneFilter === 'Provincia' && z !== 'PROVINCIA') return false;
     if (temporalView !== 'archivo' && (filterYear !== 'Todos' || filterMonth !== 'Todos' || filterDay !== 'Todos')) {
@@ -1513,7 +1535,7 @@ const DashDinet = () => {
         <div className="dn-compact-kpis">
           <div className="dn-compact-field">
             <span className="dn-compact-label">Ton / m³</span>
-            <span className="dn-compact-value">{numberOrPlaceholder(r.ton, r)} / {numberOrPlaceholder(r.m3, r)}</span>
+            <span className="dn-compact-value">{numberOrPlaceholder(r.ton, r, 2)} / {numberOrPlaceholder(r.m3, r, 3)}</span>
           </div>
           <div className="dn-compact-field">
             <span className="dn-compact-label">Pedido / Avance</span>
@@ -2143,8 +2165,8 @@ const DashDinet = () => {
                       <td className="dn-truncate" style={!String(r.transp ?? '').trim() ? { color: A.amber, fontStyle: 'italic' } : {}}>{textOrPlaceholder(r.transp)}</td>
                       <td className="dn-truncate">{r.cliente}</td>
                       <td className="dn-truncate" style={!String(r.destino ?? '').trim() ? { color: A.amber, fontSize: 11, fontStyle: 'italic' } : { color: A.sub, fontSize: 11 }}>{textOrPlaceholder(r.destino)}</td>
-                      <td className="num">{numberOrPlaceholder(r.ton, r)}</td>
-                      <td className="num">{numberOrPlaceholder(r.m3, r)}</td>
+                      <td className="num">{numberOrPlaceholder(r.ton, r, 2)}</td>
+                      <td className="num">{numberOrPlaceholder(r.m3, r, 3)}</td>
                       <td className="num">{pedido.toLocaleString()}</td>
                       <td className="num" style={{ fontWeight: 600 }}>{avance.toLocaleString()}</td>
                       <td>
