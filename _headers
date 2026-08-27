@@ -1,0 +1,11 @@
+# Cloudflare Pages - control de cache del Visor Monitor Unilever
+#
+# Meta: que cada monitor tome las mejoras al recargar, sin quedarse con copias viejas.
+#
+# "no-cache" NO significa "no guardar": el navegador guarda el archivo pero
+# revalida con el servidor en cada carga. Si el archivo no cambio, Cloudflare
+# responde 304 (no lo re-descarga). Si cambio, baja la version nueva.
+# Resultado: frescura garantizada + poco consumo. Ideal para un kiosko 24/7.
+
+/*
+  Cache-Control: no-cache

@@ -337,7 +337,7 @@ async function fetchImportRowsOptional() {
 
     const { data: rows, error: rowsError } = await supabase
       .from('excel_import_rows')
-      .select('id, dt_embarque, placa, empresa_transporte, volumen, operacion, fecha_operacion, raw_data, normalized_data')
+      .select('id, row_number, dt_embarque, placa, empresa_transporte, volumen, operacion, fecha_operacion, raw_data, normalized_data, created_at')
       .eq('batch_id', batch.id)
       .order('row_number', { ascending: true })
       .limit(250);
@@ -348,7 +348,65 @@ async function fetchImportRowsOptional() {
       return;
     }
 
-    state.importRows = rows ?? [];
+    let mergedRows = rows ?? [];
+    try {
+      const rowIds = mergedRows.map((row) => row.id).filter(Boolean);
+      if (rowIds.length) {
+        const { data: latestResults, error: latestResultsError } = await supabase
+          .from('w4w_sync_latest_results')
+          .select('batch_row_id, matched, stage, ramp, estado_carga, total_tareas, tareas_completadas, tiempo_picking_min, payload, created_at')
+          .in('batch_row_id', rowIds);
+
+        if (!latestResultsError && Array.isArray(latestResults)) {
+          const resultsMap = new Map(latestResults.map((item) => [item.batch_row_id, item]));
+          mergedRows = mergedRows.map((row) => {
+            const result = resultsMap.get(row.id);
+            if (!result) return row;
+
+            const nextRaw = { ...(row.raw_data ?? {}) };
+            const nextNormalized = { ...(row.normalized_data ?? {}) };
+
+            if (result.stage) {
+              nextRaw.stage = result.stage;
+              nextNormalized.stage = result.stage;
+            }
+            if (result.ramp) {
+              nextRaw.rampa = result.ramp;
+              nextNormalized.rampa = result.ramp;
+            }
+            if (result.estado_carga) {
+              nextRaw.estado_carga = result.estado_carga;
+              nextNormalized.estado_carga = result.estado_carga;
+            }
+            if (Number.isFinite(Number(result.total_tareas))) {
+              nextRaw.total_tareas = result.total_tareas;
+              nextNormalized.total_tareas = result.total_tareas;
+            }
+            if (Number.isFinite(Number(result.tareas_completadas))) {
+              nextRaw.tareas_completadas = result.tareas_completadas;
+              nextRaw.avance = result.tareas_completadas;
+              nextNormalized.tareas_completadas = result.tareas_completadas;
+              nextNormalized.avance = result.tareas_completadas;
+            }
+            if (Number.isFinite(Number(result.tiempo_picking_min))) {
+              nextRaw.tiempo_picking_min = result.tiempo_picking_min;
+              nextNormalized.tiempo_picking_min = result.tiempo_picking_min;
+            }
+
+            return {
+              ...row,
+              raw_data: nextRaw,
+              normalized_data: nextNormalized,
+              w4w_latest_result: result,
+            };
+          });
+        }
+      }
+    } catch (_mergeError) {
+      // Si W4W no esta disponible, seguimos mostrando al menos la data real del Excel.
+    }
+
+    state.importRows = mergedRows;
     state.importRowsAvailable = state.importRows.length > 0;
   } catch (_error) {
     state.importRows = [];
@@ -451,9 +509,9 @@ function getDashboardRows() {
 const IMPORT_DASHBOARD_ALIASES = {
   cliente: ['cliente', 'razon social', 'razon social cliente', 'cliente final', 'nombre cliente'],
   destino: ['destino', 'direccion destino', 'ruta', 'direccion', 'lugar destino', 'ubigeo'],
-  ton: ['ton', 'toneladas', 'tn', 'peso ton', 'peso'],
-  m3: ['m3', 'metros cubicos', 'metros3', 'volumen m3'],
-  pedido: ['pedido', 'cajas pedido', 'total cajas', 'cajas', 'cantidad', 'unidades', 'total pedido', 'volumen'],
+  ton: ['ton', 'toneladas', 'tn', 'peso ton', 'peso', 'peso kg', 'peso_kg'],
+  m3: ['m3', 'metros cubicos', 'metros3', 'volumen m3', 'volumen', 'vol'],
+  pedido: ['pedido', 'cajas pedido', 'total cajas', 'cajas', 'cantidad', 'unidades', 'total pedido', 'total_tareas', 'totaltareas', 'ums asignada picking', 'umsasignadapicking', 'ums asignada', 'umsasignada'],
   avance: ['avance', 'cajas avance', 'cajas cargadas', 'cajas procesadas', 'avance picking', 'procesado'],
   rampa: ['rampa', 'anden', 'and en', 'puerta', 'dock'],
   estado: ['estado carga', 'estado', 'status carga', 'status', 'situacion'],
@@ -470,6 +528,50 @@ function getImportFieldValue(source, aliases) {
     if (text) return text;
   }
   return '';
+}
+
+function getImportFieldEntry(source, aliases) {
+  const entries = Object.entries(source ?? {});
+  for (const [key, value] of entries) {
+    if (!aliases.includes(normalizeImportFieldKey(key))) continue;
+    const text = String(value ?? '').trim();
+    if (text) return { key, value: text };
+  }
+  return { key: '', value: '' };
+}
+
+function normalizeImportedWeightToTon(entryValue, entryKey = '') {
+  const rawWeight = parseLooseNumber(entryValue);
+  if (!rawWeight) return 0;
+
+  const normalizedKey = normalizeImportFieldKey(entryKey);
+  const weightLooksLikeKg = (
+    normalizedKey.includes('peso') ||
+    normalizedKey.includes('kg') ||
+    rawWeight >= 100
+  );
+
+  if (weightLooksLikeKg) {
+    return rawWeight / 1000;
+  }
+
+  return rawWeight;
+}
+
+function resolveDashboardPedido(raw, normalized, row) {
+  return parseLooseNumber(
+    normalized.total_tareas
+    || row.w4w_latest_result?.total_tareas
+    || getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.pedido)
+  );
+}
+
+function resolveDashboardAvance(raw, normalized, row) {
+  return parseLooseNumber(
+    normalized.tareas_completadas
+    || row.w4w_latest_result?.tareas_completadas
+    || getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.avance)
+  );
 }
 
 function normalizeDashboardStatus(value) {
@@ -555,14 +657,16 @@ function buildDashboardRowFromVisit(visit) {
 function buildDashboardRowFromImportRow(row) {
   const raw = row.raw_data ?? {};
   const normalized = row.normalized_data ?? {};
-  const pedido = parseLooseNumber(
-    getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.pedido)
+  const tonEntry = getImportFieldEntry(raw, IMPORT_DASHBOARD_ALIASES.ton);
+  const m3Entry = getImportFieldEntry(raw, IMPORT_DASHBOARD_ALIASES.m3);
+  const pedido = resolveDashboardPedido(raw, normalized, row);
+  const avance = resolveDashboardAvance(raw, normalized, row);
+  const ton = normalizeImportedWeightToTon(tonEntry.value, tonEntry.key);
+  const m3 = parseLooseNumber(
+    m3Entry.value
     || normalized.volumen
     || row.volumen
   );
-  const avance = parseLooseNumber(getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.avance));
-  const ton = parseLooseNumber(getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.ton));
-  const m3 = parseLooseNumber(getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.m3));
   const ramp = getImportFieldValue(raw, IMPORT_DASHBOARD_ALIASES.rampa);
   const progressPct = pedido > 0 ? Math.max(0, Math.min(100, (avance / pedido) * 100)) : 0;
 
@@ -1225,8 +1329,8 @@ function renderDashboardWebDinet() {
                       <td>${escapeHtml(row.transporte)}</td>
                       <td>${escapeHtml(row.cliente)}</td>
                       <td>${escapeHtml(row.destino)}</td>
-                      <td>${row.ton ? escapeHtml(formatNumber(row.ton, 1)) : '--'}</td>
-                      <td>${row.m3 ? escapeHtml(formatNumber(row.m3, 1)) : '--'}</td>
+                      <td>${row.ton ? escapeHtml(formatNumber(row.ton, 2)) : '--'}</td>
+                      <td>${row.m3 ? escapeHtml(formatNumber(row.m3, 3)) : '--'}</td>
                       <td>${row.pedido ? escapeHtml(formatNumber(row.pedido)) : '--'}</td>
                       <td>${row.avance ? escapeHtml(formatNumber(row.avance)) : '--'}</td>
                       <td class="strong">${escapeHtml(row.placa)}</td>
@@ -1278,9 +1382,8 @@ function renderCurrentView() {
   return renderDashboardView();
 }
 
-function renderDashboardFocusShell({ allowedViews, currentView }) {
+function renderFocusChrome({ allowedViews, currentView }) {
   return `
-    <div class="monitor-shell dashboard-focus-shell">
       <button class="focus-toggle-btn" data-action="toggle-sidebar" aria-label="Abrir panel del monitor">
         <span class="material-symbols-outlined">${state.sidebarOpen ? 'close' : 'menu'}</span>
       </button>
@@ -1338,6 +1441,13 @@ function renderDashboardFocusShell({ allowedViews, currentView }) {
       <div class="focus-backdrop ${state.sidebarOpen ? 'open' : ''}" data-action="close-sidebar"></div>
 
       ${renderMessage()}
+  `;
+}
+
+function renderDashboardFocusShell({ allowedViews, currentView }) {
+  return `
+    <div class="monitor-shell dashboard-focus-shell">
+      <div id="monitor-chrome">${renderFocusChrome({ allowedViews, currentView })}</div>
       ${renderCurrentView()}
     </div>
   `;
@@ -1406,6 +1516,21 @@ function renderShell() {
 function renderUnifiedShell() {
   const allowedViews = getAllowedViews();
   const currentView = getCurrentViewForRender();
+
+  // Cuando ya estamos mostrando el dashboard-web y su iframe sigue vivo,
+  // solo refrescamos el "chrome" (barra lateral, chips, botones). Reemplazar
+  // todo el innerHTML del shell destruye el iframe, y volver a insertarlo
+  // fuerza una recarga completa (React + Babel + recompilar el JSX). El polling
+  // corre cada 20s: sin esto, el tablero se recargaba entero en cada ciclo.
+  const chromeMount = document.getElementById('monitor-chrome');
+  const frameAlive = document.getElementById('dinet-dashboard-frame');
+  if (currentView === 'dashboard-web' && chromeMount && frameAlive) {
+    chromeMount.innerHTML = renderFocusChrome({ allowedViews, currentView });
+    bindUiEvents();
+    // La data nueva llega al iframe por postMessage/localStorage, sin recargarlo.
+    syncEmbeddedDinetDashboard();
+    return;
+  }
 
   app.innerHTML = renderDashboardFocusShell({ allowedViews, currentView });
   bindUiEvents();
