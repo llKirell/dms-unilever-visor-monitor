@@ -281,6 +281,7 @@ async function fetchLiveVisits() {
     .select(`
       id,
       codigo_visita,
+      cliente_referencia,
       tipo_operacion,
       rampa_id,
       created_at,
@@ -934,6 +935,47 @@ function renderGauge({ pct, colorClass, title, sub }) {
   `;
 }
 
+function normalizeVoiceText(value) {
+  return String(value ?? '').trim().replace(/\s+/g, ' ');
+}
+
+function getRampSpeechLabel(code) {
+  const raw = normalizeVoiceText(code).toUpperCase();
+  const clean = raw.replace(/^A-/, '');
+  const numericMatch = clean.match(/^0*(\d+)$/);
+  if (numericMatch) {
+    return `rampa ${Number(numericMatch[1])}`;
+  }
+  if (!clean) return 'rampa';
+  return `rampa ${clean}`;
+}
+
+function buildRampVoiceMessage(item) {
+  const visit = item?.visit ?? null;
+  const clientReference = normalizeVoiceText(visit?.cliente_referencia);
+  const transportCompany = normalizeVoiceText(firstValue(visit?.empresas_transporte)?.nombre);
+  const plate = normalizeVoiceText(firstValue(visit?.vehiculos)?.placa);
+  const rampLabel = getRampSpeechLabel(item?.code);
+
+  const details = [];
+  if (clientReference) details.push(`cliente ${clientReference}`);
+  if (transportCompany) details.push(`empresa de transporte ${transportCompany}`);
+  if (plate) details.push(`placa ${plate}`);
+
+  const detailText = details.length ? ` por ${details.join(', ')}` : '';
+
+  if (item?.visualState === 'occupied') {
+    return `${rampLabel} ocupada${detailText}`;
+  }
+  if (item?.visualState === 'reserved') {
+    return `${rampLabel} reservada${detailText}`;
+  }
+  if (item?.visualState === 'free') {
+    return `${rampLabel} liberada`;
+  }
+  return `${rampLabel} en proceso${detailText}`;
+}
+
 function announceRampChanges() {
   if (!state.voiceEnabled || !('speechSynthesis' in window)) return;
 
@@ -947,13 +989,7 @@ function announceRampChanges() {
     const current = nextMap.get(item.id);
     if (!previous || previous === current) continue;
 
-    if (item.visualState === 'occupied' && plate) {
-      announcements.push(`Rampa ${item.code} ocupada por la placa ${plate}`);
-    } else if (item.visualState === 'reserved' && plate) {
-      announcements.push(`Rampa ${item.code} reservada para la placa ${plate}`);
-    } else if (item.visualState === 'free') {
-      announcements.push(`Rampa ${item.code} liberada`);
-    }
+    announcements.push(buildRampVoiceMessage(item));
   }
 
   state.previousRampStates = nextMap;
@@ -961,7 +997,9 @@ function announceRampChanges() {
 
   const utterance = new SpeechSynthesisUtterance(announcements[0]);
   utterance.lang = 'es-PE';
-  utterance.rate = 1;
+  utterance.rate = 0.96;
+  utterance.pitch = 1;
+  utterance.volume = 1;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
 }
