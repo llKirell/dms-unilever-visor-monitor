@@ -958,8 +958,8 @@ function buildRampVoiceMessage(item) {
   const rampLabel = getRampSpeechLabel(item?.code);
 
   const details = [];
-  if (clientReference) details.push(`cliente ${clientReference}`);
-  if (transportCompany) details.push(`empresa de transporte ${transportCompany}`);
+  if (clientReference) details.push(clientReference);
+  if (transportCompany) details.push(transportCompany);
   if (plate) details.push(`placa ${plate}`);
 
   const detailText = details.length ? ` por ${details.join(', ')}` : '';
