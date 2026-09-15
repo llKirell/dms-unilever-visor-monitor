@@ -558,14 +558,14 @@ function getIntegralStageMetrics() {
   }));
 }
 
-function getIntegralLiveVisits(limit = 5) {
+function getIntegralLiveVisits(limit = 4) {
   return state.visits
     .slice()
     .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
     .slice(0, limit);
 }
 
-function getIntegralProcessVisits(limit = 5) {
+function getIntegralProcessVisits(limit = 4) {
   return state.visits
     .slice()
     .sort((a, b) => new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime())
