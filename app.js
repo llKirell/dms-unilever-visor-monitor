@@ -16,6 +16,11 @@ const DINET_MONITOR_STORAGE_KEY = 'dinet-monitor-data';
 const DINET_MONITOR_OVERRIDE_KEY = 'dinet-monitor-overrides';
 
 const VIEW_DEFS = {
+  integral: {
+    label: 'Vista Integral',
+    icon: 'dashboard_customize',
+    subtitle: 'Vista estatica con playa, procesos, rampas y productividad.',
+  },
   'rampas-voz': {
     label: 'Rampas + Voz',
     icon: 'campaign',
@@ -39,12 +44,13 @@ const VIEW_DEFS = {
 };
 
 const VIEW_ACCESS_BY_ROLE = {
-  admin: ['rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
-  supervisor_cuenta: ['rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
-  lider: ['rampas-voz', 'resumen', 'kiosk'],
+  admin: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
+  supervisor_cuenta: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
+  lider: ['integral', 'rampas-voz', 'resumen', 'kiosk'],
 };
 
 const VIEW_ACCESS_BY_USERNAME = {
+  monitorintegral: ['integral'],
   monitorrampas: ['rampas-voz'],
   monitorresumen: ['resumen'],
   monitordashboard: ['dashboard-web'],
@@ -84,7 +90,7 @@ const state = {
   roleKey: null,
   loading: false,
   message: null,
-  activeView: 'rampas-voz',
+  activeView: 'integral',
   ramps: [],
   visits: [],
   importRows: [],
@@ -463,6 +469,115 @@ function getSummary() {
     carga: state.visits.filter((visit) => visit.tipo_operacion === 'salida').length,
     descarga: state.visits.filter((visit) => visit.tipo_operacion !== 'salida').length,
   };
+}
+
+function getVisitClientLabel(visit) {
+  const value = String(visit?.cliente_referencia ?? '').trim();
+  return value || 'Cliente no definido';
+}
+
+function getVisitCompanyLabel(visit) {
+  return firstValue(visit?.empresas_transporte)?.nombre ?? 'Sin transportista';
+}
+
+function getVisitPlateLabel(visit) {
+  return firstValue(visit?.vehiculos)?.placa ?? 'SIN-PLACA';
+}
+
+function getVisitRampLabel(visit) {
+  const ramp = state.ramps.find((item) => item.id === visit?.rampa_id);
+  return ramp?.codigo ? `A-${ramp.codigo}` : '--';
+}
+
+function getVisitProcessStart(visit) {
+  if (!visit) return null;
+  if (visit.tipo_operacion === 'salida') return visit.hora_inicio_carga;
+  return visit.hora_inicio_descarga;
+}
+
+function getVisitProcessEnd(visit) {
+  if (!visit) return null;
+  if (visit.tipo_operacion === 'salida') {
+    return visit.hora_fin_facturacion || visit.hora_fin_carga;
+  }
+  return visit.hora_fin_descarga;
+}
+
+function getVisitCurrentStage(visit) {
+  const status = firstValue(visit?.estados_visita)?.nombre;
+  if (!visit) return 'Sin estado';
+  if (!visit.rampa_id) return status || 'En playa';
+  if (visit.rampa_id && !visit.hora_llegada_rampa) return status || 'Rampa asignada';
+  if (getVisitProcessStart(visit) && !getVisitProcessEnd(visit)) return status || 'En operacion';
+  if (getVisitProcessEnd(visit)) return status || 'Pendiente salida';
+  return status || 'En rampa';
+}
+
+function getIntegralStageMetrics() {
+  const stages = [
+    {
+      key: 'playa',
+      icon: 'local_shipping',
+      title: 'Camiones en playa',
+      note: 'Registrados sin rampa',
+      count: state.visits.filter((visit) => !visit.rampa_id).length,
+    },
+    {
+      key: 'asignacion',
+      icon: 'forklift',
+      title: 'Rampa asignada',
+      note: 'Pendiente de llegada',
+      count: state.visits.filter((visit) => visit.rampa_id && !visit.hora_llegada_rampa).length,
+    },
+    {
+      key: 'rampa',
+      icon: 'warehouse',
+      title: 'En rampa',
+      note: 'Unidad posicionada',
+      count: state.visits.filter((visit) => visit.hora_llegada_rampa && !getVisitProcessStart(visit)).length,
+    },
+    {
+      key: 'operacion',
+      icon: 'manufacturing',
+      title: 'En proceso',
+      note: 'Carga, descarga o devolucion',
+      count: state.visits.filter((visit) => getVisitProcessStart(visit) && !getVisitProcessEnd(visit)).length,
+    },
+    {
+      key: 'salida',
+      icon: 'verified',
+      title: 'Listas para salida',
+      note: 'Operacion terminada',
+      count: state.visits.filter((visit) => getVisitProcessEnd(visit)).length,
+    },
+  ];
+  const max = Math.max(1, ...stages.map((stage) => stage.count));
+  return stages.map((stage) => ({
+    ...stage,
+    pct: Math.max(8, Math.round((stage.count / max) * 100)),
+  }));
+}
+
+function getIntegralLiveVisits(limit = 5) {
+  return state.visits
+    .slice()
+    .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
+    .slice(0, limit);
+}
+
+function getIntegralProcessVisits(limit = 5) {
+  return state.visits
+    .slice()
+    .sort((a, b) => new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime())
+    .slice(0, limit);
+}
+
+function getIntegralTurnPlaceholders() {
+  return [
+    { title: 'Turno 1', window: '07:00 - 15:00', accent: 'blue' },
+    { title: 'Turno 2', window: '15:00 - 23:00', accent: 'cyan' },
+    { title: 'Turno 3', window: '23:00 - 07:00', accent: 'green' },
+  ];
 }
 
 function getStageMetrics() {
@@ -1108,6 +1223,157 @@ function renderLogin() {
   document.getElementById('login-form')?.addEventListener('submit', handleLogin);
 }
 
+function renderIntegralView() {
+  const summary = getSummary();
+  const liveVisits = getIntegralLiveVisits();
+  const processVisits = getIntegralProcessVisits();
+  const stageMetrics = getIntegralStageMetrics();
+  const rampItems = deriveRampItems();
+  const turns = getIntegralTurnPlaceholders();
+  const cargaCount = state.visits.filter((visit) => visit.tipo_operacion === 'salida').length;
+  const descargaCount = state.visits.filter((visit) => visit.tipo_operacion === 'ingreso').length;
+  const devolucionCount = state.visits.filter((visit) => visit.tipo_operacion === 'devolucion').length;
+
+  return `
+    <section class="view-panel integral-panel">
+      <div class="integral-top">
+        <div class="integral-title">
+          <span class="integral-title-icon material-symbols-outlined">dashboard_customize</span>
+          <div>
+            <p class="eyebrow">MONITOR UNILEVER</p>
+            <h2>Vista Operativa Integral</h2>
+            <span>Camiones en playa, procesos, rampas y productividad en tiempo real.</span>
+          </div>
+        </div>
+        <div class="integral-status-row">
+          <span class="integral-status-chip"><span class="material-symbols-outlined">sync</span>${escapeHtml(formatDateTime(state.lastSyncAt))}</span>
+          <span class="integral-status-chip"><span class="material-symbols-outlined">${state.voiceEnabled ? 'volume_up' : 'volume_off'}</span>${state.voiceEnabled ? 'Voz activa' : 'Voz off'}</span>
+          <span class="integral-status-chip"><span class="material-symbols-outlined">timer</span>${Math.round(DEFAULT_POLL_MS / 1000)}s</span>
+        </div>
+      </div>
+
+      <div class="integral-grid">
+        <article class="integral-card integral-card-playa">
+          <div class="integral-card-head">
+            <div>
+              <p class="eyebrow">Camiones en playa</p>
+              <h3>Arribos activos</h3>
+            </div>
+            <div class="integral-mini-metrics">
+              <span><b>${summary.activas}</b>Total</span>
+              <span><b>${cargaCount}</b>Carga</span>
+              <span><b>${descargaCount}</b>Descarga</span>
+              <span><b>${devolucionCount}</b>Devol.</span>
+            </div>
+          </div>
+          ${liveVisits.length ? `
+            <div class="integral-live-list">
+              ${liveVisits.map((visit) => `
+                <div class="integral-live-row">
+                  <div>
+                    <strong>${escapeHtml(getVisitClientLabel(visit))}</strong>
+                    <span>${escapeHtml(getVisitCompanyLabel(visit))}</span>
+                  </div>
+                  <b>${escapeHtml(getVisitPlateLabel(visit))}</b>
+                  <small>${escapeHtml(getOperationLabel(visit.tipo_operacion))}</small>
+                  <small>${escapeHtml(getVisitRampLabel(visit))}</small>
+                  <small>${escapeHtml(formatElapsed(visit.hora_registro || visit.created_at))}</small>
+                </div>
+              `).join('')}
+            </div>
+          ` : '<div class="integral-empty">No hay camiones activos en playa.</div>'}
+        </article>
+
+        <article class="integral-card integral-card-process">
+          <div class="integral-card-head">
+            <div>
+              <p class="eyebrow">Control de procesos</p>
+              <h3>Flujo operativo</h3>
+            </div>
+            <span class="integral-highlight">${stageMetrics.reduce((sum, stage) => sum + stage.count, 0)} unidades</span>
+          </div>
+          <div class="integral-stage-flow">
+            ${stageMetrics.map((stage) => `
+              <div class="integral-stage-card stage-${stage.key}" style="--stage-fill:${stage.pct}%">
+                <div>
+                  <span class="material-symbols-outlined">${stage.icon}</span>
+                  <strong>${escapeHtml(stage.title)}</strong>
+                </div>
+                <b>${stage.count}</b>
+                <small>${escapeHtml(stage.note)}</small>
+                <i></i>
+              </div>
+            `).join('')}
+          </div>
+          ${processVisits.length ? `
+            <div class="integral-process-list">
+              ${processVisits.map((visit) => `
+                <div class="integral-process-row">
+                  <span>${escapeHtml(getVisitPlateLabel(visit))}</span>
+                  <strong>${escapeHtml(getVisitCurrentStage(visit))}</strong>
+                  <small>${escapeHtml(getVisitRampLabel(visit))}</small>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </article>
+
+        <article class="integral-card integral-card-rampas">
+          <div class="integral-card-head">
+            <div>
+              <p class="eyebrow">Rampas</p>
+              <h3>Bloque A</h3>
+            </div>
+            <div class="integral-mini-metrics">
+              <span><b>${summary.ocupadas}</b>Ocupadas</span>
+              <span><b>${summary.reservadas}</b>Reservadas</span>
+              <span><b>${summary.libres}</b>Libres</span>
+            </div>
+          </div>
+          <div class="integral-ramp-grid">
+            ${rampItems.map((item) => {
+              const visit = item.visit;
+              return `
+                <div class="integral-ramp-tile ${item.visualState}">
+                  <span>${escapeHtml(item.code.replace(/^A-/, ''))}</span>
+                  <b>${visit ? escapeHtml(getVisitPlateLabel(visit)) : 'Libre'}</b>
+                  <small>${visit ? escapeHtml(getVisitClientLabel(visit)) : 'Disponible'}</small>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </article>
+
+        <article class="integral-card integral-card-productivity">
+          <div class="integral-card-head">
+            <div>
+              <p class="eyebrow">Productividad en tiempo real</p>
+              <h3>Calculo por turno</h3>
+            </div>
+            <span class="integral-highlight muted">Pendiente</span>
+          </div>
+          <div class="integral-productivity-grid">
+            ${turns.map((turn) => `
+              <div class="integral-turn-card ${turn.accent}">
+                <span>${escapeHtml(turn.title)}</span>
+                <strong>${escapeHtml(turn.window)}</strong>
+                <small>Espacio reservado para cajas, avance y productividad.</small>
+                <div class="integral-skeleton-bars">
+                  <i></i><i></i><i></i>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="integral-productivity-note">
+            <span class="material-symbols-outlined">info</span>
+            La formula quedara conectada cuando definamos el criterio exacto por turno.
+          </div>
+        </article>
+      </div>
+    </section>
+  `;
+}
+
 function renderRampasView() {
   const items = deriveRampItems();
   const summary = getSummary();
@@ -1414,6 +1680,7 @@ function renderDashboardWebExactDinet() {
 
 function renderCurrentView() {
   const current = getCurrentViewForRender();
+  if (current === 'integral') return renderIntegralView();
   if (current === 'rampas-voz') return renderRampasView();
   if (current === 'resumen') return renderResumenView();
   if (current === 'dashboard-web') return renderDashboardWebExactDinet();
