@@ -503,6 +503,11 @@ function getVisitProcessEnd(visit) {
   return visit.hora_fin_descarga;
 }
 
+function getRampStayElapsed(visit) {
+  if (!visit?.hora_llegada_rampa) return '--';
+  return formatElapsed(visit.hora_llegada_rampa);
+}
+
 function getVisitCurrentStage(visit) {
   const status = firstValue(visit?.estados_visita)?.nombre;
   if (!visit) return 'Sin estado';
@@ -1333,11 +1338,21 @@ function renderIntegralView() {
           <div class="integral-ramp-grid">
             ${rampItems.map((item) => {
               const visit = item.visit;
+              const isFree = !visit;
               return `
                 <div class="integral-ramp-tile ${item.visualState}">
-                  <span>${escapeHtml(item.code.replace(/^A-/, ''))}</span>
-                  <b>${visit ? escapeHtml(getVisitPlateLabel(visit)) : 'Libre'}</b>
-                  <small>${visit ? escapeHtml(getVisitClientLabel(visit)) : 'Disponible'}</small>
+                  <div class="integral-ramp-side">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <strong>${escapeHtml(item.code.replace(/^A-/, ''))}</strong>
+                    <b>${isFree ? '0' : '1'}</b>
+                  </div>
+                  <div class="integral-ramp-detail">
+                    <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
+                    <div><span>Placa:</span><b>${escapeHtml(isFree ? '--' : getVisitPlateLabel(visit))}</b></div>
+                    <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime(visit.hora_registro || visit.created_at))}</b></div>
+                    <div><span>H. Rampa:</span><b>${escapeHtml(isFree ? '--' : formatTime(visit.hora_llegada_rampa))}</b></div>
+                    <div><span>T. Permanencia:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
+                  </div>
                 </div>
               `;
             }).join('')}
