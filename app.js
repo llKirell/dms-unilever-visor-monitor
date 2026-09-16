@@ -1362,8 +1362,8 @@ function renderIntegralView() {
         <article class="integral-card integral-card-productivity">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Productividad en tiempo real</p>
-              <h3>Calculo por turno</h3>
+              <p class="eyebrow">Productividad</p>
+              <h3>Productividad</h3>
             </div>
             <span class="integral-highlight muted">Pendiente</span>
           </div>
@@ -1371,17 +1371,14 @@ function renderIntegralView() {
             ${turns.map((turn) => `
               <div class="integral-turn-card ${turn.accent}">
                 <span>${escapeHtml(turn.title)}</span>
-                <strong>${escapeHtml(turn.window)}</strong>
-                <small>Espacio reservado para cajas, avance y productividad.</small>
-                <div class="integral-skeleton-bars">
-                  <i></i><i></i><i></i>
+                <small>${escapeHtml(turn.window)}</small>
+                <div class="integral-productivity-values">
+                  <div><b>--</b><em>Peso</em></div>
+                  <div><b>--</b><em>Cajas</em></div>
+                  <div><b>--</b><em>Volumen</em></div>
                 </div>
               </div>
             `).join('')}
-          </div>
-          <div class="integral-productivity-note">
-            <span class="material-symbols-outlined">info</span>
-            La formula quedara conectada cuando definamos el criterio exacto por turno.
           </div>
         </article>
       </div>
