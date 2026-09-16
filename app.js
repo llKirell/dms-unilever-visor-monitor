@@ -594,6 +594,65 @@ function getIntegralTurnPlaceholders() {
   ];
 }
 
+const INTEGRAL_WEEK_DAYS = [
+  { key: 1, label: 'L' },
+  { key: 2, label: 'M' },
+  { key: 3, label: 'M' },
+  { key: 4, label: 'J' },
+  { key: 5, label: 'V' },
+  { key: 6, label: 'S' },
+  { key: 0, label: 'D' },
+];
+
+function getIntegralTrendStats(mode) {
+  const stats = INTEGRAL_WEEK_DAYS.map((day) => ({ ...day, count: 0 }));
+  for (const visit of state.visits) {
+    if (mode === 'ingresos' && visit.tipo_operacion !== 'ingreso') continue;
+    if (mode === 'salidas' && visit.tipo_operacion !== 'salida') continue;
+    const value = visit.hora_registro || visit.created_at;
+    if (!value) continue;
+    const day = new Date(value).getDay();
+    const target = stats.find((item) => item.key === day);
+    if (target) target.count += 1;
+  }
+  return stats;
+}
+
+function renderIntegralTrendCard({ title, subtitle, stats, total, tone }) {
+  const max = Math.max(1, ...stats.map((item) => item.count));
+  const points = stats.map((item, index) => {
+    const x = 12 + index * 28;
+    const y = 58 - (item.count / max) * 36;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return `
+    <article class="integral-card integral-trend-card ${tone}">
+      <div class="integral-trend-head">
+        <div>
+          <p class="eyebrow">${escapeHtml(subtitle)}</p>
+          <h3>${escapeHtml(title)}</h3>
+        </div>
+        <strong>${total}</strong>
+      </div>
+      <svg class="integral-trend-chart" viewBox="0 0 192 72" role="img" aria-label="${escapeHtml(title)}">
+        <path d="M12 62H180" />
+        <polyline points="${points}" />
+        ${stats.map((item, index) => {
+          const x = 12 + index * 28;
+          const y = 58 - (item.count / max) * 36;
+          return `<circle cx="${x}" cy="${y}" r="2.4"></circle>`;
+        }).join('')}
+      </svg>
+      <div class="integral-trend-days">
+        ${stats.map((item) => `
+          <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
+        `).join('')}
+      </div>
+    </article>
+  `;
+}
+
 function getStageMetrics() {
   return [
     {
@@ -1238,15 +1297,13 @@ function renderLogin() {
 }
 
 function renderIntegralView() {
-  const summary = getSummary();
-  const liveVisits = getIntegralLiveVisits();
-  const processVisits = getIntegralProcessVisits();
+  const liveVisits = getIntegralLiveVisits(9);
   const stageMetrics = getIntegralStageMetrics();
   const rampItems = deriveRampItems();
-  const turns = getIntegralTurnPlaceholders();
-  const cargaCount = state.visits.filter((visit) => visit.tipo_operacion === 'salida').length;
-  const descargaCount = state.visits.filter((visit) => visit.tipo_operacion === 'ingreso').length;
-  const devolucionCount = state.visits.filter((visit) => visit.tipo_operacion === 'devolucion').length;
+  const ingresosStats = getIntegralTrendStats('ingresos');
+  const salidasStats = getIntegralTrendStats('salidas');
+  const ingresosTotal = ingresosStats.reduce((sum, item) => sum + item.count, 0);
+  const salidasTotal = salidasStats.reduce((sum, item) => sum + item.count, 0);
 
   return `
     <section class="view-panel integral-panel">
@@ -1256,7 +1313,7 @@ function renderIntegralView() {
           <div>
             <p class="eyebrow">MONITOR UNILEVER</p>
             <h2>Vista Operativa Integral</h2>
-            <span>Camiones en playa, procesos, rampas y productividad en tiempo real.</span>
+            <span>Ingresos, salidas, unidades en playa, flujo y rampas en tiempo real.</span>
           </div>
         </div>
         <div class="integral-status-row">
@@ -1267,33 +1324,52 @@ function renderIntegralView() {
       </div>
 
       <div class="integral-grid">
+        ${renderIntegralTrendCard({
+          title: 'Ingresos',
+          subtitle: 'Descargas',
+          stats: ingresosStats,
+          total: ingresosTotal,
+          tone: 'ingresos',
+        })}
+
+        ${renderIntegralTrendCard({
+          title: 'Salidas',
+          subtitle: 'Cargas',
+          stats: salidasStats,
+          total: salidasTotal,
+          tone: 'salidas',
+        })}
+
         <article class="integral-card integral-card-playa">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Camiones en playa</p>
-              <h3>Arribos activos</h3>
+              <p class="eyebrow">Unidades en playa</p>
+              <h3>Unidades activas</h3>
             </div>
-            <div class="integral-mini-metrics">
-              <span><b>${summary.activas}</b>Total</span>
-              <span><b>${cargaCount}</b>Carga</span>
-              <span><b>${descargaCount}</b>Descarga</span>
-              <span><b>${devolucionCount}</b>Devol.</span>
-            </div>
+            <span class="integral-highlight">${state.visits.length} visibles</span>
           </div>
           ${liveVisits.length ? `
-            <div class="integral-live-list">
+            <div class="integral-unit-table-wrap">
+              <table class="integral-unit-table">
+                <thead>
+                  <tr>
+                    <th>Empresa de transporte</th>
+                    <th>Cliente</th>
+                    <th>Placa</th>
+                    <th>Operacion</th>
+                  </tr>
+                </thead>
+                <tbody>
               ${liveVisits.map((visit) => `
-                <div class="integral-live-row">
-                  <div>
-                    <strong>${escapeHtml(getVisitClientLabel(visit))}</strong>
-                    <span>${escapeHtml(getVisitCompanyLabel(visit))}</span>
-                  </div>
-                  <b>${escapeHtml(getVisitPlateLabel(visit))}</b>
-                  <small>${escapeHtml(getOperationLabel(visit.tipo_operacion))}</small>
-                  <small>${escapeHtml(getVisitRampLabel(visit))}</small>
-                  <small>${escapeHtml(formatElapsed(visit.hora_registro || visit.created_at))}</small>
-                </div>
+                <tr>
+                  <td>${escapeHtml(getVisitCompanyLabel(visit))}</td>
+                  <td>${escapeHtml(getVisitClientLabel(visit))}</td>
+                  <td class="mono strong">${escapeHtml(getVisitPlateLabel(visit))}</td>
+                  <td><span class="integral-op-pill">${escapeHtml(getOperationLabel(visit.tipo_operacion))}</span></td>
+                </tr>
               `).join('')}
+                </tbody>
+              </table>
             </div>
           ` : '<div class="integral-empty">No hay camiones activos en playa.</div>'}
         </article>
@@ -1317,19 +1393,8 @@ function renderIntegralView() {
                 <small>${escapeHtml(stage.note)}</small>
                 <i></i>
               </div>
-            `).join('')}
-          </div>
-          ${processVisits.length ? `
-            <div class="integral-process-list">
-              ${processVisits.map((visit) => `
-                <div class="integral-process-row">
-                  <span>${escapeHtml(getVisitPlateLabel(visit))}</span>
-                  <strong>${escapeHtml(getVisitCurrentStage(visit))}</strong>
-                  <small>${escapeHtml(getVisitRampLabel(visit))}</small>
-                </div>
               `).join('')}
-            </div>
-          ` : ''}
+          </div>
         </article>
 
         <article class="integral-card integral-card-rampas">
@@ -1354,35 +1419,11 @@ function renderIntegralView() {
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
                     <div><span>Placa:</span><b>${escapeHtml(isFree ? '--' : getVisitPlateLabel(visit))}</b></div>
                     <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_registro || visit.created_at))}</b></div>
-                    <div><span>H. Rampa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_llegada_rampa))}</b></div>
                     <div><span>T. Permanencia:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
                   </div>
                 </div>
               `;
             }).join('')}
-          </div>
-        </article>
-
-        <article class="integral-card integral-card-productivity">
-          <div class="integral-card-head">
-            <div>
-              <p class="eyebrow">Productividad</p>
-              <h3>Productividad</h3>
-            </div>
-            <span class="integral-highlight muted">Pendiente</span>
-          </div>
-          <div class="integral-productivity-grid">
-            ${turns.map((turn) => `
-              <div class="integral-turn-card ${turn.accent}">
-                <span>${escapeHtml(turn.title)}</span>
-                <small>${escapeHtml(turn.window)}</small>
-                <div class="integral-productivity-values">
-                  <div><b>--</b><em>Peso</em></div>
-                  <div><b>--</b><em>Cajas</em></div>
-                  <div><b>--</b><em>Volumen</em></div>
-                </div>
-              </div>
-            `).join('')}
           </div>
         </article>
       </div>
