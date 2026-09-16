@@ -175,6 +175,15 @@ function formatTime(value) {
   }).format(new Date(value));
 }
 
+function formatTime24(value) {
+  if (!value) return '--';
+  return new Intl.DateTimeFormat('es-PE', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date(value));
+}
+
 function formatElapsed(value) {
   if (!value) return '--';
   const diffMs = Date.now() - new Date(value).getTime();
@@ -1329,11 +1338,6 @@ function renderIntegralView() {
               <p class="eyebrow">Rampas</p>
               <h3>Bloque A</h3>
             </div>
-            <div class="integral-mini-metrics">
-              <span><b>${summary.ocupadas}</b>Ocupadas</span>
-              <span><b>${summary.reservadas}</b>Reservadas</span>
-              <span><b>${summary.libres}</b>Libres</span>
-            </div>
           </div>
           <div class="integral-ramp-grid">
             ${rampItems.map((item) => {
@@ -1349,8 +1353,8 @@ function renderIntegralView() {
                   <div class="integral-ramp-detail">
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
                     <div><span>Placa:</span><b>${escapeHtml(isFree ? '--' : getVisitPlateLabel(visit))}</b></div>
-                    <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime(visit.hora_registro || visit.created_at))}</b></div>
-                    <div><span>H. Rampa:</span><b>${escapeHtml(isFree ? '--' : formatTime(visit.hora_llegada_rampa))}</b></div>
+                    <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_registro || visit.created_at))}</b></div>
+                    <div><span>H. Rampa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_llegada_rampa))}</b></div>
                     <div><span>T. Permanencia:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
                   </div>
                 </div>
