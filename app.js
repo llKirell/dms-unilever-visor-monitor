@@ -93,6 +93,7 @@ const state = {
   activeView: 'integral',
   ramps: [],
   visits: [],
+  monthlyVisits: [],
   importRows: [],
   importRowsAvailable: false,
   lastSyncAt: null,
@@ -325,6 +326,26 @@ async function fetchLiveVisits() {
   if (error) throw error;
   state.visits = data ?? [];
   state.lastSyncAt = new Date().toISOString();
+}
+
+async function fetchMonthlyVisits() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const { data, error } = await supabase
+    .from('visitas_unidad')
+    .select('id, tipo_operacion, hora_registro, created_at')
+    .eq('cliente_id', config.CLIENTE_ID)
+    .gte('hora_registro', start.toISOString())
+    .lt('hora_registro', end.toISOString())
+    .order('hora_registro', { ascending: true })
+    .limit(1200);
+
+  if (error) {
+    state.monthlyVisits = state.visits;
+    return;
+  }
+  state.monthlyVisits = data ?? [];
 }
 
 async function fetchImportRowsOptional() {
@@ -594,54 +615,66 @@ function getIntegralTurnPlaceholders() {
   ];
 }
 
-const INTEGRAL_WEEK_DAYS = [
-  { key: 1, label: 'L' },
-  { key: 2, label: 'M' },
-  { key: 3, label: 'M' },
-  { key: 4, label: 'J' },
-  { key: 5, label: 'V' },
-  { key: 6, label: 'S' },
-  { key: 0, label: 'D' },
-];
-
 function getIntegralTrendStats(mode) {
-  const stats = INTEGRAL_WEEK_DAYS.map((day) => ({ ...day, count: 0 }));
-  for (const visit of state.visits) {
+  const now = new Date();
+  const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const totalWeeks = Math.ceil(totalDays / 7);
+  const stats = Array.from({ length: totalWeeks }, (_item, index) => ({
+    key: index + 1,
+    label: `S${index + 1}`,
+    count: 0,
+  }));
+  const source = state.monthlyVisits.length ? state.monthlyVisits : state.visits;
+  for (const visit of source) {
     if (mode === 'ingresos' && visit.tipo_operacion !== 'ingreso') continue;
     if (mode === 'salidas' && visit.tipo_operacion !== 'salida') continue;
     const value = visit.hora_registro || visit.created_at;
     if (!value) continue;
-    const day = new Date(value).getDay();
-    const target = stats.find((item) => item.key === day);
+    const date = new Date(value);
+    if (date.getMonth() !== now.getMonth() || date.getFullYear() !== now.getFullYear()) continue;
+    const week = Math.floor((date.getDate() - 1) / 7) + 1;
+    const target = stats.find((item) => item.key === week);
     if (target) target.count += 1;
   }
   return stats;
 }
 
-function renderIntegralTrendCard({ title, subtitle, stats, total, tone }) {
+function buildSmoothPath(points) {
+  if (!points.length) return '';
+  if (points.length === 1) return `M${points[0].x} ${points[0].y}`;
+  const commands = [`M${points[0].x} ${points[0].y}`];
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const current = points[index];
+    const next = points[index + 1];
+    const midX = (current.x + next.x) / 2;
+    commands.push(`C ${midX} ${current.y}, ${midX} ${next.y}, ${next.x} ${next.y}`);
+  }
+  return commands.join(' ');
+}
+
+function renderIntegralTrendCard({ title, stats, total, tone }) {
   const max = Math.max(1, ...stats.map((item) => item.count));
+  const step = stats.length > 1 ? 168 / (stats.length - 1) : 0;
   const points = stats.map((item, index) => {
-    const x = 12 + index * 28;
+    const x = 12 + index * step;
     const y = 58 - (item.count / max) * 36;
-    return `${x},${y}`;
-  }).join(' ');
+    return { x, y };
+  });
+  const path = buildSmoothPath(points);
 
   return `
     <article class="integral-card integral-trend-card ${tone}">
       <div class="integral-trend-head">
         <div>
-          <p class="eyebrow">${escapeHtml(subtitle)}</p>
           <h3>${escapeHtml(title)}</h3>
         </div>
         <strong>${total}</strong>
       </div>
       <svg class="integral-trend-chart" viewBox="0 0 192 72" role="img" aria-label="${escapeHtml(title)}">
         <path d="M12 62H180" />
-        <polyline points="${points}" />
-        ${stats.map((item, index) => {
-          const x = 12 + index * 28;
-          const y = 58 - (item.count / max) * 36;
-          return `<circle cx="${x}" cy="${y}" r="2.4"></circle>`;
+        <path class="integral-trend-curve" d="${path}" />
+        ${points.map((point) => {
+          return `<circle cx="${point.x}" cy="${point.y}" r="2.4"></circle>`;
         }).join('')}
       </svg>
       <div class="integral-trend-days">
@@ -1201,6 +1234,7 @@ async function refreshLiveData({ initial = false } = {}) {
     }
     await Promise.all([
       fetchLiveVisits(),
+      fetchMonthlyVisits(),
       fetchImportRowsOptional(),
     ]);
     syncEmbeddedDinetDashboard();
@@ -1297,7 +1331,7 @@ function renderLogin() {
 }
 
 function renderIntegralView() {
-  const liveVisits = getIntegralLiveVisits(9);
+  const liveVisits = getIntegralLiveVisits(7);
   const stageMetrics = getIntegralStageMetrics();
   const rampItems = deriveRampItems();
   const ingresosStats = getIntegralTrendStats('ingresos');
@@ -1326,7 +1360,6 @@ function renderIntegralView() {
       <div class="integral-grid">
         ${renderIntegralTrendCard({
           title: 'Ingresos',
-          subtitle: 'Descargas',
           stats: ingresosStats,
           total: ingresosTotal,
           tone: 'ingresos',
@@ -1334,7 +1367,6 @@ function renderIntegralView() {
 
         ${renderIntegralTrendCard({
           title: 'Salidas',
-          subtitle: 'Cargas',
           stats: salidasStats,
           total: salidasTotal,
           tone: 'salidas',

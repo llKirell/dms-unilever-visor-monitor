@@ -684,8 +684,8 @@ button {
 
 .integral-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(350px, 0.92fr);
-  grid-template-rows: minmax(0, 0.72fr) minmax(0, 1.55fr) minmax(86px, 0.38fr);
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 0.72fr) minmax(560px, 1.38fr);
+  grid-template-rows: minmax(0, 0.68fr) minmax(0, 1.08fr) minmax(112px, 0.48fr);
   gap: 0.55rem;
   min-height: 0;
 }
@@ -882,8 +882,8 @@ button {
 }
 
 .integral-card-process .integral-stage-card {
-  min-height: 58px;
-  padding: 0.38rem 0.44rem;
+  min-height: 66px;
+  padding: 0.42rem 0.5rem;
 }
 
 .integral-card-process .integral-stage-card .material-symbols-outlined {
@@ -891,12 +891,12 @@ button {
 }
 
 .integral-card-process .integral-stage-card strong {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
 }
 
 .integral-card-process .integral-stage-card b {
-  margin-top: 0.14rem;
-  font-size: 1.12rem;
+  margin-top: 0.18rem;
+  font-size: 1.22rem;
 }
 
 .integral-card-process .integral-stage-card small {
@@ -945,8 +945,8 @@ button {
 }
 
 .integral-trend-head h3 {
-  margin-top: 0.08rem;
-  font-size: 1rem;
+  margin-top: 0;
+  font-size: 1.04rem;
 }
 
 .integral-trend-head strong {
@@ -972,7 +972,7 @@ button {
   stroke-width: 1.2;
 }
 
-.integral-trend-chart polyline {
+.integral-trend-chart .integral-trend-curve {
   fill: none;
   stroke: #38bdf8;
   stroke-width: 3;
@@ -980,7 +980,7 @@ button {
   stroke-linejoin: round;
 }
 
-.integral-trend-card.salidas .integral-trend-chart polyline {
+.integral-trend-card.salidas .integral-trend-chart .integral-trend-curve {
   stroke: #22c55e;
 }
 
@@ -992,7 +992,7 @@ button {
 
 .integral-trend-days {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
   gap: 0.18rem;
 }
 
@@ -1021,7 +1021,7 @@ button {
 }
 
 .integral-unit-table-wrap {
-  height: calc(100% - 2.6rem);
+  height: calc(100% - 2.3rem);
   overflow: hidden;
 }
 
@@ -1032,7 +1032,7 @@ button {
 
 .integral-unit-table th,
 .integral-unit-table td {
-  padding: 0.42rem 0.5rem;
+  padding: 0.34rem 0.48rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   text-align: left;
   vertical-align: middle;
@@ -1047,7 +1047,7 @@ button {
 
 .integral-unit-table td {
   color: #f8fafc;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
 }
 
 .integral-op-pill {
@@ -1063,16 +1063,16 @@ button {
 .integral-ramp-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.34rem;
+  gap: 0.42rem;
   height: calc(100% - 1.9rem);
 }
 
 .integral-ramp-tile {
   min-height: 0;
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
+  grid-template-columns: 44px minmax(0, 1fr);
   align-content: stretch;
-  gap: 0.34rem;
+  gap: 0.42rem;
   border-radius: 12px;
   padding: 0.3rem;
   border: 1px solid rgba(148, 163, 184, 0.14);
@@ -1134,17 +1134,17 @@ button {
 }
 
 .integral-ramp-side .material-symbols-outlined {
-  font-size: 1rem;
+  font-size: 1.08rem;
 }
 
 .integral-ramp-side strong {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   line-height: 1;
 }
 
 .integral-ramp-side b {
-  font-size: 0.84rem;
+  font-size: 0.96rem;
   line-height: 1;
 }
 
@@ -1167,7 +1167,7 @@ button {
 .integral-ramp-client {
   display: block;
   color: white;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   line-height: 1.05;
 }
 
@@ -1188,14 +1188,14 @@ button {
 
 .integral-ramp-detail span {
   color: #cbd5e1;
-  font-size: 0.54rem;
+  font-size: 0.6rem;
   font-weight: 800;
 }
 
 .integral-ramp-detail b {
   color: #f8fafc;
   font-family: var(--mono);
-  font-size: 0.52rem;
+  font-size: 0.58rem;
   text-align: right;
 }
 
