@@ -527,9 +527,13 @@ function getVisitProcessStart(visit) {
 
 function getVisitProcessEnd(visit) {
   if (!visit) return null;
-  if (visit.tipo_operacion === 'salida') {
-    return visit.hora_fin_facturacion || visit.hora_fin_carga;
-  }
+  if (visit.tipo_operacion === 'salida') return visit.hora_fin_carga;
+  return visit.hora_fin_descarga;
+}
+
+function getVisitReadyForExitTime(visit) {
+  if (!visit?.rampa_id) return null;
+  if (visit.tipo_operacion === 'salida') return visit.hora_fin_facturacion;
   return visit.hora_fin_descarga;
 }
 
@@ -568,8 +572,8 @@ function getIntegralStageMetrics() {
       key: 'rampa',
       icon: 'warehouse',
       title: 'En rampa',
-      note: 'Unidad posicionada',
-      count: state.visits.filter((visit) => visit.hora_llegada_rampa && !getVisitProcessStart(visit)).length,
+      note: 'Ocupacion actual',
+      count: state.visits.filter((visit) => visit.rampa_id).length,
     },
     {
       key: 'operacion',
@@ -583,7 +587,7 @@ function getIntegralStageMetrics() {
       icon: 'verified',
       title: 'Listas para salida',
       note: 'Operacion terminada',
-      count: state.visits.filter((visit) => getVisitProcessEnd(visit)).length,
+      count: state.visits.filter((visit) => getVisitReadyForExitTime(visit)).length,
     },
   ];
   const max = Math.max(1, ...stages.map((stage) => stage.count));
@@ -598,6 +602,10 @@ function getIntegralLiveVisits(limit = 4) {
     .slice()
     .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
     .slice(0, limit);
+}
+
+function getIntegralActiveCount() {
+  return state.visits.length;
 }
 
 function getIntegralProcessVisits(limit = 4) {
@@ -1410,7 +1418,7 @@ function renderIntegralView() {
         <article class="integral-card integral-card-playa">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Unidades en playa</p>
+              <p class="eyebrow">Unidades activas</p>
               <h3>Unidades activas</h3>
             </div>
             <span class="integral-highlight">${state.visits.length} visibles</span>
@@ -1447,7 +1455,7 @@ function renderIntegralView() {
               <p class="eyebrow">Control de procesos</p>
               <h3>Flujo operativo</h3>
             </div>
-            <span class="integral-highlight">${stageMetrics.reduce((sum, stage) => sum + stage.count, 0)} unidades</span>
+            <span class="integral-highlight">${getIntegralActiveCount()} activas</span>
           </div>
           <div class="integral-stage-flow">
             ${stageMetrics.map((stage) => `
