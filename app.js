@@ -615,16 +615,43 @@ function getIntegralTurnPlaceholders() {
   ];
 }
 
-function getIntegralTrendStats(mode) {
+const INTEGRAL_WEEK_DAYS = [
+  { key: 1, label: 'L' },
+  { key: 2, label: 'M' },
+  { key: 3, label: 'M' },
+  { key: 4, label: 'J' },
+  { key: 5, label: 'V' },
+  { key: 6, label: 'S' },
+  { key: 0, label: 'D' },
+];
+
+function getWeekStartDate(date) {
+  const target = new Date(date);
+  const offset = (target.getDay() + 6) % 7;
+  target.setDate(target.getDate() - offset);
+  target.setHours(0, 0, 0, 0);
+  return target;
+}
+
+function getIntegralTrendData(mode) {
   const now = new Date();
   const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   const totalWeeks = Math.ceil(totalDays / 7);
-  const stats = Array.from({ length: totalWeeks }, (_item, index) => ({
+  const dayStats = INTEGRAL_WEEK_DAYS.map((day) => ({
+    ...day,
+    count: 0,
+  }));
+  const weekStats = Array.from({ length: totalWeeks }, (_item, index) => ({
     key: index + 1,
     label: `S${index + 1}`,
     count: 0,
   }));
+  const weekStart = getWeekStartDate(now);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 7);
   const source = state.monthlyVisits.length ? state.monthlyVisits : state.visits;
+  let total = 0;
+
   for (const visit of source) {
     if (mode === 'ingresos' && visit.tipo_operacion !== 'ingreso') continue;
     if (mode === 'salidas' && visit.tipo_operacion !== 'salida') continue;
@@ -632,11 +659,16 @@ function getIntegralTrendStats(mode) {
     if (!value) continue;
     const date = new Date(value);
     if (date.getMonth() !== now.getMonth() || date.getFullYear() !== now.getFullYear()) continue;
+    total += 1;
     const week = Math.floor((date.getDate() - 1) / 7) + 1;
-    const target = stats.find((item) => item.key === week);
-    if (target) target.count += 1;
+    const weekTarget = weekStats.find((item) => item.key === week);
+    if (weekTarget) weekTarget.count += 1;
+    if (date >= weekStart && date < weekEnd) {
+      const dayTarget = dayStats.find((item) => item.key === date.getDay());
+      if (dayTarget) dayTarget.count += 1;
+    }
   }
-  return stats;
+  return { dayStats, weekStats, total };
 }
 
 function buildSmoothPath(points) {
@@ -652,10 +684,10 @@ function buildSmoothPath(points) {
   return commands.join(' ');
 }
 
-function renderIntegralTrendCard({ title, stats, total, tone }) {
-  const max = Math.max(1, ...stats.map((item) => item.count));
-  const step = stats.length > 1 ? 168 / (stats.length - 1) : 0;
-  const points = stats.map((item, index) => {
+function renderIntegralTrendCard({ title, data, tone }) {
+  const max = Math.max(1, ...data.dayStats.map((item) => item.count));
+  const step = data.dayStats.length > 1 ? 168 / (data.dayStats.length - 1) : 0;
+  const points = data.dayStats.map((item, index) => {
     const x = 12 + index * step;
     const y = 58 - (item.count / max) * 36;
     return { x, y };
@@ -668,7 +700,7 @@ function renderIntegralTrendCard({ title, stats, total, tone }) {
         <div>
           <h3>${escapeHtml(title)}</h3>
         </div>
-        <strong>${total}</strong>
+        <strong>${data.total}</strong>
       </div>
       <svg class="integral-trend-chart" viewBox="0 0 192 72" role="img" aria-label="${escapeHtml(title)}">
         <path d="M12 62H180" />
@@ -678,7 +710,12 @@ function renderIntegralTrendCard({ title, stats, total, tone }) {
         }).join('')}
       </svg>
       <div class="integral-trend-days">
-        ${stats.map((item) => `
+        ${data.dayStats.map((item) => `
+          <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
+        `).join('')}
+      </div>
+      <div class="integral-trend-weeks">
+        ${data.weekStats.map((item) => `
           <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
         `).join('')}
       </div>
@@ -1334,41 +1371,26 @@ function renderIntegralView() {
   const liveVisits = getIntegralLiveVisits(7);
   const stageMetrics = getIntegralStageMetrics();
   const rampItems = deriveRampItems();
-  const ingresosStats = getIntegralTrendStats('ingresos');
-  const salidasStats = getIntegralTrendStats('salidas');
-  const ingresosTotal = ingresosStats.reduce((sum, item) => sum + item.count, 0);
-  const salidasTotal = salidasStats.reduce((sum, item) => sum + item.count, 0);
+  const ingresosTrend = getIntegralTrendData('ingresos');
+  const salidasTrend = getIntegralTrendData('salidas');
 
   return `
     <section class="view-panel integral-panel">
       <div class="integral-top">
-        <div class="integral-title">
-          <span class="integral-title-icon material-symbols-outlined">dashboard_customize</span>
-          <div>
-            <p class="eyebrow">MONITOR UNILEVER</p>
-            <h2>Vista Operativa Integral</h2>
-            <span>Ingresos, salidas, unidades en playa, flujo y rampas en tiempo real.</span>
-          </div>
-        </div>
-        <div class="integral-status-row">
-          <span class="integral-status-chip"><span class="material-symbols-outlined">sync</span>${escapeHtml(formatDateTime(state.lastSyncAt))}</span>
-          <span class="integral-status-chip"><span class="material-symbols-outlined">${state.voiceEnabled ? 'volume_up' : 'volume_off'}</span>${state.voiceEnabled ? 'Voz activa' : 'Voz off'}</span>
-          <span class="integral-status-chip"><span class="material-symbols-outlined">timer</span>${Math.round(DEFAULT_POLL_MS / 1000)}s</span>
-        </div>
+        <h2>Panel de Control Operativo</h2>
+        <time>${escapeHtml(formatDateTime(state.lastSyncAt))}</time>
       </div>
 
       <div class="integral-grid">
         ${renderIntegralTrendCard({
           title: 'Ingresos',
-          stats: ingresosStats,
-          total: ingresosTotal,
+          data: ingresosTrend,
           tone: 'ingresos',
         })}
 
         ${renderIntegralTrendCard({
           title: 'Salidas',
-          stats: salidasStats,
-          total: salidasTotal,
+          data: salidasTrend,
           tone: 'salidas',
         })}
 
@@ -1445,7 +1467,6 @@ function renderIntegralView() {
                   <div class="integral-ramp-side">
                     <span class="material-symbols-outlined">local_shipping</span>
                     <strong>${escapeHtml(item.code.replace(/^A-/, ''))}</strong>
-                    <b>${isFree ? '0' : '1'}</b>
                   </div>
                   <div class="integral-ramp-detail">
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
