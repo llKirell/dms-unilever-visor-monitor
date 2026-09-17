@@ -93,6 +93,10 @@ const state = {
   activeView: 'integral',
   ramps: [],
   visits: [],
+  eventTypes: [],
+  transitions: [],
+  finalStateIds: [],
+  opsisFacturacionEnabled: true,
   monthlyVisits: [],
   importRows: [],
   importRowsAvailable: false,
@@ -106,6 +110,38 @@ const state = {
   speaking: false,
   bootedUserId: null,
 };
+
+const EVENT_ORDER = [
+  'llegada_a_rampa',
+  'inicio_validacion',
+  'fin_validacion',
+  'espera_autorizacion',
+  'inicio_carga',
+  'fin_carga',
+  'inicio_descarga',
+  'fin_descarga',
+  'inicio_facturacion',
+  'fin_facturacion',
+  'entrega_documentos',
+  'entrega_precinto',
+  'retiro_unidad',
+  'salida_confirmada',
+];
+
+const HIDDEN_EVENTS = new Set([
+  'unidad_registrada',
+  'rampa_asignada',
+  'llegada_a_rampa',
+  'inicio_validacion',
+  'fin_validacion',
+  'espera_autorizacion',
+  'entrega_documentos',
+  'entrega_precinto',
+]);
+
+const CARGA_OPS = new Set(['inicio_carga', 'fin_carga']);
+const DESCARGA_OPS = new Set(['inicio_descarga', 'fin_descarga']);
+const OPSIS_FACTURACION_FLAG = 'opsis_facturacion_enabled';
 
 const app = document.getElementById('app');
 
@@ -291,6 +327,32 @@ async function fetchRamps() {
   state.ramps = (data ?? []).filter((ramp) => firstValue(ramp.bloques)?.codigo === BLOCK_CODE);
 }
 
+async function fetchWorkflowData() {
+  const [finalStatesRes, eventTypesRes, transitionsRes, flagsRes] = await Promise.all([
+    supabase.from('estados_visita').select('id').eq('es_final', true),
+    supabase.from('tipos_evento').select('id, codigo, nombre'),
+    supabase
+      .from('transiciones_estado')
+      .select('estado_origen_id, evento_id, estado_destino_id, requiere_motivo, activo')
+      .eq('activo', true),
+    supabase
+      .from('system_flags')
+      .select('flag_key, enabled')
+      .eq('flag_key', OPSIS_FACTURACION_FLAG)
+      .maybeSingle(),
+  ]);
+
+  if (finalStatesRes.error) throw finalStatesRes.error;
+  if (eventTypesRes.error) throw eventTypesRes.error;
+  if (transitionsRes.error) throw transitionsRes.error;
+  if (flagsRes.error) throw flagsRes.error;
+
+  state.finalStateIds = (finalStatesRes.data ?? []).map((row) => row.id);
+  state.eventTypes = eventTypesRes.data ?? [];
+  state.transitions = transitionsRes.data ?? [];
+  state.opsisFacturacionEnabled = flagsRes.data?.enabled !== false;
+}
+
 async function fetchLiveVisits() {
   const { data, error } = await supabase
     .from('visitas_unidad')
@@ -299,6 +361,7 @@ async function fetchLiveVisits() {
       codigo_visita,
       cliente_referencia,
       tipo_operacion,
+      estado_actual_id,
       rampa_id,
       created_at,
       updated_at,
@@ -311,11 +374,12 @@ async function fetchLiveVisits() {
       hora_fin_descarga,
       hora_inicio_facturacion,
       hora_fin_facturacion,
+      hora_entrega_documentos,
       hora_salida,
       hora_retiro_unidad,
       vehiculos(placa),
       empresas_transporte(nombre),
-      estados_visita(nombre, codigo)
+      estados_visita(id, nombre, codigo, es_final)
     `)
     .eq('cliente_id', config.CLIENTE_ID)
     .is('hora_salida', null)
@@ -467,7 +531,7 @@ function getVisualStateLabel(stateKey) {
 
 function deriveRampItems() {
   const byRamp = new Map();
-  for (const visit of state.visits) {
+  for (const visit of getDashboardVisits()) {
     if (!visit.rampa_id) continue;
     if (!byRamp.has(visit.rampa_id)) {
       byRamp.set(visit.rampa_id, visit);
@@ -519,22 +583,87 @@ function getVisitRampLabel(visit) {
   return ramp?.codigo ? `A-${ramp.codigo}` : '--';
 }
 
+function getProcessKind(visit) {
+  return normalizeText(visit?.tipo_operacion) === 'salida' ? 'carga' : 'descarga';
+}
+
 function getVisitProcessStart(visit) {
   if (!visit) return null;
-  if (visit.tipo_operacion === 'salida') return visit.hora_inicio_carga;
+  if (getProcessKind(visit) === 'carga') return visit.hora_inicio_carga;
   return visit.hora_inicio_descarga;
 }
 
 function getVisitProcessEnd(visit) {
   if (!visit) return null;
-  if (visit.tipo_operacion === 'salida') return visit.hora_fin_carga;
+  if (getProcessKind(visit) === 'carga') return visit.hora_fin_carga;
   return visit.hora_fin_descarga;
 }
 
 function getVisitReadyForExitTime(visit) {
   if (!visit?.rampa_id) return null;
-  if (visit.tipo_operacion === 'salida') return visit.hora_fin_facturacion;
+  if (getProcessKind(visit) === 'carga') return visit.hora_entrega_documentos || visit.hora_fin_facturacion;
   return visit.hora_fin_descarga;
+}
+
+function getEventTypeId(code) {
+  return state.eventTypes.find((eventType) => eventType.codigo === code)?.id ?? null;
+}
+
+function getTransition(visit, eventCode) {
+  const eventId = getEventTypeId(eventCode);
+  if (!eventId) return null;
+  return state.transitions.find(
+    (transition) =>
+      transition.estado_origen_id === visit?.estado_actual_id &&
+      transition.evento_id === eventId &&
+      transition.activo,
+  ) ?? null;
+}
+
+function getVisitState(visit) {
+  return firstValue(visit?.estados_visita);
+}
+
+function hasOutgoingTransition(visit) {
+  return state.transitions.some(
+    (transition) => transition.estado_origen_id === visit?.estado_actual_id && transition.activo,
+  );
+}
+
+function isFinalVisit(visit) {
+  if (visit?.hora_salida || visit?.hora_retiro_unidad) return true;
+  if (state.transitions.length) return !hasOutgoingTransition(visit);
+  const stateInfo = getVisitState(visit);
+  return Boolean(stateInfo?.es_final || state.finalStateIds.includes(visit?.estado_actual_id));
+}
+
+function getAvailableEvents(visit) {
+  return EVENT_ORDER.filter((eventCode) => Boolean(getTransition(visit, eventCode)));
+}
+
+function getDashboardVisits() {
+  return state.visits.filter((visit) => !isFinalVisit(visit));
+}
+
+function getMonitorPageEventCodes(visit, page) {
+  const kind = getProcessKind(visit);
+  const availableEvents = getAvailableEvents(visit);
+  const visibleEvents = availableEvents.filter((code) => !HIDDEN_EVENTS.has(code));
+  if (page === 'operacion') {
+    return availableEvents.filter((code) =>
+      code === 'llegada_a_rampa' || (kind === 'carga' ? CARGA_OPS.has(code) : DESCARGA_OPS.has(code)),
+    );
+  }
+  if (page === 'prevencion') {
+    if (kind === 'carga') {
+      if (state.opsisFacturacionEnabled !== false && !getVisitReadyForExitTime(visit)) return [];
+      return (availableEvents.includes('entrega_precinto') || availableEvents.includes('salida_confirmada'))
+        ? ['prevencion_complete']
+        : [];
+    }
+    return visibleEvents.filter((code) => code === 'retiro_unidad');
+  }
+  return [];
 }
 
 function getRampStayElapsed(visit) {
@@ -553,41 +682,35 @@ function getVisitCurrentStage(visit) {
 }
 
 function getIntegralStageMetrics() {
+  const dashboardVisits = getDashboardVisits();
   const stages = [
     {
       key: 'playa',
       icon: 'local_shipping',
       title: 'Camiones en playa',
       note: 'Registrados sin rampa',
-      count: state.visits.filter((visit) => !visit.rampa_id).length,
-    },
-    {
-      key: 'asignacion',
-      icon: 'forklift',
-      title: 'Rampa asignada',
-      note: 'Pendiente de llegada',
-      count: state.visits.filter((visit) => visit.rampa_id && !visit.hora_llegada_rampa).length,
+      count: dashboardVisits.filter((visit) => !visit.rampa_id).length,
     },
     {
       key: 'rampa',
       icon: 'warehouse',
       title: 'En rampa',
       note: 'Ocupacion actual',
-      count: state.visits.filter((visit) => visit.rampa_id).length,
+      count: deriveRampItems().filter((item) => item.visit).length,
     },
     {
       key: 'operacion',
       icon: 'manufacturing',
       title: 'En proceso',
       note: 'Carga, descarga o devolucion',
-      count: state.visits.filter((visit) => getVisitProcessStart(visit) && !getVisitProcessEnd(visit)).length,
+      count: dashboardVisits.filter((visit) => getMonitorPageEventCodes(visit, 'operacion').length > 0).length,
     },
     {
       key: 'salida',
       icon: 'verified',
       title: 'Listas para salida',
       note: 'Operacion terminada',
-      count: state.visits.filter((visit) => getVisitReadyForExitTime(visit)).length,
+      count: dashboardVisits.filter((visit) => getMonitorPageEventCodes(visit, 'prevencion').length > 0).length,
     },
   ];
   const max = Math.max(1, ...stages.map((stage) => stage.count));
@@ -598,7 +721,7 @@ function getIntegralStageMetrics() {
 }
 
 function getIntegralLiveVisits(limit = 4) {
-  return state.visits
+  return getDashboardVisits()
     .filter((visit) => !visit.rampa_id)
     .slice()
     .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
@@ -606,11 +729,11 @@ function getIntegralLiveVisits(limit = 4) {
 }
 
 function getIntegralPlayaCount() {
-  return state.visits.filter((visit) => !visit.rampa_id).length;
+  return getDashboardVisits().filter((visit) => !visit.rampa_id).length;
 }
 
 function getIntegralActiveCount() {
-  return state.visits.length;
+  return getDashboardVisits().length;
 }
 
 function getIntegralProcessVisits(limit = 4) {
@@ -1294,6 +1417,9 @@ async function refreshLiveData({ initial = false } = {}) {
   try {
     if (initial && !state.ramps.length) {
       await fetchRamps();
+    }
+    if (initial && (!state.eventTypes.length || !state.transitions.length)) {
+      await fetchWorkflowData();
     }
     await Promise.all([
       fetchLiveVisits(),
