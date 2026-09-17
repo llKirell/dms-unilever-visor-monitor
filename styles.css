@@ -728,6 +728,10 @@ button {
   grid-row: 1 / 4;
 }
 
+.integral-card-rampas .integral-card-head {
+  margin-bottom: 0.22rem;
+}
+
 .integral-card-productivity {
   grid-column: 3 / 4;
 }
@@ -975,7 +979,7 @@ button {
 
 .integral-trend-chart {
   width: 100%;
-  height: 60px;
+  height: 64px;
   overflow: visible;
 }
 
@@ -985,28 +989,42 @@ button {
   stroke-width: 1.2;
 }
 
+.integral-trend-chart .integral-scale-line {
+  stroke: rgba(148, 163, 184, 0.12);
+  stroke-width: 1;
+}
+
+.integral-trend-chart .integral-scale-label {
+  fill: rgba(203, 213, 225, 0.56);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 800;
+  text-anchor: end;
+}
+
 .integral-trend-chart .integral-trend-curve {
   fill: none;
-  stroke: #38bdf8;
-  stroke-width: 3;
+  stroke: #38BDF8;
+  stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .integral-trend-card.salidas .integral-trend-chart .integral-trend-curve {
-  stroke: #22c55e;
+  stroke: #34D399;
 }
 
 .integral-trend-chart circle {
   fill: #e0f2fe;
   stroke: #061126;
-  stroke-width: 1.2;
+  stroke-width: 2;
 }
 
 .integral-trend-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.14rem;
+  padding-left: 2.2rem;
 }
 
 .integral-trend-weeks {
@@ -1089,18 +1107,18 @@ button {
 .integral-ramp-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.34rem;
-  height: calc(100% - 1.58rem);
+  gap: 0.24rem;
+  height: calc(100% - 1.34rem);
 }
 
 .integral-ramp-tile {
   min-height: 0;
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: 40px minmax(0, 1fr);
   align-content: stretch;
-  gap: 0.34rem;
-  border-radius: 11px;
-  padding: 0.24rem;
+  gap: 0.26rem;
+  border-radius: 10px;
+  padding: 0.18rem;
   border: 1px solid rgba(148, 163, 184, 0.14);
   position: relative;
   overflow: hidden;
@@ -1139,8 +1157,8 @@ button {
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 0.16rem;
-  border-radius: 8px;
+  gap: 0.1rem;
+  border-radius: 7px;
   color: white;
   background: linear-gradient(180deg, rgba(148, 163, 184, 0.34), rgba(51, 65, 85, 0.38));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
@@ -1160,12 +1178,12 @@ button {
 }
 
 .integral-ramp-side .material-symbols-outlined {
-  font-size: 1.12rem;
+  font-size: 1rem;
 }
 
 .integral-ramp-side strong {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   line-height: 1;
 }
 
@@ -1182,7 +1200,7 @@ button {
   border-radius: 5px;
   background: rgba(2, 6, 23, 0.18);
   border: 1px solid rgba(226, 232, 240, 0.09);
-  padding: 0.12rem 0.22rem;
+  padding: 0.08rem 0.18rem;
 }
 
 .integral-ramp-client {
@@ -2088,24 +2106,26 @@ button {
   }
 
   .integral-ramp-grid {
-    gap: 0.26rem;
+    gap: 0.2rem;
+    height: calc(100% - 1.2rem);
   }
 
   .integral-ramp-tile {
     border-radius: 10px;
-    padding: 0.28rem;
+    gap: 0.22rem;
+    padding: 0.14rem;
   }
 
   .integral-ramp-client {
-    font-size: 0.52rem;
+    font-size: 0.5rem;
   }
 
   .integral-ramp-detail span {
-    font-size: 0.46rem;
+    font-size: 0.44rem;
   }
 
   .integral-ramp-detail b {
-    font-size: 0.44rem;
+    font-size: 0.42rem;
   }
 
   .integral-turn-card {

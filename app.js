@@ -685,11 +685,18 @@ function buildSmoothPath(points) {
 }
 
 function renderIntegralTrendCard({ title, data, tone }) {
-  const max = Math.max(1, ...data.dayStats.map((item) => item.count));
-  const step = data.dayStats.length > 1 ? 168 / (data.dayStats.length - 1) : 0;
+  const scaleMax = 100;
+  const plot = {
+    x: 42,
+    y: 8,
+    width: 630,
+    height: 92,
+  };
+  const scaleMarks = Array.from({ length: 11 }, (_item, index) => index * 10);
   const points = data.dayStats.map((item, index) => {
-    const x = 12 + index * step;
-    const y = 58 - (item.count / max) * 36;
+    const value = Math.min(scaleMax, Math.max(0, item.count));
+    const x = plot.x + (plot.width / data.dayStats.length) * (index + 0.5);
+    const y = plot.y + plot.height - (value / scaleMax) * plot.height;
     return { x, y };
   });
   const path = buildSmoothPath(points);
@@ -702,11 +709,17 @@ function renderIntegralTrendCard({ title, data, tone }) {
         </div>
         <strong>${data.total}</strong>
       </div>
-      <svg class="integral-trend-chart" viewBox="0 0 192 72" role="img" aria-label="${escapeHtml(title)}">
-        <path d="M12 62H180" />
+      <svg class="integral-trend-chart" viewBox="0 0 700 112" role="img" aria-label="${escapeHtml(title)}">
+        ${scaleMarks.map((mark) => {
+          const y = plot.y + plot.height - (mark / scaleMax) * plot.height;
+          return `
+            <path class="integral-scale-line" d="M${plot.x} ${y}H${plot.x + plot.width}" />
+            <text class="integral-scale-label" x="${plot.x - 8}" y="${y + 3}">${mark}</text>
+          `;
+        }).join('')}
         <path class="integral-trend-curve" d="${path}" />
         ${points.map((point) => {
-          return `<circle cx="${point.x}" cy="${point.y}" r="2.4"></circle>`;
+          return `<circle cx="${point.x}" cy="${point.y}" r="4.2"></circle>`;
         }).join('')}
       </svg>
       <div class="integral-trend-days">
