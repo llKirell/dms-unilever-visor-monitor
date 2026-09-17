@@ -685,14 +685,14 @@ function buildSmoothPath(points) {
 }
 
 function renderIntegralTrendCard({ title, data, tone }) {
-  const scaleMax = 100;
+  const scaleMax = 30;
   const plot = {
     x: 42,
-    y: 8,
+    y: 6,
     width: 630,
-    height: 92,
+    height: 108,
   };
-  const scaleMarks = Array.from({ length: 11 }, (_item, index) => index * 10);
+  const scaleMarks = Array.from({ length: 4 }, (_item, index) => index * 10);
   const points = data.dayStats.map((item, index) => {
     const value = Math.min(scaleMax, Math.max(0, item.count));
     const x = plot.x + (plot.width / data.dayStats.length) * (index + 0.5);
@@ -709,7 +709,7 @@ function renderIntegralTrendCard({ title, data, tone }) {
         </div>
         <strong>${data.total}</strong>
       </div>
-      <svg class="integral-trend-chart" viewBox="0 0 700 112" role="img" aria-label="${escapeHtml(title)}">
+      <svg class="integral-trend-chart" viewBox="0 0 700 122" role="img" aria-label="${escapeHtml(title)}">
         ${scaleMarks.map((mark) => {
           const y = plot.y + plot.height - (mark / scaleMax) * plot.height;
           return `
@@ -1467,7 +1467,6 @@ function renderIntegralView() {
         <article class="integral-card integral-card-rampas">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Rampas</p>
               <h3>Bloque A</h3>
             </div>
           </div>
