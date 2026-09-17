@@ -336,8 +336,9 @@ async function fetchWorkflowData() {
       .select('estado_origen_id, evento_id, estado_destino_id, requiere_motivo, activo')
       .eq('activo', true),
     supabase
-      .from('system_flags')
+      .from('cliente_feature_flags')
       .select('flag_key, enabled')
+      .eq('cliente_id', config.CLIENTE_ID)
       .eq('flag_key', OPSIS_FACTURACION_FLAG)
       .maybeSingle(),
   ]);
@@ -345,12 +346,11 @@ async function fetchWorkflowData() {
   if (finalStatesRes.error) throw finalStatesRes.error;
   if (eventTypesRes.error) throw eventTypesRes.error;
   if (transitionsRes.error) throw transitionsRes.error;
-  if (flagsRes.error) throw flagsRes.error;
 
   state.finalStateIds = (finalStatesRes.data ?? []).map((row) => row.id);
   state.eventTypes = eventTypesRes.data ?? [];
   state.transitions = transitionsRes.data ?? [];
-  state.opsisFacturacionEnabled = flagsRes.data?.enabled !== false;
+  state.opsisFacturacionEnabled = flagsRes.error ? true : flagsRes.data?.enabled !== false;
 }
 
 async function fetchLiveVisits() {
