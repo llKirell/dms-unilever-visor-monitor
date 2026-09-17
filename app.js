@@ -599,9 +599,14 @@ function getIntegralStageMetrics() {
 
 function getIntegralLiveVisits(limit = 4) {
   return state.visits
+    .filter((visit) => !visit.rampa_id)
     .slice()
     .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
     .slice(0, limit);
+}
+
+function getIntegralPlayaCount() {
+  return state.visits.filter((visit) => !visit.rampa_id).length;
 }
 
 function getIntegralActiveCount() {
@@ -1418,10 +1423,9 @@ function renderIntegralView() {
         <article class="integral-card integral-card-playa">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Unidades activas</p>
-              <h3>Unidades activas</h3>
+              <h3>Unidades en playa</h3>
             </div>
-            <span class="integral-highlight">${state.visits.length} visibles</span>
+            <span class="integral-highlight">${getIntegralPlayaCount()} visibles</span>
           </div>
           ${liveVisits.length ? `
             <div class="integral-unit-table-wrap">
