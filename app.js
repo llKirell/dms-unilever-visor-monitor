@@ -605,6 +605,26 @@ function getVisitReadyForExitTime(visit) {
   return visit.hora_fin_descarga;
 }
 
+function getFacturacionCompletionTime(visit) {
+  return visit?.hora_entrega_documentos || visit?.hora_fin_facturacion || null;
+}
+
+function usesDocumentDeliveryFacturacionFlow() {
+  return Number(config.CLIENTE_ID) === 7;
+}
+
+function isVisitFacturacionEligible(visit) {
+  if (!visit || state.opsisFacturacionEnabled === false) return false;
+  if (getProcessKind(visit) !== 'carga') return false;
+  return Boolean(
+    visit.rampa_id ||
+    visit.hora_llegada_rampa ||
+    visit.hora_asignacion_rampa ||
+    visit.hora_inicio_carga ||
+    visit.hora_inicio_descarga,
+  );
+}
+
 function getEventTypeId(code) {
   return state.eventTypes.find((eventType) => eventType.codigo === code)?.id ?? null;
 }
@@ -654,6 +674,16 @@ function getMonitorPageEventCodes(visit, page) {
       code === 'llegada_a_rampa' || (kind === 'carga' ? CARGA_OPS.has(code) : DESCARGA_OPS.has(code)),
     );
   }
+  if (page === 'facturacion') {
+    if (state.opsisFacturacionEnabled === false || kind !== 'carga') return [];
+    if (!usesDocumentDeliveryFacturacionFlow()) {
+      return visibleEvents.filter((code) => code === 'inicio_facturacion' || code === 'fin_facturacion');
+    }
+    const hasDocumentFlow = ['inicio_facturacion', 'fin_facturacion', 'entrega_documentos'].some((eventCode) =>
+      availableEvents.includes(eventCode),
+    );
+    return hasDocumentFlow && !getFacturacionCompletionTime(visit) ? ['facturacion_entrega_documentos'] : [];
+  }
   if (page === 'prevencion') {
     if (kind === 'carga') {
       if (state.opsisFacturacionEnabled !== false && !getVisitReadyForExitTime(visit)) return [];
@@ -664,6 +694,25 @@ function getMonitorPageEventCodes(visit, page) {
     return visibleEvents.filter((code) => code === 'retiro_unidad');
   }
   return [];
+}
+
+function getMonitorFacturacionVisits() {
+  return getDashboardVisits().filter((visit) => {
+    if (state.opsisFacturacionEnabled === false) return false;
+    if (getProcessKind(visit) !== 'carga') return false;
+    if (usesDocumentDeliveryFacturacionFlow()) {
+      if (getFacturacionCompletionTime(visit)) {
+        return getMonitorPageEventCodes(visit, 'prevencion').length > 0;
+      }
+      return isVisitFacturacionEligible(visit);
+    }
+    if (getMonitorPageEventCodes(visit, 'facturacion').length > 0) return true;
+    return Boolean(getFacturacionCompletionTime(visit)) && getMonitorPageEventCodes(visit, 'prevencion').length > 0;
+  });
+}
+
+function getMonitorFacturacionPendingCount() {
+  return getMonitorFacturacionVisits().filter((visit) => !getFacturacionCompletionTime(visit)).length;
 }
 
 function getRampStayElapsed(visit) {
@@ -704,6 +753,13 @@ function getIntegralStageMetrics() {
       title: 'En proceso',
       note: 'Carga, descarga o devolucion',
       count: dashboardVisits.filter((visit) => getMonitorPageEventCodes(visit, 'operacion').length > 0).length,
+    },
+    {
+      key: 'facturacion',
+      icon: 'receipt_long',
+      title: 'Doc. pendiente',
+      note: 'Por facturar/entregar',
+      count: getMonitorFacturacionPendingCount(),
     },
     {
       key: 'salida',
