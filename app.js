@@ -716,8 +716,9 @@ function getMonitorFacturacionPendingCount() {
 }
 
 function getRampStayElapsed(visit) {
-  if (!visit?.hora_llegada_rampa) return '--';
-  return formatElapsed(visit.hora_llegada_rampa);
+  const startTime = visit?.hora_registro || visit?.created_at;
+  if (!startTime) return '--';
+  return formatElapsed(startTime);
 }
 
 function getVisitCurrentStage(visit) {
@@ -1678,7 +1679,7 @@ function renderIntegralView() {
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
                     <div><span>Placa:</span><b>${escapeHtml(isFree ? '--' : getVisitPlateLabel(visit))}</b></div>
                     <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_registro || visit.created_at))}</b></div>
-                    <div><span>T. Permanencia:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
+                    <div><span>T. Total:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
                   </div>
                 </div>
               `;
