@@ -861,7 +861,14 @@ function getIntegralTrendData(mode) {
       if (dayTarget) dayTarget.count += 1;
     }
   }
-  return { dayStats, weekStats, total };
+  return { dayStats, weekStats, total, monthLabel: formatMonthLabel(now) };
+}
+
+function formatMonthLabel(date) {
+  return new Intl.DateTimeFormat('es-PE', { month: 'short' })
+    .format(date)
+    .replace('.', '')
+    .toUpperCase();
 }
 
 function buildSmoothPath(points) {
@@ -881,9 +888,9 @@ function renderIntegralTrendCard({ title, data, tone }) {
   const scaleMax = 30;
   const plot = {
     x: 42,
-    y: 6,
+    y: 4,
     width: 630,
-    height: 108,
+    height: 96,
   };
   const scaleMarks = Array.from({ length: 4 }, (_item, index) => index * 10);
   const points = data.dayStats.map((item, index) => {
@@ -900,25 +907,27 @@ function renderIntegralTrendCard({ title, data, tone }) {
         <div>
           <h3>${escapeHtml(title)}</h3>
         </div>
-        <strong>${data.total}</strong>
+        <strong><span>${escapeHtml(data.monthLabel)}</span>${data.total}</strong>
       </div>
-      <svg class="integral-trend-chart" viewBox="0 0 700 122" role="img" aria-label="${escapeHtml(title)}">
-        ${scaleMarks.map((mark) => {
-          const y = plot.y + plot.height - (mark / scaleMax) * plot.height;
-          return `
-            <path class="integral-scale-line" d="M${plot.x} ${y}H${plot.x + plot.width}" />
-            <text class="integral-scale-label" x="${plot.x - 8}" y="${y + 3}">${mark}</text>
-          `;
-        }).join('')}
-        <path class="integral-trend-curve" d="${path}" />
-        ${points.map((point) => {
-          return `<circle cx="${point.x}" cy="${point.y}" r="4.2"></circle>`;
-        }).join('')}
-      </svg>
-      <div class="integral-trend-days">
-        ${data.dayStats.map((item) => `
-          <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
-        `).join('')}
+      <div class="integral-trend-plot">
+        <svg class="integral-trend-chart" viewBox="0 0 700 106" role="img" aria-label="${escapeHtml(title)}">
+          ${scaleMarks.map((mark) => {
+            const y = plot.y + plot.height - (mark / scaleMax) * plot.height;
+            return `
+              <path class="integral-scale-line" d="M${plot.x} ${y}H${plot.x + plot.width}" />
+              <text class="integral-scale-label" x="${plot.x - 8}" y="${y + 3}">${mark}</text>
+            `;
+          }).join('')}
+          <path class="integral-trend-curve" d="${path}" />
+          ${points.map((point) => {
+            return `<circle cx="${point.x}" cy="${point.y}" r="4.2"></circle>`;
+          }).join('')}
+        </svg>
+        <div class="integral-trend-days">
+          ${data.dayStats.map((item) => `
+            <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
+          `).join('')}
+        </div>
       </div>
       <div class="integral-trend-weeks">
         ${data.weekStats.map((item) => `
@@ -1606,7 +1615,7 @@ function renderIntegralView() {
         <article class="integral-card integral-card-playa">
           <div class="integral-card-head">
             <div>
-              <h3>Unidades en playa</h3>
+              <h3>U.T. reportadas en playa</h3>
             </div>
             <span class="integral-highlight">${getIntegralPlayaCount()} visibles</span>
           </div>

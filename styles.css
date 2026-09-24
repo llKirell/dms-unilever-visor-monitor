@@ -698,19 +698,19 @@ button {
 .integral-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.68fr) minmax(0, 0.68fr) minmax(610px, 1.55fr);
-  grid-template-rows: minmax(0, 0.72fr) minmax(0, 0.92fr) minmax(126px, 0.52fr);
+  grid-template-rows: minmax(108px, 0.44fr) minmax(0, 1fr) minmax(172px, 0.7fr);
   gap: 0.42rem;
   min-height: 0;
 }
 
 .integral-trend-card.ingresos {
   grid-column: 1 / 2;
-  grid-row: 1 / 2;
+  grid-row: 3 / 4;
 }
 
 .integral-trend-card.salidas {
   grid-column: 2 / 3;
-  grid-row: 1 / 2;
+  grid-row: 3 / 4;
 }
 
 .integral-card-playa {
@@ -720,7 +720,7 @@ button {
 
 .integral-card-process {
   grid-column: 1 / 3;
-  grid-row: 3 / 4;
+  grid-row: 1 / 2;
 }
 
 .integral-card-rampas {
@@ -945,8 +945,8 @@ button {
 
 .integral-trend-card {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  gap: 0.08rem;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.12rem;
 }
 
 .integral-trend-head {
@@ -968,18 +968,37 @@ button {
 
 .integral-trend-head strong {
   display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.24rem;
   place-items: center;
-  min-width: 38px;
-  height: 30px;
+  min-width: 74px;
+  min-height: 30px;
   border-radius: 11px;
   color: white;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(148, 163, 184, 0.15);
+  padding: 0.12rem 0.45rem;
+}
+
+.integral-trend-head strong span {
+  color: #bae6fd;
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.integral-trend-plot {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.04rem;
+  align-content: end;
 }
 
 .integral-trend-chart {
   width: 100%;
-  height: 82px;
+  height: 76px;
   overflow: visible;
 }
 
@@ -1023,9 +1042,9 @@ button {
 .integral-trend-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.14rem;
+  gap: 0.12rem;
   padding-left: 2.12rem;
-  margin-top: -0.08rem;
+  margin-top: -0.18rem;
 }
 
 .integral-trend-weeks {
@@ -1041,19 +1060,25 @@ button {
   gap: 0.06rem;
   justify-items: center;
   border-radius: 7px;
-  padding: 0.14rem 0.08rem;
-  background: rgba(2, 6, 23, 0.18);
+  padding: 0.16rem 0.08rem;
+  background: rgba(226, 232, 240, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.1);
 }
 
 .integral-trend-weeks span {
-  background: rgba(2, 6, 23, 0.28);
+  background: rgba(241, 245, 249, 0.9);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .integral-trend-days b,
 .integral-trend-weeks b {
-  color: #cbd5e1;
+  color: #dbeafe;
   font-size: 0.58rem;
   line-height: 1;
+}
+
+.integral-trend-weeks b {
+  color: #0f2c5c;
 }
 
 .integral-trend-days em,
@@ -1063,6 +1088,10 @@ button {
   line-height: 1;
   font-style: normal;
   font-weight: 900;
+}
+
+.integral-trend-weeks em {
+  color: #082f49;
 }
 
 .integral-unit-table-wrap {
