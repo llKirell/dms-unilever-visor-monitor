@@ -943,7 +943,7 @@ function renderIntegralTrendCard({ title, data, tone }) {
           ${points.map((point) => {
             const circleClass = point.isFuture ? 'future' : point.isToday ? 'today' : 'active';
             const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 15}">${point.count}</text>`;
-            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '6.4' : point.isFuture ? '3.6' : '5.5'}"></circle>`;
+            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '4.8' : point.isFuture ? '2.8' : '4.2'}"></circle>`;
           }).join('')}
         </svg>
         <div class="integral-trend-days">
