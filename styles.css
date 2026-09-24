@@ -732,6 +732,11 @@ button {
   margin-bottom: 0.12rem;
 }
 
+.integral-card-playa .integral-card-head {
+  align-items: center;
+  margin-bottom: 0.56rem;
+}
+
 .integral-card-productivity {
   grid-column: 3 / 4;
 }
@@ -1204,6 +1209,79 @@ button {
   overflow: hidden;
 }
 
+.integral-playa-filters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.42rem;
+  flex-wrap: wrap;
+}
+
+.integral-playa-filter {
+  --op-color: #38bdf8;
+  --op-bg: rgba(56, 189, 248, 0.12);
+  --op-border: rgba(56, 189, 248, 0.34);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  border: 1px solid var(--op-border);
+  border-radius: 999px;
+  padding: 0.34rem 0.56rem;
+  background: rgba(15, 23, 42, 0.52);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.integral-playa-filter:hover,
+.integral-playa-filter.active {
+  transform: translateY(-1px);
+  background: var(--op-bg);
+  color: #f8fafc;
+  border-color: var(--op-color);
+}
+
+.integral-playa-filter.op-carga {
+  --op-color: #5eead4;
+  --op-bg: rgba(20, 184, 166, 0.16);
+  --op-border: rgba(94, 234, 212, 0.36);
+}
+
+.integral-playa-filter.op-descarga {
+  --op-color: #f6c768;
+  --op-bg: rgba(245, 158, 11, 0.15);
+  --op-border: rgba(246, 199, 104, 0.38);
+}
+
+.integral-playa-filter.op-devolucion {
+  --op-color: #9bb6f5;
+  --op-bg: rgba(99, 102, 241, 0.16);
+  --op-border: rgba(155, 182, 245, 0.38);
+}
+
+.integral-filter-dot {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: var(--op-color);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--op-color), transparent 58%);
+}
+
+.integral-playa-filter b {
+  min-width: 1.28rem;
+  height: 1.28rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #ecfeff;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
 .integral-unit-table {
   width: 100%;
   border-collapse: collapse;
@@ -1235,8 +1313,27 @@ button {
   padding: 0.2rem 0.48rem;
   color: #bfdbfe;
   background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.28);
   font-size: 0.68rem;
   font-weight: 900;
+}
+
+.integral-op-pill.op-carga {
+  color: #99f6e4;
+  background: rgba(20, 184, 166, 0.14);
+  border-color: rgba(94, 234, 212, 0.34);
+}
+
+.integral-op-pill.op-descarga {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.13);
+  border-color: rgba(246, 199, 104, 0.36);
+}
+
+.integral-op-pill.op-devolucion {
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(155, 182, 245, 0.36);
 }
 
 .integral-ramp-grid {

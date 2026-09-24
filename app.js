@@ -106,6 +106,7 @@ const state = {
   voiceEnabled: true,
   kioskPaused: false,
   sidebarOpen: false,
+  integralPlayaFilter: null,
   previousRampStates: new Map(),
   speaking: false,
   bootedUserId: null,
@@ -270,9 +271,16 @@ function parseLooseNumber(value) {
 
 function getOperationLabel(value) {
   const normalized = normalizeText(value);
-  if (normalized.includes('devol')) return 'Devolucion';
+  if (normalized.includes('devol')) return 'Devolución';
   if (normalized.includes('descarg') || normalized.includes('ingres')) return 'Descarga';
   return 'Carga';
+}
+
+function getOperationFilterKey(value) {
+  const label = normalizeText(getOperationLabel(value));
+  if (label.includes('devol')) return 'devolucion';
+  if (label.includes('descarg')) return 'descarga';
+  return 'carga';
 }
 
 function getCurrentUserLabel() {
@@ -777,16 +785,33 @@ function getIntegralStageMetrics() {
   }));
 }
 
+function getIntegralPlayaVisits() {
+  return getDashboardVisits().filter((visit) => !visit.rampa_id);
+}
+
 function getIntegralLiveVisits(limit = 4) {
-  return getDashboardVisits()
-    .filter((visit) => !visit.rampa_id)
+  return getIntegralPlayaVisits()
+    .filter((visit) => !state.integralPlayaFilter || getOperationFilterKey(visit.tipo_operacion) === state.integralPlayaFilter)
     .slice()
     .sort((a, b) => new Date(b.hora_registro || b.created_at).getTime() - new Date(a.hora_registro || a.created_at).getTime())
     .slice(0, limit);
 }
 
 function getIntegralPlayaCount() {
-  return getDashboardVisits().filter((visit) => !visit.rampa_id).length;
+  return getIntegralPlayaVisits().filter((visit) => !state.integralPlayaFilter || getOperationFilterKey(visit.tipo_operacion) === state.integralPlayaFilter).length;
+}
+
+function getIntegralPlayaOperationCounts() {
+  const counts = {
+    carga: 0,
+    descarga: 0,
+    devolucion: 0,
+  };
+  for (const visit of getIntegralPlayaVisits()) {
+    const key = getOperationFilterKey(visit.tipo_operacion);
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
 }
 
 function getIntegralActiveCount() {
@@ -1619,10 +1644,16 @@ function renderLogin() {
 
 function renderIntegralView() {
   const liveVisits = getIntegralLiveVisits(7);
+  const playaCounts = getIntegralPlayaOperationCounts();
   const stageMetrics = getIntegralStageMetrics();
   const rampItems = deriveRampItems();
   const ingresosTrend = getIntegralTrendData('ingresos');
   const salidasTrend = getIntegralTrendData('salidas');
+  const playaFilters = [
+    { key: 'carga', label: 'Carga', count: playaCounts.carga },
+    { key: 'descarga', label: 'Descarga', count: playaCounts.descarga },
+    { key: 'devolucion', label: 'Devolución', count: playaCounts.devolucion },
+  ];
 
   return `
     <section class="view-panel integral-panel">
@@ -1649,7 +1680,20 @@ function renderIntegralView() {
             <div>
               <h3>U.T. reportadas en playa</h3>
             </div>
-            <span class="integral-highlight">${getIntegralPlayaCount()} visibles</span>
+            <div class="integral-playa-filters" aria-label="Filtrar unidades en playa por operacion">
+              ${playaFilters.map((filter) => `
+                <button
+                  class="integral-playa-filter op-${filter.key} ${state.integralPlayaFilter === filter.key ? 'active' : ''}"
+                  data-action="integral-playa-filter"
+                  data-filter="${filter.key}"
+                  type="button"
+                >
+                  <span class="integral-filter-dot"></span>
+                  <span>${escapeHtml(filter.label)}</span>
+                  <b>${filter.count}</b>
+                </button>
+              `).join('')}
+            </div>
           </div>
           ${liveVisits.length ? `
             <div class="integral-unit-table-wrap">
@@ -1668,7 +1712,7 @@ function renderIntegralView() {
                   <td>${escapeHtml(getVisitCompanyLabel(visit))}</td>
                   <td>${escapeHtml(getVisitClientLabel(visit))}</td>
                   <td class="mono strong">${escapeHtml(getVisitPlateLabel(visit))}</td>
-                  <td><span class="integral-op-pill">${escapeHtml(getOperationLabel(visit.tipo_operacion))}</span></td>
+                  <td><span class="integral-op-pill op-${getOperationFilterKey(visit.tipo_operacion)}">${escapeHtml(getOperationLabel(visit.tipo_operacion))}</span></td>
                 </tr>
               `).join('')}
                 </tbody>
@@ -2287,6 +2331,14 @@ function bindUiEvents() {
   document.querySelector('[data-action="toggle-kiosk-pause"]')?.addEventListener('click', () => {
     state.kioskPaused = !state.kioskPaused;
     render();
+  });
+
+  document.querySelectorAll('[data-action="integral-playa-filter"]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const nextFilter = button.dataset.filter;
+      state.integralPlayaFilter = state.integralPlayaFilter === nextFilter ? null : nextFilter;
+      render();
+    });
   });
 }
 
