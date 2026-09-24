@@ -833,6 +833,8 @@ function getIntegralTrendData(mode) {
   const dayStats = INTEGRAL_WEEK_DAYS.map((day) => ({
     ...day,
     count: 0,
+    isToday: day.key === now.getDay(),
+    isFuture: ((day.key + 6) % 7) > ((now.getDay() + 6) % 7),
   }));
   const weekStats = Array.from({ length: totalWeeks }, (_item, index) => ({
     key: index + 1,
@@ -861,7 +863,14 @@ function getIntegralTrendData(mode) {
       if (dayTarget) dayTarget.count += 1;
     }
   }
-  return { dayStats, weekStats, total, monthLabel: formatMonthLabel(now) };
+  return {
+    dayStats,
+    weekStats,
+    total,
+    monthLabel: formatMonthLabel(now),
+    monthFullLabel: formatFullMonthLabel(now),
+    todayIndex: dayStats.findIndex((item) => item.isToday),
+  };
 }
 
 function formatMonthLabel(date) {
@@ -869,6 +878,11 @@ function formatMonthLabel(date) {
     .format(date)
     .replace('.', '')
     .toUpperCase();
+}
+
+function formatFullMonthLabel(date) {
+  const formatted = new Intl.DateTimeFormat('es-PE', { month: 'long', year: 'numeric' }).format(date);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 function buildSmoothPath(points) {
@@ -887,52 +901,68 @@ function buildSmoothPath(points) {
 function renderIntegralTrendCard({ title, data, tone }) {
   const scaleMax = 30;
   const plot = {
-    x: 42,
-    y: 4,
-    width: 630,
-    height: 96,
+    x: 40,
+    y: 8,
+    width: 620,
+    height: 92,
   };
-  const scaleMarks = Array.from({ length: 4 }, (_item, index) => index * 10);
+  const baselineY = plot.y + plot.height;
   const points = data.dayStats.map((item, index) => {
-    const value = Math.min(scaleMax, Math.max(0, item.count));
+    const value = item.isFuture ? 0 : Math.min(scaleMax, Math.max(0, item.count));
     const x = plot.x + (plot.width / data.dayStats.length) * (index + 0.5);
-    const y = plot.y + plot.height - (value / scaleMax) * plot.height;
-    return { x, y };
+    const y = item.isFuture ? baselineY : plot.y + plot.height - (value / scaleMax) * plot.height;
+    return { ...item, x, y, value };
   });
-  const path = buildSmoothPath(points);
+  const activePoints = points.filter((point) => !point.isFuture);
+  const path = buildSmoothPath(activePoints);
+  const areaPath = activePoints.length
+    ? `${path} L${activePoints[activePoints.length - 1].x} ${baselineY} L${activePoints[0].x} ${baselineY} Z`
+    : '';
+  const todayPoint = points[data.todayIndex] || null;
+  const weekMax = Math.max(1, ...data.weekStats.map((item) => item.count));
 
   return `
     <article class="integral-card integral-trend-card ${tone}">
       <div class="integral-trend-head">
         <div>
           <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(data.monthFullLabel)}</p>
         </div>
-        <strong><span>${escapeHtml(data.monthLabel)}</span>${data.total}</strong>
+        <strong><b>${data.total}</b><span>total del mes</span></strong>
       </div>
       <div class="integral-trend-plot">
         <svg class="integral-trend-chart" viewBox="0 0 700 106" role="img" aria-label="${escapeHtml(title)}">
-          ${scaleMarks.map((mark) => {
-            const y = plot.y + plot.height - (mark / scaleMax) * plot.height;
-            return `
-              <path class="integral-scale-line" d="M${plot.x} ${y}H${plot.x + plot.width}" />
-              <text class="integral-scale-label" x="${plot.x - 8}" y="${y + 3}">${mark}</text>
-            `;
-          }).join('')}
-          <path class="integral-trend-curve" d="${path}" />
+          <path class="integral-scale-line integral-baseline" d="M${plot.x} ${baselineY}H${plot.x + plot.width}" />
+          ${todayPoint ? `
+            <path class="integral-today-line" d="M${todayPoint.x} ${plot.y}V${baselineY}" />
+            <text class="integral-today-label" x="${todayPoint.x + 12}" y="${plot.y + 12}">HOY</text>
+          ` : ''}
+          ${areaPath ? `<path class="integral-trend-area" d="${areaPath}" />` : ''}
+          ${path ? `<path class="integral-trend-curve" d="${path}" />` : ''}
           ${points.map((point) => {
-            return `<circle cx="${point.x}" cy="${point.y}" r="4.2"></circle>`;
+            const circleClass = point.isFuture ? 'future' : point.isToday ? 'today' : 'active';
+            const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 13}">${point.count}</text>`;
+            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '5.2' : point.isFuture ? '3.2' : '4.4'}"></circle>`;
           }).join('')}
         </svg>
         <div class="integral-trend-days">
           ${data.dayStats.map((item) => `
-            <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
+            <span class="${item.isToday ? 'today' : item.isFuture ? 'future' : ''}">${escapeHtml(item.label)}</span>
           `).join('')}
         </div>
       </div>
       <div class="integral-trend-weeks">
-        ${data.weekStats.map((item) => `
-          <span><b>${escapeHtml(item.label)}</b><em>${item.count}</em></span>
-        `).join('')}
+        ${data.weekStats.map((item) => {
+          const pct = data.total ? Math.round((item.count / data.total) * 100) : 0;
+          const width = Math.round((item.count / weekMax) * 100);
+          return `
+          <span class="${item.count ? '' : 'empty'}">
+            <i><b>${escapeHtml(item.label)}</b><em>${pct}%</em></i>
+            <strong>${item.count}</strong>
+            <small><u style="width:${width}%"></u></small>
+          </span>
+        `;
+        }).join('')}
       </div>
     </article>
   `;
