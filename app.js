@@ -903,9 +903,9 @@ function renderIntegralTrendCard({ title, data, tone }) {
   const scaleMax = Math.max(12, Math.min(30, Math.ceil(maxDayValue * 1.5)));
   const plot = {
     x: 38,
-    y: 8,
+    y: 6,
     width: 624,
-    height: 88,
+    height: 90,
   };
   const baselineY = plot.y + plot.height;
   const points = data.dayStats.map((item, index) => {
