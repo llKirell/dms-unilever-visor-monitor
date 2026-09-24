@@ -900,7 +900,7 @@ function buildSmoothPath(points) {
 
 function renderIntegralTrendCard({ title, data, tone }) {
   const maxDayValue = Math.max(1, ...data.dayStats.filter((item) => !item.isFuture).map((item) => item.count));
-  const scaleMax = Math.max(12, Math.min(30, Math.ceil(maxDayValue * 1.5)));
+  const scaleMax = Math.max(10, Math.min(30, Math.ceil(maxDayValue * 1.2)));
   const plot = {
     x: 42,
     y: 12,
