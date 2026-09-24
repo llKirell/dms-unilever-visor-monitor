@@ -903,9 +903,9 @@ function renderIntegralTrendCard({ title, data, tone }) {
   const scaleMax = Math.max(10, Math.min(30, Math.ceil(maxDayValue * 1.2)));
   const plot = {
     x: 42,
-    y: 12,
+    y: 4,
     width: 616,
-    height: 102,
+    height: 112,
   };
   const baselineY = plot.y + plot.height;
   const points = data.dayStats.map((item, index) => {
@@ -942,7 +942,8 @@ function renderIntegralTrendCard({ title, data, tone }) {
           ${path ? `<path class="integral-trend-curve" d="${path}" />` : ''}
           ${points.map((point) => {
             const circleClass = point.isFuture ? 'future' : point.isToday ? 'today' : 'active';
-            const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 15}">${point.count}</text>`;
+            const labelY = Math.max(18, point.y - 12);
+            const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${labelY}">${point.count}</text>`;
             return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '5' : point.isFuture ? '2.6' : '4'}"></circle>`;
           }).join('')}
         </svg>
