@@ -899,12 +899,13 @@ function buildSmoothPath(points) {
 }
 
 function renderIntegralTrendCard({ title, data, tone }) {
-  const scaleMax = 30;
+  const maxDayValue = Math.max(1, ...data.dayStats.filter((item) => !item.isFuture).map((item) => item.count));
+  const scaleMax = Math.max(12, Math.min(30, Math.ceil(maxDayValue * 1.5)));
   const plot = {
-    x: 40,
+    x: 38,
     y: 8,
-    width: 620,
-    height: 92,
+    width: 624,
+    height: 88,
   };
   const baselineY = plot.y + plot.height;
   const points = data.dayStats.map((item, index) => {
@@ -931,7 +932,7 @@ function renderIntegralTrendCard({ title, data, tone }) {
         <strong><b>${data.total}</b><span>total del mes</span></strong>
       </div>
       <div class="integral-trend-plot">
-        <svg class="integral-trend-chart" viewBox="0 0 700 106" role="img" aria-label="${escapeHtml(title)}">
+        <svg class="integral-trend-chart" viewBox="0 0 700 102" role="img" aria-label="${escapeHtml(title)}">
           <path class="integral-scale-line integral-baseline" d="M${plot.x} ${baselineY}H${plot.x + plot.width}" />
           ${todayPoint ? `
             <path class="integral-today-line" d="M${todayPoint.x} ${plot.y}V${baselineY}" />
@@ -942,7 +943,7 @@ function renderIntegralTrendCard({ title, data, tone }) {
           ${points.map((point) => {
             const circleClass = point.isFuture ? 'future' : point.isToday ? 'today' : 'active';
             const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 13}">${point.count}</text>`;
-            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '5.2' : point.isFuture ? '3.2' : '4.4'}"></circle>`;
+            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '5.6' : point.isFuture ? '3.2' : '4.8'}"></circle>`;
           }).join('')}
         </svg>
         <div class="integral-trend-days">
