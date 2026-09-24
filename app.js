@@ -902,10 +902,10 @@ function renderIntegralTrendCard({ title, data, tone }) {
   const maxDayValue = Math.max(1, ...data.dayStats.filter((item) => !item.isFuture).map((item) => item.count));
   const scaleMax = Math.max(12, Math.min(30, Math.ceil(maxDayValue * 1.5)));
   const plot = {
-    x: 38,
-    y: 6,
-    width: 624,
-    height: 90,
+    x: 42,
+    y: 12,
+    width: 616,
+    height: 102,
   };
   const baselineY = plot.y + plot.height;
   const points = data.dayStats.map((item, index) => {
@@ -932,7 +932,7 @@ function renderIntegralTrendCard({ title, data, tone }) {
         <strong><b>${data.total}</b><span>total del mes</span></strong>
       </div>
       <div class="integral-trend-plot">
-        <svg class="integral-trend-chart" viewBox="0 0 700 102" role="img" aria-label="${escapeHtml(title)}">
+        <svg class="integral-trend-chart" viewBox="0 0 700 124" role="img" aria-label="${escapeHtml(title)}">
           <path class="integral-scale-line integral-baseline" d="M${plot.x} ${baselineY}H${plot.x + plot.width}" />
           ${todayPoint ? `
             <path class="integral-today-line" d="M${todayPoint.x} ${plot.y}V${baselineY}" />
@@ -942,8 +942,8 @@ function renderIntegralTrendCard({ title, data, tone }) {
           ${path ? `<path class="integral-trend-curve" d="${path}" />` : ''}
           ${points.map((point) => {
             const circleClass = point.isFuture ? 'future' : point.isToday ? 'today' : 'active';
-            const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 13}">${point.count}</text>`;
-            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '5.6' : point.isFuture ? '3.2' : '4.8'}"></circle>`;
+            const label = point.isFuture ? '' : `<text class="integral-point-label ${point.isToday ? 'today' : ''}" x="${point.x}" y="${point.y - 15}">${point.count}</text>`;
+            return `${label}<circle class="${circleClass}" cx="${point.x}" cy="${point.y}" r="${point.isToday ? '6.4' : point.isFuture ? '3.6' : '5.5'}"></circle>`;
           }).join('')}
         </svg>
         <div class="integral-trend-days">
