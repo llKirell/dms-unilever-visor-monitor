@@ -371,7 +371,6 @@ async function fetchLiveVisits() {
       tipo_operacion,
       observaciones,
       numero_contenedor,
-      procedencia_pais,
       estado_actual_id,
       rampa_id,
       created_at,
@@ -607,8 +606,7 @@ function getVisitNumeroContenedor(visit) {
 }
 
 function getVisitDescargaProcedencia(visit) {
-  const directValue = formatUppercaseValue(visit?.procedencia_pais);
-  return directValue || formatUppercaseValue(extractTaggedObservationValue(visit?.observaciones, 'PROCEDENCIA'));
+  return formatUppercaseValue(extractTaggedObservationValue(visit?.observaciones, 'PROCEDENCIA'));
 }
 
 function getVisitContainerOriginDisplay(visit) {
