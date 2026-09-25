@@ -369,6 +369,9 @@ async function fetchLiveVisits() {
       codigo_visita,
       cliente_referencia,
       tipo_operacion,
+      observaciones,
+      numero_contenedor,
+      procedencia_pais,
       estado_actual_id,
       rampa_id,
       created_at,
@@ -584,6 +587,35 @@ function getVisitCompanyLabel(visit) {
 
 function getVisitPlateLabel(visit) {
   return firstValue(visit?.vehiculos)?.placa ?? 'SIN-PLACA';
+}
+
+function extractTaggedObservationValue(observaciones, tag) {
+  const source = String(observaciones ?? '').trim();
+  if (!source || !tag) return '';
+  const escapedTag = String(tag).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = source.match(new RegExp(`(?:^|\\|\\s*)${escapedTag}:\\s*([^|]+)`, 'i'));
+  return match?.[1]?.trim() ?? '';
+}
+
+function formatUppercaseValue(value) {
+  return String(value ?? '').trim().replace(/\s+/g, ' ').toUpperCase();
+}
+
+function getVisitNumeroContenedor(visit) {
+  const directValue = formatUppercaseValue(visit?.numero_contenedor);
+  return directValue || formatUppercaseValue(extractTaggedObservationValue(visit?.observaciones, 'CONTENEDOR'));
+}
+
+function getVisitDescargaProcedencia(visit) {
+  const directValue = formatUppercaseValue(visit?.procedencia_pais);
+  return directValue || formatUppercaseValue(extractTaggedObservationValue(visit?.observaciones, 'PROCEDENCIA'));
+}
+
+function getVisitContainerOriginDisplay(visit) {
+  if (!visit || String(visit.tipo_operacion ?? '') !== 'ingreso') return '--';
+  const numeroContenedor = getVisitNumeroContenedor(visit);
+  const procedencia = getVisitDescargaProcedencia(visit);
+  return [numeroContenedor, procedencia].filter(Boolean).join(' - ') || '--';
 }
 
 function getVisitRampLabel(visit) {
@@ -1703,6 +1735,7 @@ function renderIntegralView() {
                     <th>Empresa de transporte</th>
                     <th>Cliente</th>
                     <th>Placa</th>
+                    <th>Contenedor / Procedencia</th>
                     <th>Operacion</th>
                   </tr>
                 </thead>
@@ -1712,6 +1745,7 @@ function renderIntegralView() {
                   <td>${escapeHtml(getVisitCompanyLabel(visit))}</td>
                   <td>${escapeHtml(getVisitClientLabel(visit))}</td>
                   <td class="mono strong">${escapeHtml(getVisitPlateLabel(visit))}</td>
+                  <td class="mono">${escapeHtml(getVisitContainerOriginDisplay(visit))}</td>
                   <td><span class="integral-op-pill op-${getOperationFilterKey(visit.tipo_operacion)}">${escapeHtml(getOperationLabel(visit.tipo_operacion))}</span></td>
                 </tr>
               `).join('')}
