@@ -1699,13 +1699,13 @@ function renderIntegralView() {
 
       <div class="integral-grid">
         ${renderIntegralTrendCard({
-          title: 'Ingresos (U.T.)',
+          title: 'Ingresos (UT)',
           data: ingresosTrend,
           tone: 'ingresos',
         })}
 
         ${renderIntegralTrendCard({
-          title: 'Salidas (U.T.)',
+          title: 'Salidas (UT)',
           data: salidasTrend,
           tone: 'salidas',
         })}
