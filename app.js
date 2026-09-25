@@ -771,6 +771,7 @@ function getVisitCurrentStage(visit) {
 
 function getIntegralStageMetrics() {
   const dashboardVisits = getDashboardVisits();
+  const operationVisits = getIntegralOperationVisits();
   const stages = [
     {
       key: 'playa',
@@ -784,14 +785,14 @@ function getIntegralStageMetrics() {
       icon: 'warehouse',
       title: 'En rampa',
       note: 'Ocupacion actual',
-      count: deriveRampItems().filter((item) => item.visit).length,
+      count: operationVisits.length,
     },
     {
       key: 'operacion',
       icon: 'manufacturing',
       title: 'En proceso',
       note: 'Carga, descarga o devolucion',
-      count: dashboardVisits.filter((visit) => getMonitorPageEventCodes(visit, 'operacion').length > 0).length,
+      count: operationVisits.filter((visit) => getVisitProcessStart(visit) && !getVisitProcessEnd(visit)).length,
     },
     {
       key: 'facturacion',
@@ -813,6 +814,10 @@ function getIntegralStageMetrics() {
     ...stage,
     pct: Math.max(8, Math.round((stage.count / max) * 100)),
   }));
+}
+
+function getIntegralOperationVisits() {
+  return getDashboardVisits().filter((visit) => Boolean(visit.rampa_id) && !getVisitProcessEnd(visit));
 }
 
 function getIntegralPlayaVisits() {
@@ -1694,13 +1699,13 @@ function renderIntegralView() {
 
       <div class="integral-grid">
         ${renderIntegralTrendCard({
-          title: 'Ingresos',
+          title: 'Ingresos (U.T.)',
           data: ingresosTrend,
           tone: 'ingresos',
         })}
 
         ${renderIntegralTrendCard({
-          title: 'Salidas',
+          title: 'Salidas (U.T.)',
           data: salidasTrend,
           tone: 'salidas',
         })}
@@ -1777,7 +1782,7 @@ function renderIntegralView() {
         <article class="integral-card integral-card-rampas">
           <div class="integral-card-head">
             <div>
-              <h3>Bloque A</h3>
+              <h3>Gestion de muelles-Bloque A</h3>
             </div>
           </div>
           <div class="integral-ramp-grid">

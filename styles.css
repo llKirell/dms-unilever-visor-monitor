@@ -1606,6 +1606,233 @@ button {
   text-align: center;
 }
 
+/* Tema claro/índigo para Panel de Control Operativo */
+.integral-panel {
+  --integral-indigo: #3f4aa8;
+  --integral-indigo-dark: #25317f;
+  --integral-teal: #0f8b83;
+  --integral-bg: #eef2f8;
+  --integral-card: #ffffff;
+  --integral-card-soft: #f6f8fc;
+  --integral-line: #d9e0ee;
+  --integral-text: #151b2f;
+  --integral-muted: #66728d;
+  --integral-muted-2: #96a1b8;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(63, 74, 168, 0.1), transparent 30%),
+    linear-gradient(180deg, #f8faff, var(--integral-bg));
+  color: var(--integral-text);
+}
+
+.integral-top {
+  border-color: rgba(63, 74, 168, 0.16);
+  background: var(--integral-indigo);
+  box-shadow: 0 10px 24px rgba(31, 41, 93, 0.18);
+}
+
+.integral-top h2,
+.integral-top time {
+  color: #ffffff;
+}
+
+.integral-card {
+  border-color: var(--integral-line);
+  background: var(--integral-card);
+  box-shadow: 0 8px 18px rgba(44, 58, 105, 0.14);
+}
+
+.integral-card h3,
+.integral-stage-card strong,
+.integral-stage-card b,
+.integral-unit-table td,
+.integral-live-row strong,
+.integral-process-row strong {
+  color: var(--integral-text);
+}
+
+.integral-highlight {
+  color: var(--integral-indigo);
+  background: #eef1ff;
+  border-color: rgba(63, 74, 168, 0.34);
+}
+
+.integral-stage-card {
+  background: #f7f8fc;
+  border-color: #d8dfef;
+}
+
+.integral-stage-card::before {
+  background: var(--integral-indigo);
+}
+
+.integral-stage-card .material-symbols-outlined {
+  color: var(--integral-indigo);
+}
+
+.integral-stage-card small,
+.integral-card-head p,
+.integral-unit-table th,
+.integral-unit-table td,
+.integral-empty,
+.integral-ramp-detail span {
+  color: var(--integral-muted);
+}
+
+.integral-playa-filter {
+  background: #f7f8fc;
+  color: var(--integral-muted);
+}
+
+.integral-playa-filter:hover,
+.integral-playa-filter.active {
+  color: var(--integral-text);
+}
+
+.integral-playa-filter b {
+  color: #334155;
+  background: rgba(100, 116, 139, 0.18);
+}
+
+.integral-unit-table th,
+.integral-unit-table td {
+  border-bottom-color: var(--integral-line);
+}
+
+.integral-empty {
+  border-color: var(--integral-line);
+  background: #fbfcff;
+}
+
+.integral-op-pill.op-carga {
+  color: #0f766e;
+  background: rgba(15, 118, 110, 0.1);
+  border-color: rgba(15, 118, 110, 0.32);
+}
+
+.integral-op-pill.op-descarga {
+  color: #9a6a17;
+  background: rgba(180, 120, 20, 0.11);
+  border-color: rgba(180, 120, 20, 0.32);
+}
+
+.integral-op-pill.op-devolucion {
+  color: var(--integral-indigo);
+  background: rgba(63, 74, 168, 0.1);
+  border-color: rgba(63, 74, 168, 0.32);
+}
+
+.integral-trend-card {
+  --trend-color: var(--integral-indigo);
+  --trend-fill: rgba(63, 74, 168, 0.14);
+  border-color: var(--integral-line);
+  background: var(--integral-card);
+}
+
+.integral-trend-card.salidas {
+  --trend-color: var(--integral-teal);
+  --trend-fill: rgba(15, 139, 131, 0.13);
+  border-color: var(--integral-line);
+}
+
+.integral-trend-head h3,
+.integral-trend-head strong b,
+.integral-trend-weeks strong,
+.integral-trend-days span.today,
+.integral-trend-chart .integral-point-label {
+  color: var(--integral-text);
+  fill: var(--integral-text);
+}
+
+.integral-trend-head p,
+.integral-trend-head strong span,
+.integral-trend-days span,
+.integral-trend-weeks b,
+.integral-trend-weeks em {
+  color: var(--integral-muted);
+}
+
+.integral-trend-chart .integral-scale-line {
+  stroke: #e1e6f1;
+}
+
+.integral-trend-chart circle {
+  fill: #ffffff;
+}
+
+.integral-trend-chart circle.today {
+  fill: var(--trend-color);
+  stroke: #ffffff;
+}
+
+.integral-trend-chart circle.future {
+  fill: #9aa6bd;
+}
+
+.integral-trend-chart .integral-today-label,
+.integral-trend-card.salidas .integral-trend-chart .integral-today-label,
+.integral-trend-chart .integral-point-label.today {
+  fill: var(--trend-color);
+}
+
+.integral-trend-weeks span {
+  background: #f5f7fc;
+  border-color: #d8dfef;
+  box-shadow: none;
+}
+
+.integral-trend-weeks small {
+  background: #e1e7f2;
+}
+
+.integral-ramp-tile {
+  background: #f6f8fc;
+  border-color: #d6ddec;
+  color: var(--integral-text);
+}
+
+.integral-ramp-tile.free {
+  background: #f5f7fb;
+  border-color: #d7deed;
+  color: var(--integral-text);
+}
+
+.integral-ramp-tile.reserved,
+.integral-ramp-tile.occupied,
+.integral-ramp-tile.process {
+  background: #f1f3fb;
+  border-color: rgba(63, 74, 168, 0.46);
+  box-shadow: inset 0 0 0 1px rgba(63, 74, 168, 0.08);
+}
+
+.integral-ramp-side,
+.integral-ramp-tile.free .integral-ramp-side {
+  color: #9aa6bd;
+  background: #eef2f8;
+  box-shadow: none;
+}
+
+.integral-ramp-tile.reserved .integral-ramp-side,
+.integral-ramp-tile.occupied .integral-ramp-side,
+.integral-ramp-tile.process .integral-ramp-side {
+  color: #ffffff;
+  background: var(--integral-indigo);
+  box-shadow: none;
+}
+
+.integral-ramp-client,
+.integral-ramp-detail div,
+.integral-ramp-tile.free .integral-ramp-detail div {
+  background: transparent;
+  border-color: transparent;
+}
+
+.integral-ramp-client,
+.integral-ramp-tile.free .integral-ramp-client,
+.integral-ramp-detail b,
+.integral-ramp-tile.free .integral-ramp-detail b {
+  color: var(--integral-text);
+}
+
 .dinet-embed-panel {
   padding: 0 0 0 4.6rem;
   overflow: hidden;
