@@ -1724,10 +1724,8 @@ function renderIntegralView() {
         <article class="integral-card integral-card-process">
           <div class="integral-card-head">
             <div>
-              <p class="eyebrow">Control de procesos</p>
               <h3>Flujo operativo</h3>
             </div>
-            <span class="integral-highlight">${getIntegralActiveCount()} activas</span>
           </div>
           <div class="integral-stage-flow">
             ${stageMetrics.map((stage) => `
