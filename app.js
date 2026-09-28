@@ -1793,9 +1793,9 @@ function renderIntegralView() {
               const hasContenedorProcedencia = contenedorProcedencia && contenedorProcedencia !== '--';
               return `
                 <div class="integral-ramp-tile ${item.visualState}">
-                  <div class="integral-ramp-top">
-                    <strong>${escapeHtml(item.code.replace(/^A-/, ''))}</strong>
+                  <div class="integral-ramp-rail">
                     <span class="material-symbols-outlined">local_shipping</span>
+                    <strong>${escapeHtml(item.code.replace(/^A-/, ''))}</strong>
                   </div>
                   <div class="integral-ramp-detail">
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>

@@ -1861,9 +1861,10 @@ button {
 .integral-ramp-tile {
   min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 0.12rem;
-  padding: 0.42rem 0.5rem 0.38rem;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.42rem;
+  padding: 0.18rem 0.42rem 0.18rem 0.18rem;
   border-radius: 9px;
   overflow: hidden;
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
@@ -1882,40 +1883,44 @@ button {
     0 0 0 1px rgba(245, 158, 11, 0.08);
 }
 
-.integral-ramp-top {
-  min-width: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.35rem;
+.integral-ramp-rail {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.14rem;
+  border-radius: 7px;
+  color: #94a3b8;
+  background: linear-gradient(180deg, #eef2f7, #e2e8f0);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.integral-ramp-top strong {
-  color: #0b2a6f;
-  font-family: var(--mono);
-  font-size: 0.77rem;
-  font-weight: 900;
+.integral-ramp-tile.reserved .integral-ramp-rail,
+.integral-ramp-tile.occupied .integral-ramp-rail,
+.integral-ramp-tile.process .integral-ramp-rail {
+  color: #ffffff;
+  background: linear-gradient(180deg, #fbbf24, #f59e0b);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    0 0 0 1px rgba(217, 119, 6, 0.12);
+}
+
+.integral-ramp-rail .material-symbols-outlined {
+  font-size: 1.1rem;
   line-height: 1;
 }
 
-.integral-ramp-top .material-symbols-outlined {
-  margin-top: -0.08rem;
-  color: #d7dee8;
-  font-size: 1.7rem;
-  line-height: 0.85;
-}
-
-.integral-ramp-tile.reserved .integral-ramp-top .material-symbols-outlined,
-.integral-ramp-tile.occupied .integral-ramp-top .material-symbols-outlined,
-.integral-ramp-tile.process .integral-ramp-top .material-symbols-outlined {
-  color: #f59e0b;
+.integral-ramp-rail strong {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .integral-ramp-detail {
   min-width: 0;
   display: grid;
-  align-content: end;
-  gap: 0.08rem;
+  align-content: center;
+  gap: 0.09rem;
 }
 
 .integral-ramp-client,
@@ -1936,14 +1941,14 @@ button {
   border: 0;
   padding: 0;
   color: #0f172a;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 900;
   line-height: 1.06;
 }
 
 .integral-ramp-origin {
   color: #334155;
-  font-size: 0.54rem;
+  font-size: 0.52rem;
   font-weight: 900;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -1951,7 +1956,7 @@ button {
 
 .integral-ramp-company {
   color: #64748b;
-  font-size: 0.57rem;
+  font-size: 0.53rem;
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -1960,13 +1965,13 @@ button {
 .integral-ramp-plate {
   color: #0f172a;
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   font-weight: 900;
 }
 
 .integral-ramp-time {
   color: #64748b;
-  font-size: 0.56rem;
+  font-size: 0.51rem;
   font-weight: 800;
 }
 
