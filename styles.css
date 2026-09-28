@@ -1833,6 +1833,152 @@ button {
   color: var(--integral-text);
 }
 
+/* Paridad visual compacta con la vista Rampas de DockOps */
+.integral-card-rampas {
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.98), rgba(239, 246, 255, 0.96));
+  border-color: rgba(37, 99, 235, 0.22);
+  box-shadow:
+    0 12px 26px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.integral-card-rampas .integral-card-head {
+  margin-bottom: 0.34rem;
+}
+
+.integral-card-rampas .integral-card-head h3 {
+  color: #0f172a;
+}
+
+.integral-ramp-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  gap: 0.32rem;
+  height: calc(100% - 1.55rem);
+}
+
+.integral-ramp-tile {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.12rem;
+  padding: 0.42rem 0.5rem 0.38rem;
+  border-radius: 9px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  border: 1px solid rgba(203, 213, 225, 0.92);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+}
+
+.integral-ramp-tile.reserved,
+.integral-ramp-tile.occupied,
+.integral-ramp-tile.process {
+  background: linear-gradient(180deg, #fffdf6 0%, #fff7dd 100%);
+  border-color: rgba(245, 158, 11, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 0 0 1px rgba(245, 158, 11, 0.08);
+}
+
+.integral-ramp-top {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.integral-ramp-top strong {
+  color: #0b2a6f;
+  font-family: var(--mono);
+  font-size: 0.77rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.integral-ramp-top .material-symbols-outlined {
+  margin-top: -0.08rem;
+  color: #d7dee8;
+  font-size: 1.7rem;
+  line-height: 0.85;
+}
+
+.integral-ramp-tile.reserved .integral-ramp-top .material-symbols-outlined,
+.integral-ramp-tile.occupied .integral-ramp-top .material-symbols-outlined,
+.integral-ramp-tile.process .integral-ramp-top .material-symbols-outlined {
+  color: #f59e0b;
+}
+
+.integral-ramp-detail {
+  min-width: 0;
+  display: grid;
+  align-content: end;
+  gap: 0.08rem;
+}
+
+.integral-ramp-client,
+.integral-ramp-origin,
+.integral-ramp-company,
+.integral-ramp-plate,
+.integral-ramp-time {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.integral-ramp-client {
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #0f172a;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.06;
+}
+
+.integral-ramp-origin {
+  color: #334155;
+  font-size: 0.54rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.integral-ramp-company {
+  color: #64748b;
+  font-size: 0.57rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.integral-ramp-plate {
+  color: #0f172a;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.integral-ramp-time {
+  color: #64748b;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+
+.integral-ramp-tile.free .integral-ramp-client {
+  color: #0f172a;
+}
+
+.integral-ramp-tile.free .integral-ramp-company,
+.integral-ramp-tile.free .integral-ramp-time {
+  color: #64748b;
+}
+
 .dinet-embed-panel {
   padding: 0 0 0 4.6rem;
   overflow: hidden;

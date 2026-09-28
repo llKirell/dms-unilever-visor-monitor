@@ -1789,17 +1789,20 @@ function renderIntegralView() {
             ${rampItems.map((item) => {
               const visit = item.visit;
               const isFree = !visit;
+              const contenedorProcedencia = isFree ? '' : getVisitContainerOriginDisplay(visit);
+              const hasContenedorProcedencia = contenedorProcedencia && contenedorProcedencia !== '--';
               return `
                 <div class="integral-ramp-tile ${item.visualState}">
-                  <div class="integral-ramp-side">
-                    <span class="material-symbols-outlined">local_shipping</span>
+                  <div class="integral-ramp-top">
                     <strong>${escapeHtml(item.code.replace(/^A-/, ''))}</strong>
+                    <span class="material-symbols-outlined">local_shipping</span>
                   </div>
                   <div class="integral-ramp-detail">
                     <strong class="integral-ramp-client">${escapeHtml(isFree ? 'Libre' : getVisitClientLabel(visit))}</strong>
-                    <div><span>Placa:</span><b>${escapeHtml(isFree ? '--' : getVisitPlateLabel(visit))}</b></div>
-                    <div><span>H. Playa:</span><b>${escapeHtml(isFree ? '--' : formatTime24(visit.hora_registro || visit.created_at))}</b></div>
-                    <div><span>T. Total:</span><b>${escapeHtml(isFree ? '--' : getRampStayElapsed(visit))}</b></div>
+                    ${hasContenedorProcedencia ? `<p class="integral-ramp-origin">${escapeHtml(contenedorProcedencia)}</p>` : ''}
+                    <p class="integral-ramp-company">${escapeHtml(isFree ? 'Sin unidad asignada' : getVisitCompanyLabel(visit))}</p>
+                    <p class="integral-ramp-plate">${escapeHtml(isFree ? 'Sin placa asignada' : getVisitPlateLabel(visit))}</p>
+                    <p class="integral-ramp-time">${escapeHtml(isFree ? 'Disponible para nueva asignacion' : `H. Playa: ${formatTime24(visit.hora_registro || visit.created_at)} · T. Total: ${getRampStayElapsed(visit)}`)}</p>
                   </div>
                 </div>
               `;
