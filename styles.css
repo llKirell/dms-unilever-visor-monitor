@@ -1836,11 +1836,12 @@ button {
 /* Paridad visual compacta con la vista Rampas de DockOps */
 .integral-card-rampas {
   background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.98), rgba(239, 246, 255, 0.96));
-  border-color: rgba(37, 99, 235, 0.22);
+    radial-gradient(circle at 92% 4%, rgba(59, 130, 246, 0.42), transparent 28%),
+    linear-gradient(135deg, #06146b 0%, #1d36d4 56%, #4098f7 100%);
+  border-color: rgba(96, 165, 250, 0.55);
   box-shadow:
-    0 12px 26px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 16px 34px rgba(15, 23, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .integral-card-rampas .integral-card-head {
@@ -1848,7 +1849,8 @@ button {
 }
 
 .integral-card-rampas .integral-card-head h3 {
-  color: #0f172a;
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(15, 23, 42, 0.2);
 }
 
 .integral-ramp-grid {
@@ -1856,6 +1858,13 @@ button {
   grid-template-rows: repeat(8, minmax(0, 1fr));
   gap: 0.32rem;
   height: calc(100% - 1.55rem);
+  padding: 0.32rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06)),
+    rgba(15, 23, 42, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .integral-ramp-tile {
