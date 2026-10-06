@@ -68,6 +68,7 @@ def main() -> int:
     parser.add_argument("--timezone", default=DEFAULT_TZ)
     parser.add_argument("--chunk-days", type=int, default=7)
     parser.add_argument("--skip-fetch", action="store_true", help="Usa ReportTareas.xlsx existente.")
+    parser.add_argument("--set-context", action="store_true", help="Fuerza contexto HUACHIPA/UNILEVER antes de consultar.")
     parser.add_argument("--publish-html", action="store_true", help="Tambien reemplaza waretrack.html publico.")
     args = parser.parse_args()
 
@@ -84,12 +85,11 @@ def main() -> int:
             start.isoformat(),
             "--hasta",
             end.isoformat(),
-            "--set-context",
             "--chunk-days",
             str(args.chunk_days),
             "--out",
             str(PIPELINE_DIR / "ReportTareas.xlsx"),
-        ])
+        ] + (["--set-context"] if args.set_context else []))
 
     if not (PIPELINE_DIR / "ReportTareas.xlsx").exists():
         raise FileNotFoundError("No existe ReportTareas.xlsx para recalcular productividad.")
