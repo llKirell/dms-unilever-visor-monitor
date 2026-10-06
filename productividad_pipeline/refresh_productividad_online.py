@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import calendar
 import shutil
 import subprocess
 import sys
@@ -37,26 +38,18 @@ def run(cmd: list[str], *, cwd: Path = PIPELINE_DIR) -> None:
 
 
 def month_bounds(month: str, tz_name: str) -> tuple[date, date]:
-    today = date.today()
     try:
         today = __import__("datetime").datetime.now(ZoneInfo(tz_name)).date()
     except Exception:
-        pass
+        today = date.today()
 
     if month:
         year, month_num = [int(part) for part in month.split("-", 1)]
         start = date(year, month_num, 1)
-        end = today if (today.year, today.month) == (year, month_num) else start.replace(day=28)
-        if end.month != month_num:
-            end = start
-        while True:
-            try:
-                candidate = end.replace(day=end.day + 1)
-            except ValueError:
-                break
-            if candidate.month != month_num:
-                break
-            end = candidate
+        if (today.year, today.month) == (year, month_num):
+            end = today
+        else:
+            end = date(year, month_num, calendar.monthrange(year, month_num)[1])
         return start, end
 
     return today.replace(day=1), today
@@ -89,6 +82,12 @@ def main() -> int:
             str(args.chunk_days),
             "--out",
             str(PIPELINE_DIR / "ReportTareas.xlsx"),
+            "--include-pedidos",
+            "--pedidos-out",
+            str(PIPELINE_DIR / "ReportPedidos.xlsx"),
+            "--include-flujo",
+            "--flujo-out",
+            str(PIPELINE_DIR / "ReportFlujoSalidas.xlsx"),
         ] + (["--set-context"] if args.set_context else []))
 
     if not (PIPELINE_DIR / "ReportTareas.xlsx").exists():

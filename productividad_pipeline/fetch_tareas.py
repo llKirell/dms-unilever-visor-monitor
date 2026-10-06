@@ -64,6 +64,8 @@ URL_REDIRECT = f"{APP_BASE}/Home/RedirectSystem"
 URL_LISTAR   = f"{W4W_BASE}/IngresoSistema/ListarCuentas"
 URL_ASSIGN   = f"{W4W_BASE}/IngresoSistema/AssignmentCredentials"
 URL_TAREAS   = f"{W4W_BASE}/Tareas/Tarea/Consultar"
+URL_PEDIDOS_SALIDA = f"{W4W_BASE}/Salidas/IngresoPedido/Consultar"
+URL_FLUJO_SALIDAS = f"{W4W_BASE}/Consultas/SalidasFlujoSalidas/Consultar"
 
 SYSTEM_CODE  = "W4WWEB"
 DC_CODE, DC_NAME       = "HU", "HUACHIPA"
@@ -191,6 +193,65 @@ def payload_tareas(start: date, end: date) -> dict:
     }
 
 
+def payload_pedidos_salida(start: date, end: date) -> dict:
+    """Payload del endpoint Salidas/IngresoPedido/Consultar."""
+    return {
+        "NumeroPedido": "",
+        "NroPedidoCliente": "",
+        "NumeroEnvio": "",
+        "CodigoEstadoPedido": "",
+        "CodigoMotivo": "",
+        "CodigoTipoPreparacion": "",
+        "CodigoCliente": "",
+        "CodigoSeccion": "",
+        "CodigoArticulo": "",
+        "Atributo": "",
+        "Atributo1": "",
+        "Atributo2": "",
+        "Atributo3": "",
+        "DescripcionCuentaProcedencia": "",
+        "DescripcionMotivoCliente": "",
+        "FechaCreacionDesde": "",
+        "FechaCreacionHasta": "",
+        "FechaPedidoDesde": f"{ddmmyyyy(start)} 00:00",
+        "FechaPedidoHasta": f"{ddmmyyyy(end)} 23:59",
+        "FechaPrometidaDesde": "",
+        "FechaPrometidaHasta": "",
+        "FlagEspecial": False,
+        "FlagReserva": False,
+        "FlagUrgente": False,
+        "ListaRutas": [],
+    }
+
+
+def payload_flujo_salidas(start: date, end: date) -> dict:
+    """Payload del endpoint Consultas/SalidasFlujoSalidas/Consultar."""
+    return {
+        "NroPedidoCliente": "",
+        "CodigoMotivo": "",
+        "NroEnvio": "",
+        "NroPicking": "",
+        "NroCamion": "",
+        "NroTarea": "",
+        "Placa": "",
+        "DocumentoTransporte": "",
+        "CodigoUbicacion": "",
+        "CodigoArticulo": "",
+        "CodigoLoteProveedor": "",
+        "CodigoEstadoMercaderia": "",
+        "CodigoCliente": "",
+        "CodigoSeccion": "",
+        "CodigoTipoPreparacion": "",
+        "CodigoTransportista": "",
+        "FechaPedidoDesde": "",
+        "FechaPedidoHasta": "",
+        "FechaPickingDesde": "",
+        "FechaPickingHasta": "",
+        "FechaDespachoDesde": ddmmyyyy(start),
+        "FechaDespachoHasta": ddmmyyyy(end),
+    }
+
+
 def extract_rows(raw: Any) -> list[dict]:
     """
     Normaliza la respuesta: el w4w suele envolver las filas en una llave
@@ -222,6 +283,18 @@ def fetch_tareas(session: requests.Session, start: date, end: date) -> list[dict
     return rows
 
 
+def fetch_pedidos_salida(session: requests.Session, start: date, end: date) -> list[dict]:
+    raw = post_json(session, URL_PEDIDOS_SALIDA, payload_pedidos_salida(start, end),
+                    referer=f"{W4W_BASE}/Salidas/IngresoPedido/")
+    return extract_rows(raw)
+
+
+def fetch_flujo_salidas(session: requests.Session, start: date, end: date) -> list[dict]:
+    raw = post_json(session, URL_FLUJO_SALIDAS, payload_flujo_salidas(start, end),
+                    referer=f"{W4W_BASE}/Consultas/SalidasFlujoSalidas/")
+    return extract_rows(raw)
+
+
 def dedupe(rows: list[dict]) -> list[dict]:
     keys = ["NumeroTarea", "NroTarea", "Nro Tarea", "Numero Tarea"]
     seen, out = set(), []
@@ -247,6 +320,10 @@ def main() -> int:
     ap.add_argument("--chunk-days", type=int, default=0,
                     help="Baja en tramos de N dias (util para rangos largos).")
     ap.add_argument("--out", default="", help="Salida .xlsx (default ReportTareas_<desde>_<hasta>.xlsx).")
+    ap.add_argument("--pedidos-out", default="", help="Salida .xlsx para pedidos de salida.")
+    ap.add_argument("--flujo-out", default="", help="Salida .xlsx para flujo de salidas.")
+    ap.add_argument("--include-pedidos", action="store_true", help="Descarga tambien Salidas/IngresoPedido.")
+    ap.add_argument("--include-flujo", action="store_true", help="Descarga tambien Consultas/SalidasFlujoSalidas.")
     ap.add_argument("--run", action="store_true", help="Encadena motor_productividad.py al terminar.")
     ap.add_argument("--maestro-usuario", default=str(BASE_DIR / "maestro_usuario.xlsx"))
     ap.add_argument("--horas-max", type=float, default=16.0)
@@ -264,10 +341,20 @@ def main() -> int:
         set_context(session)
 
     all_rows: list[dict] = []
+    all_pedidos: list[dict] = []
+    all_flujo: list[dict] = []
     for cs, ce in date_chunks(args.desde, args.hasta, args.chunk_days):
         rows = fetch_tareas(session, cs, ce)
         print(f"[OK] {cs}..{ce}: {len(rows)} tareas")
         all_rows.extend(rows)
+        if args.include_pedidos:
+            pedidos = fetch_pedidos_salida(session, cs, ce)
+            print(f"[OK] {cs}..{ce}: {len(pedidos)} pedidos salida")
+            all_pedidos.extend(pedidos)
+        if args.include_flujo:
+            flujo = fetch_flujo_salidas(session, cs, ce)
+            print(f"[OK] {cs}..{ce}: {len(flujo)} lineas flujo salidas")
+            all_flujo.extend(flujo)
     all_rows = dedupe(all_rows)
 
     if not all_rows:
@@ -278,6 +365,16 @@ def main() -> int:
         BASE_DIR / f"ReportTareas_{args.desde:%Y%m%d}_{args.hasta:%Y%m%d}.xlsx")
     pd.DataFrame(all_rows).to_excel(out, index=False)
     print(f"[OK] ReportTareas -> {out} ({len(all_rows)} filas)")
+
+    if args.include_pedidos:
+        pedidos_out = Path(args.pedidos_out) if args.pedidos_out else BASE_DIR / "ReportPedidos.xlsx"
+        pd.DataFrame(all_pedidos).to_excel(pedidos_out, index=False)
+        print(f"[OK] ReportPedidos -> {pedidos_out} ({len(all_pedidos)} filas)")
+
+    if args.include_flujo:
+        flujo_out = Path(args.flujo_out) if args.flujo_out else BASE_DIR / "ReportFlujoSalidas.xlsx"
+        pd.DataFrame(all_flujo).to_excel(flujo_out, index=False)
+        print(f"[OK] ReportFlujoSalidas -> {flujo_out} ({len(all_flujo)} filas)")
 
     if args.run:
         cmd = [sys.executable, str(BASE_DIR / "motor_productividad.py"),

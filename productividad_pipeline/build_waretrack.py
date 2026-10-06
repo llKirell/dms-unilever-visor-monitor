@@ -30,6 +30,12 @@ def recompute() -> None:
            "--maestro-usuario", str(BASE_DIR / "maestro_usuario.xlsx"),
            "--out-json", str(BASE_DIR / "productividad.json"),
            "--out-xlsx", str(BASE_DIR / "productividad.xlsx")]
+    flujo = BASE_DIR / "ReportFlujoSalidas.xlsx"
+    maestro_articulo = BASE_DIR / "maestro_articulo.xlsx"
+    if flujo.exists():
+        cmd.extend(["--flujo", str(flujo)])
+        if maestro_articulo.exists():
+            cmd.extend(["--maestro-articulo", str(maestro_articulo)])
     import os
     subprocess.check_call(cmd, env=dict(os.environ, PYTHONUTF8="1"))
 
@@ -54,6 +60,7 @@ def build_dash_data(prod: dict) -> dict:
             "umbral_pallet_cajas_por_ubic": meta.get("umbral_pallet_cajas_por_ubic"),
             "modelo_estandar": meta.get("modelo_estandar"),
             "cobertura": meta.get("cobertura"),
+            "flujo": meta.get("flujo"),
         },
         "comparativo": prod.get("comparativo"),
         "mix": prod.get("mix"),

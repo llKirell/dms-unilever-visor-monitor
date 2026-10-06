@@ -461,12 +461,12 @@ def _normaliza_tarea(serie: pd.Series) -> pd.Series:
 
 FLUJO_FIELDS = {
     "nro_tarea":   ["nro tarea", "numero tarea", "numerotarea", "nro de tarea"],
-    "nro_picking": ["nro picking", "nro de picking", "numeropicking", "numero de picking"],
+    "nro_picking": ["nro picking", "nro de picking", "nropicking", "numeropicking", "numero de picking"],
     "um":          ["um", "unidad medida", "unidad de medida", "umpicking", "um picking",
-                    "unidad de extraccion", "unidad extraccion"],
-    "cant":        ["cant picking", "cant", "cantidad picking", "cantidad", "cantpicking"],
-    "cod_articulo": ["cod articulo", "codigo articulo", "codarticulo", "cod de articulo", "sku"],
-    "paletizado":  ["paletizado", "huella", "paletizado huella", "paletizado / huella",
+                    "unidad de extraccion", "unidad extraccion", "unidadmedida", "unidadmedidapedido"],
+    "cant":        ["cant picking", "cant", "cantidad picking", "cantidad", "cantpicking", "cantidadpicking"],
+    "cod_articulo": ["cod articulo", "codigo articulo", "codigoarticulo", "codarticulo", "cod de articulo", "sku"],
+    "paletizado":  ["paletizado", "huella", "codigohuella", "codigo huella", "paletizado huella", "paletizado / huella",
                     "um paletizado", "paletizado huella"],
     "familia":     ["familia", "descripcion familia", "linea articulo"],
 }
