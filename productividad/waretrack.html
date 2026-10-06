@@ -284,8 +284,12 @@ function filtered(){
 function groupBy(rows, key){const m=new Map();for(const r of rows){if(!m.has(r[key]))m.set(r[key],[]);m.get(r[key]).push(r);}return m;}
 
 function renderControls(){
-  document.getElementById("f-metric").innerHTML=METRICS.map(m=>`<button data-k="${m.key}" class="${m.key===state.metric?'on':''}">${m.label}</button>`).join("");
-  document.getElementById("f-metric").onclick=e=>{const b=e.target.closest("button");if(!b)return;state.metric=b.dataset.k;renderAll();};
+  const el=document.getElementById("f-metric");
+  el.innerHTML=METRICS.map(m=>`<button data-k="${m.key}" class="${m.key===state.metric?'on':''}">${m.label}</button>`).join("");
+  el.onclick=e=>{const b=e.target.closest("button");if(!b)return;
+    state.metric=b.dataset.k;
+    el.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x.dataset.k===state.metric));
+    renderAll();};
 }
 function renderKpis(){
   const m=metricDef();
