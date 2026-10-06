@@ -36,6 +36,11 @@ const VIEW_DEFS = {
     icon: 'space_dashboard',
     subtitle: 'Replica visual del dashboard DINET usando la data actual del DMS.',
   },
+  productividad: {
+    label: 'Productividad',
+    icon: 'insights',
+    subtitle: 'Productividad de picking por turno, familia y tendencia diaria.',
+  },
   kiosk: {
     label: 'Kiosk',
     icon: 'slideshow',
@@ -44,9 +49,9 @@ const VIEW_DEFS = {
 };
 
 const VIEW_ACCESS_BY_ROLE = {
-  admin: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
-  supervisor_cuenta: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'kiosk'],
-  lider: ['integral', 'rampas-voz', 'resumen', 'kiosk'],
+  admin: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'productividad', 'kiosk'],
+  supervisor_cuenta: ['integral', 'rampas-voz', 'resumen', 'dashboard-web', 'productividad', 'kiosk'],
+  lider: ['integral', 'rampas-voz', 'resumen', 'productividad', 'kiosk'],
 };
 
 const VIEW_ACCESS_BY_USERNAME = {
@@ -54,6 +59,7 @@ const VIEW_ACCESS_BY_USERNAME = {
   monitorrampas: ['rampas-voz'],
   monitorresumen: ['resumen'],
   monitordashboard: ['dashboard-web'],
+  monitorproductividad: ['productividad'],
   monitorkiosk: ['kiosk'],
 };
 
@@ -2118,12 +2124,29 @@ function renderDashboardWebExactDinet() {
   `;
 }
 
+function renderProductividadView() {
+  return `
+    <section class="view-panel dinet-embed-panel">
+      <div class="dashboard-frame-shell">
+        <iframe
+          id="productividad-frame"
+          class="dashboard-frame"
+          src="./productividad/waretrack.html"
+          title="Productividad de Picking"
+          loading="eager"
+        ></iframe>
+      </div>
+    </section>
+  `;
+}
+
 function renderCurrentView() {
   const current = getCurrentViewForRender();
   if (current === 'integral') return renderIntegralView();
   if (current === 'rampas-voz') return renderRampasView();
   if (current === 'resumen') return renderResumenView();
   if (current === 'dashboard-web') return renderDashboardWebExactDinet();
+  if (current === 'productividad') return renderProductividadView();
   return renderDashboardView();
 }
 
@@ -2274,6 +2297,16 @@ function renderUnifiedShell() {
     bindUiEvents();
     // La data nueva llega al iframe por postMessage/localStorage, sin recargarlo.
     syncEmbeddedDinetDashboard();
+    return;
+  }
+
+  // Productividad: su iframe es autocontenido (data embebida). Igual que el
+  // dashboard-web, si el iframe sigue vivo solo refrescamos el chrome para NO
+  // recargar el tablero en cada ciclo de polling.
+  const prodFrameAlive = document.getElementById('productividad-frame');
+  if (currentView === 'productividad' && chromeMount && prodFrameAlive) {
+    chromeMount.innerHTML = renderFocusChrome({ allowedViews, currentView });
+    bindUiEvents();
     return;
   }
 
