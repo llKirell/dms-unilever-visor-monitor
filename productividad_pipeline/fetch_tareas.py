@@ -163,8 +163,15 @@ def login_session(session: requests.Session, user: str, password: str) -> None:
 
 def post_json(session: requests.Session, url: str, payload: dict,
               referer: str = W4W_BASE, timeout: int = 120) -> Any:
-    resp = session.post(url, data=json.dumps(payload),
-                        headers={"Referer": referer}, timeout=timeout)
+    origin = APP_BASE if "app.dinet.com.pe" in url else "https://w4w.dinet.com.pe"
+    resp = session.post(url, json=payload, headers={
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Origin": origin,
+        "Referer": referer,
+        "X-Requested-With": "XMLHttpRequest",
+        "User-Agent": USER_AGENT,
+    }, timeout=timeout)
     resp.raise_for_status()
     ctype = resp.headers.get("Content-Type", "")
     text = resp.text.strip()
