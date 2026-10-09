@@ -13,6 +13,13 @@ archiva el grano `persona x día` en la base.
    - `SUPABASE_SERVICE_ROLE_KEY`: service role key del proyecto.
 4. No exponer `SUPABASE_SERVICE_ROLE_KEY` en el frontend ni en archivos del repositorio.
 
+Para que W4W renueve la sesión automáticamente, agrega también estos secretos en GitHub Actions:
+
+- `DINET_USER`: usuario de W4W.
+- `DINET_PASSWORD`: contraseña de W4W.
+
+Con ambos secretos, el pipeline inicia sesión y `DINET_W4W_COOKIE` queda únicamente como respaldo.
+
 El workflow `Refresh Productividad` publicará en cada corrida las filas de
 `productividad_persona_dia` y actualizará el snapshot del período en
 `productividad_snapshots`.

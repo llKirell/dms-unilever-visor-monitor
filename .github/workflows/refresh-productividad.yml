@@ -28,6 +28,8 @@ jobs:
     timeout-minutes: 20
     env:
       DINET_W4W_COOKIE: ${{ secrets.DINET_W4W_COOKIE }}
+      DINET_USER: ${{ secrets.DINET_USER }}
+      DINET_PASSWORD: ${{ secrets.DINET_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

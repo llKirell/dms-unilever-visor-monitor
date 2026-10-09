@@ -59,6 +59,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # --- Endpoints y codigos fijos (del semaforo/context.py y w4w_monthly_store) ---
 APP_BASE   = "https://app.dinet.com.pe"
+URL_LOGIN  = f"{APP_BASE}/Login/Ingresar"
 W4W_BASE   = "https://w4w.dinet.com.pe/AppWeb"
 URL_REDIRECT = f"{APP_BASE}/Home/RedirectSystem"
 URL_LISTAR   = f"{W4W_BASE}/IngresoSistema/ListarCuentas"
@@ -68,6 +69,8 @@ URL_PEDIDOS_SALIDA = f"{W4W_BASE}/Salidas/IngresoPedido/Consultar"
 URL_FLUJO_SALIDAS = f"{W4W_BASE}/Consultas/SalidasFlujoSalidas/Consultar"
 
 SYSTEM_CODE  = "W4WWEB"
+COMPANY_CODE, COMPANY_NAME = "01", "DINET S.A."
+SYSTEM_LANGUAGE = "ES"
 DC_CODE, DC_NAME       = "HU", "HUACHIPA"
 ACCOUNT_CODE, ACCOUNT  = "I1002", "UNILEVER"
 
@@ -145,6 +148,17 @@ def build_session(cookie: str) -> requests.Session:
     })
     s.cookies.update(parse_cookie_string(cookie))
     return s
+
+
+def login_session(session: requests.Session, user: str, password: str) -> None:
+    post_json(session, URL_LOGIN, {
+        "CompanyCode": COMPANY_CODE,
+        "Company": COMPANY_NAME,
+        "User": user,
+        "Password": password,
+        "SystemLanguage": SYSTEM_LANGUAGE,
+    }, referer=f"{APP_BASE}/")
+    set_context(session)
 
 
 def post_json(session: requests.Session, url: str, payload: dict,
@@ -334,11 +348,18 @@ def main() -> int:
         print("[ERROR] --hasta es anterior a --desde", file=sys.stderr)
         return 2
 
-    cookie = read_cookie(args.cookie_file)
-    session = build_session(cookie)
-    if args.set_context:
-        print("[..] Fijando contexto HUACHIPA/UNILEVER")
-        set_context(session)
+    user = os.getenv("DINET_USER", "").strip()
+    password = os.getenv("DINET_PASSWORD", "").strip()
+    if user and password:
+        print("[..] Iniciando sesion W4W con credenciales protegidas")
+        session = build_session("")
+        login_session(session, user, password)
+    else:
+        cookie = read_cookie(args.cookie_file)
+        session = build_session(cookie)
+        if args.set_context:
+            print("[..] Fijando contexto HUACHIPA/UNILEVER")
+            set_context(session)
 
     all_rows: list[dict] = []
     all_pedidos: list[dict] = []
