@@ -55,11 +55,15 @@ jobs:
           python productividad_pipeline/refresh_productividad_online.py $ARGS
 
       - name: Archive productivity in Supabase
-        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Secretos de Supabase no configurados; se omite el archivo historico."
+            exit 0
+          fi
+          python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
 
       - name: Commit refreshed JSON
         run: |
