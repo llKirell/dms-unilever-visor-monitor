@@ -78,6 +78,7 @@ def main() -> int:
             }""",
             payload,
         )
+        print(f"[INFO] Respuestas de autenticacion Dinet: {[item['status'] for item in login_result]}")
         if not all(item["status"] < 400 for item in login_result):
             raise RuntimeError("Dinet rechazo el inicio de sesion automatico.")
         page.goto("https://w4w.dinet.com.pe/AppWeb/", wait_until="domcontentloaded", timeout=120000)
