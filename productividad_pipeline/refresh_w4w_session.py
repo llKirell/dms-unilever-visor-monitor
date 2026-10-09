@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 from pathlib import Path
 
@@ -25,6 +24,16 @@ def build_cookie(cookies: list[dict]) -> str:
     return "; ".join(f"{name}={value}" for name, value in values.items())
 
 
+def first_selector(page, selectors: list[str], description: str) -> str:
+    for selector in selectors:
+        try:
+            page.wait_for_selector(selector, timeout=8000)
+            return selector
+        except Exception:
+            continue
+    raise RuntimeError(f"No se encontro {description} en el login de Dinet.")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Genera una cookie W4W mediante navegador.")
     parser.add_argument("--out", required=True, help="Archivo temporal de salida para la cookie.")
@@ -35,85 +44,87 @@ def main() -> int:
     if not user or not password:
         raise RuntimeError("Faltan DINET_USER y DINET_PASSWORD para renovar la sesion.")
 
-    payload = {
-        "companyCode": env("DINET_COMPANY_CODE", "01"),
-        "company": env("DINET_COMPANY_NAME", "DINET S.A."),
-        "user": user,
-        "password": password,
-        "systemLanguage": env("DINET_SYSTEM_LANGUAGE", "ES"),
-        "systemCode": env("DINET_SYSTEM_CODE", "W4WWEB"),
-        "listarCodes": [code.strip() for code in env("DINET_LISTAR_CUENTAS_CODES", "E5,HU").split(",") if code.strip()],
-        "dcCode": env("DINET_DC_CODE", "HU"),
-        "dcName": env("DINET_DC_NAME", "HUACHIPA"),
-        "accountCode": env("DINET_ACCOUNT_CODE", "I1002"),
-        "account": env("DINET_ACCOUNT_NAME", "UNILEVER"),
-    }
+    system_code = env("DINET_SYSTEM_CODE", "W4WWEB")
+    dc_code = env("DINET_DC_CODE", "HU")
+    dc_name = env("DINET_DC_NAME", "HUACHIPA")
+    account_code = env("DINET_ACCOUNT_CODE", "I1002")
+    account = env("DINET_ACCOUNT_NAME", "UNILEVER")
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        context = browser.new_context()
+        browser = playwright.chromium.launch(headless=True, args=["--no-sandbox"])
+        context = browser.new_context(
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            ),
+            locale="es-PE",
+            ignore_https_errors=True,
+        )
+        context.add_init_script(
+            "Object.defineProperty(navigator,'webdriver',{get:()=>undefined});"
+            "window.chrome={runtime:{}};"
+            "Object.defineProperty(navigator,'languages',{get:()=>['es-PE','es','en-US']});"
+            "Object.defineProperty(navigator,'plugins',{get:()=>[1,2,3]});"
+        )
         page = context.new_page()
-        page.goto("https://app.dinet.com.pe/", wait_until="domcontentloaded", timeout=120000)
-        login_result = page.evaluate(
-            """async (payload) => {
-                async function post(url, body, referer) {
-                    const response = await fetch(url, {
-                        method: "POST", credentials: "include",
-                        headers: { "accept": "application/json, text/javascript, */*; q=0.01",
-                            "content-type": "application/json; charset=UTF-8",
-                            "x-requested-with": "XMLHttpRequest", "referer": referer },
-                        body: JSON.stringify(body)
-                    });
-                    return { status: response.status,
-                        json: (response.headers.get("content-type") || "").toLowerCase().includes("application/json") };
-                }
-                const login = await post("https://app.dinet.com.pe/Login/Ingresar", {
-                    CompanyCode: payload.companyCode, Company: payload.company,
-                    User: payload.user, Password: payload.password,
-                    SystemLanguage: payload.systemLanguage
-                }, "https://app.dinet.com.pe/");
-                const redirect = await post("https://app.dinet.com.pe/Home/RedirectSystem",
-                    { SystemCode: payload.systemCode }, "https://app.dinet.com.pe/Home/Index/");
-                return [login, redirect];
-            }""",
-            payload,
-        )
-        print(f"[INFO] Respuestas de autenticacion Dinet: {[item['status'] for item in login_result]}")
-        if not all(item["status"] < 400 for item in login_result):
-            raise RuntimeError("Dinet rechazo el inicio de sesion automatico.")
-        page.goto("https://w4w.dinet.com.pe/AppWeb/", wait_until="domcontentloaded", timeout=120000)
-        context_result = page.evaluate(
-            """async (payload) => {
-                async function post(url, body) {
-                    const response = await fetch(url, {
-                        method: "POST", credentials: "include",
-                        headers: { "accept": "application/json, text/javascript, */*; q=0.01",
-                            "content-type": "application/json; charset=UTF-8",
-                            "x-requested-with": "XMLHttpRequest", "referer": "https://w4w.dinet.com.pe/AppWeb" },
-                        body: JSON.stringify(body)
-                    });
-                    return { status: response.status,
-                        json: (response.headers.get("content-type") || "").toLowerCase().includes("application/json") };
-                }
-                const responses = [];
-                for (const code of payload.listarCodes) {
-                    responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/ListarCuentas",
-                        { CodigoCentroDistribucion: code }));
-                }
-                responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/AssignmentCredentials", {
-                    distributionCenterCode: payload.dcCode, distributionCenter: payload.dcName,
-                    accountCode: payload.accountCode, account: payload.account
-                }));
-                return responses;
-            }""",
-            payload,
-        )
-        if not all(item["json"] and item["status"] < 400 for item in context_result):
-            raise RuntimeError("W4W no devolvio respuestas JSON validas al seleccionar el contexto.")
-        page.goto("https://w4w.dinet.com.pe/AppWeb/Home/Index/", wait_until="domcontentloaded", timeout=120000)
-        page.wait_for_timeout(1000)
-        cookie = build_cookie(context.cookies(["https://app.dinet.com.pe", "https://w4w.dinet.com.pe"]))
-        browser.close()
+        try:
+            page.goto("https://app.dinet.com.pe/", wait_until="domcontentloaded", timeout=120000)
+            try:
+                page.wait_for_load_state("networkidle", timeout=20000)
+            except Exception:
+                pass
+            user_selector = first_selector(
+                page,
+                ["#txtUsuario", "input[name='txtUsuario']", "input[id*='usuario' i]", "input[type='text']"],
+                "el campo Usuario",
+            )
+            password_selector = first_selector(
+                page,
+                ["#txtContrasenia", "input[name='txtContrasenia']", "input[type='password']"],
+                "el campo Contrasena",
+            )
+            submit_selector = first_selector(
+                page,
+                ["#btnIngresar", "button[type='submit']", "button:has-text('Ingresar')", "input[type='submit']"],
+                "el boton Ingresar",
+            )
+            page.fill(user_selector, user)
+            page.fill(password_selector, password)
+            page.click(submit_selector)
+            try:
+                page.wait_for_load_state("networkidle", timeout=30000)
+            except Exception:
+                page.wait_for_timeout(3000)
+            response_redirect = context.request.post(
+                "https://app.dinet.com.pe/Home/RedirectSystem",
+                data={"SystemCode": system_code},
+                timeout=120000,
+            )
+            response_accounts = context.request.post(
+                "https://w4w.dinet.com.pe/AppWeb/IngresoSistema/ListarCuentas",
+                data={"CodigoCentroDistribucion": dc_code},
+                timeout=120000,
+            )
+            response_assignment = context.request.post(
+                "https://w4w.dinet.com.pe/AppWeb/IngresoSistema/AssignmentCredentials",
+                data={
+                    "distributionCenterCode": dc_code,
+                    "distributionCenter": dc_name,
+                    "accountCode": account_code,
+                    "account": account,
+                },
+                timeout=120000,
+            )
+            statuses = [response_redirect.status, response_accounts.status, response_assignment.status]
+            print(f"[INFO] Contexto W4W: {statuses}")
+            if not all(response.ok for response in (response_redirect, response_accounts, response_assignment)):
+                raise RuntimeError("W4W no acepto el contexto despues del login visual.")
+            page.goto("https://w4w.dinet.com.pe/AppWeb/Home/Index/", wait_until="domcontentloaded", timeout=120000)
+            page.wait_for_timeout(1000)
+            cookie = build_cookie(context.cookies(["https://app.dinet.com.pe", "https://w4w.dinet.com.pe"]))
+        finally:
+            context.close()
+            browser.close()
 
     output = Path(args.out)
     output.write_text(cookie, encoding="utf-8")
