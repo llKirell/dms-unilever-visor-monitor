@@ -54,52 +54,61 @@ def main() -> int:
         context = browser.new_context()
         page = context.new_page()
         page.goto("https://app.dinet.com.pe/", wait_until="domcontentloaded", timeout=120000)
-        result = page.evaluate(
+        login_result = page.evaluate(
             """async (payload) => {
                 async function post(url, body, referer) {
                     const response = await fetch(url, {
-                        method: "POST",
-                        credentials: "include",
-                        headers: {
-                            "accept": "application/json, text/javascript, */*; q=0.01",
+                        method: "POST", credentials: "include",
+                        headers: { "accept": "application/json, text/javascript, */*; q=0.01",
                             "content-type": "application/json; charset=UTF-8",
-                            "x-requested-with": "XMLHttpRequest",
-                            "referer": referer
-                        },
+                            "x-requested-with": "XMLHttpRequest", "referer": referer },
                         body: JSON.stringify(body)
                     });
-                    const contentType = (response.headers.get("content-type") || "").toLowerCase();
-                    const text = await response.text();
-                    return { status: response.status, json: contentType.includes("application/json"), text };
+                    return { status: response.status,
+                        json: (response.headers.get("content-type") || "").toLowerCase().includes("application/json") };
                 }
-                const responses = [];
-                responses.push(await post("https://app.dinet.com.pe/Login/Ingresar", {
-                    CompanyCode: payload.companyCode,
-                    Company: payload.company,
-                    User: payload.user,
-                    Password: payload.password,
+                const login = await post("https://app.dinet.com.pe/Login/Ingresar", {
+                    CompanyCode: payload.companyCode, Company: payload.company,
+                    User: payload.user, Password: payload.password,
                     SystemLanguage: payload.systemLanguage
-                }, "https://app.dinet.com.pe/"));
-                responses.push(await post("https://app.dinet.com.pe/Home/RedirectSystem", {
-                    SystemCode: payload.systemCode
-                }, "https://app.dinet.com.pe/Home/Index/"));
-                for (const code of payload.listarCodes) {
-                    responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/ListarCuentas", {
-                        CodigoCentroDistribucion: code
-                    }, "https://w4w.dinet.com.pe/AppWeb"));
-                }
-                responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/AssignmentCredentials", {
-                    distributionCenterCode: payload.dcCode,
-                    distributionCenter: payload.dcName,
-                    accountCode: payload.accountCode,
-                    account: payload.account
-                }, "https://w4w.dinet.com.pe/AppWeb"));
-                return responses.map(response => ({ status: response.status, json: response.json }));
+                }, "https://app.dinet.com.pe/");
+                const redirect = await post("https://app.dinet.com.pe/Home/RedirectSystem",
+                    { SystemCode: payload.systemCode }, "https://app.dinet.com.pe/Home/Index/");
+                return [login, redirect];
             }""",
             payload,
         )
-        if not all(item["json"] and item["status"] < 400 for item in result):
+        if not all(item["json"] and item["status"] < 400 for item in login_result):
             raise RuntimeError("W4W no devolvio respuestas JSON validas durante el inicio de sesion.")
+        page.goto("https://w4w.dinet.com.pe/AppWeb/", wait_until="domcontentloaded", timeout=120000)
+        context_result = page.evaluate(
+            """async (payload) => {
+                async function post(url, body) {
+                    const response = await fetch(url, {
+                        method: "POST", credentials: "include",
+                        headers: { "accept": "application/json, text/javascript, */*; q=0.01",
+                            "content-type": "application/json; charset=UTF-8",
+                            "x-requested-with": "XMLHttpRequest", "referer": "https://w4w.dinet.com.pe/AppWeb" },
+                        body: JSON.stringify(body)
+                    });
+                    return { status: response.status,
+                        json: (response.headers.get("content-type") || "").toLowerCase().includes("application/json") };
+                }
+                const responses = [];
+                for (const code of payload.listarCodes) {
+                    responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/ListarCuentas",
+                        { CodigoCentroDistribucion: code }));
+                }
+                responses.push(await post("https://w4w.dinet.com.pe/AppWeb/IngresoSistema/AssignmentCredentials", {
+                    distributionCenterCode: payload.dcCode, distributionCenter: payload.dcName,
+                    accountCode: payload.accountCode, account: payload.account
+                }));
+                return responses;
+            }""",
+            payload,
+        )
+        if not all(item["json"] and item["status"] < 400 for item in context_result):
+            raise RuntimeError("W4W no devolvio respuestas JSON validas al seleccionar el contexto.")
         page.goto("https://w4w.dinet.com.pe/AppWeb/Home/Index/", wait_until="domcontentloaded", timeout=120000)
         page.wait_for_timeout(1000)
         cookie = build_cookie(context.cookies(["https://app.dinet.com.pe", "https://w4w.dinet.com.pe"]))
