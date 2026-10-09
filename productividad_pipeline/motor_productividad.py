@@ -347,7 +347,8 @@ def _agg(df_elig: pd.DataFrame, by: list[str] | None) -> list[dict]:
     """
     sum_cols = ["horas", "cajas", "volumen_m3", "peso_tn", "ubicaciones", "detalle"]
     opt = [c for c in ("t_std_min", "t_real_min", "cajas_eq",
-                       "pallets", "cajas_sueltas") if c in df_elig.columns]
+                       "pallets", "cajas_sueltas", "unidades_productivas")
+           if c in df_elig.columns]
     all_cols = sum_cols + opt
 
     if by:
@@ -397,6 +398,9 @@ def _agg(df_elig: pd.DataFrame, by: list[str] | None) -> list[dict]:
         if "cajas_sueltas" in opt:
             row["cajas_sueltas"]    = round(float(r["cajas_sueltas"]), 2)
             row["cajas_sueltas_hr"] = round(rate(r["cajas_sueltas"], h), 2)
+        if "unidades_productivas" in opt:
+            row["unidades_productivas"] = round(float(r["unidades_productivas"]), 2)
+            row["unidades_productivas_hr"] = round(rate(r["unidades_productivas"], h), 2)
         # cajas-equivalentes exactas (con FlujoSalidas)
         if "cajas_eq" in opt:
             row["cajas_eq"]    = round(float(r["cajas_eq"]), 2)
@@ -609,6 +613,8 @@ def calcular(df_prep: pd.DataFrame, umbral_pallet: float = 60.0,
         cruzado = fx["cajas_eq"].to_numpy() > 0
         elig.loc[cruzado, "pallets"]       = fx.loc[cruzado, "pallets"].values
         elig.loc[cruzado, "cajas_sueltas"] = fx.loc[cruzado, "cajas_sueltas"].values
+
+    elig["unidades_productivas"] = elig["cajas_sueltas"] + elig["pallets"]
 
     # para granos por-persona, arrastrar cargo/turno (1er valor por usuario)
     cargo_turno = (elig.sort_values("usuario")

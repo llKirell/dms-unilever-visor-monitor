@@ -43,7 +43,8 @@ def recompute() -> None:
 def build_dash_data(prod: dict) -> dict:
     """Subset embebible: meta + comparativo + grano atomico persona x dia."""
     keep_cell = ("usuario", "dia", "cargo", "turno", "horas", "tareas",
-                 "cajas", "cajas_sueltas", "pallets", "volumen_m3", "peso_tn",
+                 "cajas", "cajas_sueltas", "pallets", "unidades_productivas",
+                 "volumen_m3", "peso_tn",
                  "ubicaciones", "detalle", "t_std_min", "t_real_min", "efic")
     celdas = [{k: r.get(k) for k in keep_cell if k in r}
               for r in prod.get("por_persona_dia", [])]
@@ -319,15 +320,15 @@ function normalizeCells(data){
   usuario:c.usuario, dia:c.dia, turno:c.turno||"SIN TURNO", cargo:c.cargo||"",
   horas:+c.horas||0, tareas:+c.tareas||0, cajas:+c.cajas||0,
   cajas_sueltas:+c.cajas_sueltas||0, pallets:+c.pallets||0,
+  unidades_productivas: c.unidades_productivas==null ? ((+c.cajas_sueltas||0)+(+c.pallets||0)) : (+c.unidades_productivas||0),
   volumen_m3:+c.volumen_m3||0, peso_tn:+c.peso_tn||0,
   ubicaciones:+c.ubicaciones||0, detalle:+c.detalle||0,
   t_std_min:+c.t_std_min||0, t_real_min:+c.t_real_min||0
 }));
 }
-// Selector de métrica (como el tablero anterior): caja suelta y pallet separados.
+// Selector de métricas operativas normalizadas y de volumen.
 const METRICS = [
-  {key:"cajas", label:"Cajas/h", unit:"cajas/h", num:"cajas_sueltas", dec:1},
-  {key:"pallets", label:"Pallets/h", unit:"pallets/h", num:"pallets", dec:2},
+  {key:"unidades_productivas", label:"Unidades/h", unit:"unidades/h", num:"unidades_productivas", dec:1},
   {key:"volumen_m3", label:"m³/h", unit:"m³/h", num:"volumen_m3", dec:2},
   {key:"peso_tn", label:"Tn/h", unit:"Tn/h", num:"peso_tn", dec:2},
   {key:"ubicaciones", label:"Ubic/h", unit:"ubic/h", num:"ubicaciones", dec:1},
@@ -335,7 +336,7 @@ const METRICS = [
 ];
 const EFIC = {key:"efic"};  // métrica siempre visible como KPI (no en el selector)
 // rankMode: "auto" (turno por hora) | "1° TURNO" | "2° TURNO" | "3° TURNO" | "top15"
-let state = {dia:"__ALL__", turno:"__ALL__", metric:"cajas", rankMode:"auto"};
+let state = {dia:"__ALL__", turno:"__ALL__", metric:"unidades_productivas", rankMode:"auto"};
 
 // hora de LIMA (America/Lima, UTC-5) sin depender del reloj/zona del equipo
 function limaHour(){
