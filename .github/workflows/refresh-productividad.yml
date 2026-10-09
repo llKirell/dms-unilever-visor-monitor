@@ -12,8 +12,8 @@ on:
         required: false
         default: "false"
   schedule:
-    # Hora Lima: se ejecuta cada hora. Si W4W responde bien, se puede bajar a */30.
-    - cron: "0 * * * *"
+    # GitHub Actions usa UTC; cada 10 minutos se refresca el mes actual.
+    - cron: "*/10 * * * *"
 
 permissions:
   contents: write
