@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 20
     env:
       DINET_W4W_COOKIE: ${{ secrets.DINET_W4W_COOKIE }}
@@ -48,44 +48,49 @@ jobs:
       - name: Renew W4W session
         if: ${{ env.DINET_USER != '' && env.DINET_PASSWORD != '' }}
         run: |
-          python -m playwright install --with-deps chromium
-          python productividad_pipeline/refresh_w4w_session.py --out "$RUNNER_TEMP/dinet_cookie.txt"
-          {
-            echo "DINET_W4W_COOKIE=$(cat \"$RUNNER_TEMP/dinet_cookie.txt\")"
-            echo "DINET_USER="
-            echo "DINET_PASSWORD="
-          } >> "$GITHUB_ENV"
+          python -m playwright install chromium
+          $cookiePath = Join-Path $env:RUNNER_TEMP 'dinet_cookie.txt'
+          python productividad_pipeline/refresh_w4w_session.py --out $cookiePath
+          $cookie = (Get-Content -Raw $cookiePath).Trim()
+          "DINET_W4W_COOKIE=$cookie" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "DINET_USER=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "DINET_PASSWORD=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        shell: pwsh
 
       - name: Refresh productivity data
         run: |
-          ARGS=""
-          if [ "${{ github.event.inputs.month }}" != "" ]; then
-            ARGS="$ARGS --month ${{ github.event.inputs.month }}"
-          fi
-          if [ "${{ github.event.inputs.skip_fetch }}" = "true" ]; then
-            ARGS="$ARGS --skip-fetch"
-          fi
-          python productividad_pipeline/refresh_productividad_online.py $ARGS
+          $arguments = @()
+          if ("${{ github.event.inputs.month }}" -ne "") {
+            $arguments += "--month"
+            $arguments += "${{ github.event.inputs.month }}"
+          }
+          if ("${{ github.event.inputs.skip_fetch }}" -eq "true") {
+            $arguments += "--skip-fetch"
+          }
+          python productividad_pipeline/refresh_productividad_online.py @arguments
+        shell: pwsh
 
       - name: Archive productivity in Supabase
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "Secretos de Supabase no configurados; se omite el archivo historico."
+          if ([string]::IsNullOrWhiteSpace($env:SUPABASE_URL) -or [string]::IsNullOrWhiteSpace($env:SUPABASE_SERVICE_ROLE_KEY)) {
+            Write-Host "Secretos de Supabase no configurados; se omite el archivo historico."
             exit 0
-          fi
+          }
           python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
+        shell: pwsh
 
       - name: Commit refreshed JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add productividad/dash_data.json
-          if git diff --cached --quiet; then
-            echo "No hay cambios en dash_data.json"
+          if (git diff --cached --quiet) {
+            Write-Host "No hay cambios en dash_data.json"
             exit 0
-          fi
+          }
           git commit -m "Refresca productividad W4W"
           git push
+        shell: pwsh
