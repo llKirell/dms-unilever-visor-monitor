@@ -45,6 +45,17 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r productividad_pipeline/requirements.txt
 
+      - name: Renew W4W session
+        if: ${{ env.DINET_USER != '' && env.DINET_PASSWORD != '' }}
+        run: |
+          python -m playwright install --with-deps chromium
+          python productividad_pipeline/refresh_w4w_session.py --out "$RUNNER_TEMP/dinet_cookie.txt"
+          {
+            echo "DINET_W4W_COOKIE=$(cat \"$RUNNER_TEMP/dinet_cookie.txt\")"
+            echo "DINET_USER="
+            echo "DINET_PASSWORD="
+          } >> "$GITHUB_ENV"
+
       - name: Refresh productivity data
         run: |
           ARGS=""
