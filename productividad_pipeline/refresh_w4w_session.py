@@ -78,8 +78,8 @@ def main() -> int:
             }""",
             payload,
         )
-        if not all(item["json"] and item["status"] < 400 for item in login_result):
-            raise RuntimeError("W4W no devolvio respuestas JSON validas durante el inicio de sesion.")
+        if not all(item["status"] < 400 for item in login_result):
+            raise RuntimeError("Dinet rechazo el inicio de sesion automatico.")
         page.goto("https://w4w.dinet.com.pe/AppWeb/", wait_until="domcontentloaded", timeout=120000)
         context_result = page.evaluate(
             """async (payload) => {
