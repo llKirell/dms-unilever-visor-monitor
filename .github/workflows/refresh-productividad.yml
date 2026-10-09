@@ -54,6 +54,13 @@ jobs:
           fi
           python productividad_pipeline/refresh_productividad_online.py $ARGS
 
+      - name: Archive productivity in Supabase
+        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
+
       - name: Commit refreshed JSON
         run: |
           git config user.name "github-actions[bot]"
