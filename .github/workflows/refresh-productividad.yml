@@ -55,7 +55,7 @@ jobs:
           "DINET_W4W_COOKIE=$cookie" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "DINET_USER=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "DINET_PASSWORD=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        shell: pwsh
+        shell: powershell
 
       - name: Refresh productivity data
         run: |
@@ -68,7 +68,7 @@ jobs:
             $arguments += "--skip-fetch"
           }
           python productividad_pipeline/refresh_productividad_online.py @arguments
-        shell: pwsh
+        shell: powershell
 
       - name: Archive productivity in Supabase
         env:
@@ -80,7 +80,7 @@ jobs:
             exit 0
           }
           python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
-        shell: pwsh
+        shell: powershell
 
       - name: Commit refreshed JSON
         run: |
@@ -93,4 +93,4 @@ jobs:
           }
           git commit -m "Refresca productividad W4W"
           git push
-        shell: pwsh
+        shell: powershell
