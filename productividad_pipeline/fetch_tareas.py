@@ -72,6 +72,7 @@ SYSTEM_CODE  = "W4WWEB"
 COMPANY_CODE, COMPANY_NAME = "01", "DINET S.A."
 SYSTEM_LANGUAGE = "ES"
 DC_CODE, DC_NAME       = "HU", "HUACHIPA"
+DC_LIST_CODES          = ("E5", "HU")
 ACCOUNT_CODE, ACCOUNT  = "I1002", "UNILEVER"
 
 # User-Agent realista: desde IPs de datacenter el w4w exige UA de navegador real.
@@ -187,7 +188,8 @@ def set_context(session: requests.Session) -> None:
     """Fija el contexto HUACHIPA/UNILEVER (3 POST en orden)."""
     post_json(session, URL_REDIRECT, {"SystemCode": SYSTEM_CODE},
               referer=f"{APP_BASE}/Home/Index/")
-    post_json(session, URL_LISTAR, {"CodigoCentroDistribucion": DC_CODE})
+    for code in DC_LIST_CODES:
+        post_json(session, URL_LISTAR, {"CodigoCentroDistribucion": code})
     post_json(session, URL_ASSIGN, {
         "distributionCenterCode": DC_CODE, "distributionCenter": DC_NAME,
         "accountCode": ACCOUNT_CODE, "account": ACCOUNT,
