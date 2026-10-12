@@ -307,14 +307,13 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
         return "Sin tiempo valido"
     d["motivo_exclusion"] = d.apply(_motivo, axis=1)
 
-    # enriquecer con maestro Usuario -> Cargo / Turno
+    # enriquecer con maestro Usuario -> Cargo
     d["cargo"] = "(SIN CARGO)"
-    d["turno"] = "SIN TURNO"
+    d["turno"] = d["turno_hora"]
     if maestro_usuario is not None and not maestro_usuario.empty:
         mcols = _resolve_columns(maestro_usuario, {
             "usuario": ["usuario ejecucion", "usuario"],
             "cargo":   ["cargo", "perfil", "cargo perfil"],
-            "turno":   ["turno", "turno asignado"],
         })
         if "usuario" in mcols:
             m = maestro_usuario.copy()
@@ -322,14 +321,6 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
             mp = m.drop_duplicates("_k").set_index("_k")
             if "cargo" in mcols:
                 d["cargo"] = d["usuario"].map(mp[mcols["cargo"]]).fillna("(SIN CARGO)")
-            if "turno" in mcols:
-                d["turno"] = d["usuario"].map(mp[mcols["turno"]]).fillna("SIN TURNO")
-
-    # Fallback V7: si el roster no trae turno, usar el turno por hora de inicio.
-    # El roster (turno contratado) manda; solo se rellenan los huecos.
-    sin_turno = d["turno"].astype(str).str.strip().str.upper().isin(
-        ["SIN TURNO", "", "NAN", "NONE", "(SIN TURNO)"])
-    d.loc[sin_turno, "turno"] = d.loc[sin_turno, "turno_hora"]
     return d
 
 
