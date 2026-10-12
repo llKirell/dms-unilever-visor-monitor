@@ -43,8 +43,23 @@ create table if not exists public.productividad_snapshots (
 create index if not exists productividad_snapshots_anio_idx
   on public.productividad_snapshots (anio, actualizado_en desc);
 
+create table if not exists public.productividad_objetivos (
+  anio smallint not null,
+  metrica text not null,
+  turno text not null default 'TODOS',
+  objetivo numeric(14,4) not null,
+  amarillo_min numeric(14,4) not null,
+  verde_min numeric(14,4) not null,
+  horas_base numeric(14,3) not null default 0,
+  jornadas_base integer not null default 0,
+  criterio text not null,
+  actualizado_en timestamptz not null default now(),
+  primary key (anio, metrica, turno)
+);
+
 alter table public.productividad_persona_dia enable row level security;
 alter table public.productividad_snapshots enable row level security;
+alter table public.productividad_objetivos enable row level security;
 
 drop policy if exists "productividad lectura autenticada" on public.productividad_persona_dia;
 create policy "productividad lectura autenticada"
@@ -54,4 +69,9 @@ create policy "productividad lectura autenticada"
 drop policy if exists "productividad snapshots lectura autenticada" on public.productividad_snapshots;
 create policy "productividad snapshots lectura autenticada"
   on public.productividad_snapshots for select
+  to authenticated using (true);
+
+drop policy if exists "productividad objetivos lectura autenticada" on public.productividad_objetivos;
+create policy "productividad objetivos lectura autenticada"
+  on public.productividad_objetivos for select
   to authenticated using (true);

@@ -1,0 +1,89 @@
+name: Backfill Historico Productividad
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Año a cargar"
+        required: true
+        default: "2026"
+      start_month:
+        description: "Mes inicial (1-12)"
+        required: true
+        default: "1"
+      end_month:
+        description: "Mes final (1-12)"
+        required: true
+        default: "10"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-productividad
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      DINET_USER: ${{ secrets.DINET_USER }}
+      DINET_PASSWORD: ${{ secrets.DINET_PASSWORD }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install -r productividad_pipeline/requirements.txt
+
+      - name: Renew W4W session
+        run: |
+          python -m playwright install --with-deps chromium
+          python productividad_pipeline/refresh_w4w_session.py --out "$RUNNER_TEMP/dinet_cookie.txt"
+          COOKIE="$(tr -d '\r\n' < "$RUNNER_TEMP/dinet_cookie.txt")"
+          if [ -z "$COOKIE" ]; then
+            echo "No se genero la cookie W4W."
+            exit 1
+          fi
+          echo "DINET_W4W_COOKIE=$COOKIE" >> "$GITHUB_ENV"
+          echo "DINET_USER=" >> "$GITHUB_ENV"
+          echo "DINET_PASSWORD=" >> "$GITHUB_ENV"
+
+      - name: Load months into Supabase
+        run: |
+          YEAR="${{ inputs.year }}"
+          START="${{ inputs.start_month }}"
+          END="${{ inputs.end_month }}"
+          if ! [[ "$YEAR" =~ ^[0-9]{4}$ ]] || ! [[ "$START" =~ ^(1[0-2]|[1-9])$ ]] || ! [[ "$END" =~ ^(1[0-2]|[1-9])$ ]] || [ "$START" -gt "$END" ]; then
+            echo "Rango inválido: año=$YEAR, meses=$START..$END"
+            exit 1
+          fi
+          for MONTH in $(seq "$START" "$END"); do
+            PERIOD="$(printf '%04d-%02d' "$YEAR" "$MONTH")"
+            echo "[INFO] Cargando $PERIOD"
+            python productividad_pipeline/refresh_productividad_online.py --month "$PERIOD"
+            python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
+          done
+
+      - name: Calculate annual targets
+        run: python productividad_pipeline/calcular_objetivos_supabase.py --year "${{ inputs.year }}"
+
+      - name: Commit current dashboard JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add productividad/dash_data.json
+          if git diff --cached --quiet; then
+            echo "No hay cambios en dash_data.json"
+            exit 0
+          fi
+          git commit -m "Actualiza productividad historica"
+          git push
