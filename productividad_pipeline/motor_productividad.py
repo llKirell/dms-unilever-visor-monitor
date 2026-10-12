@@ -235,8 +235,7 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
     d["horas"] = (fin - ini).dt.total_seconds() / 3600.0
     d["t_real_min"] = d["horas"] * 60.0   # tiempo real en minutos (para eficiencia)
 
-    # turno por HORA DE INICIO (mejora V7): T1 07-15, T2 15-23, T3 23-07.
-    # Se usa como respaldo cuando el roster no trae el turno del usuario.
+    # turno por HORA DE INICIO: T1 07-15, T2 15-23, T3 23-07.
     def _turno_por_hora(h):
         if pd.isna(h):
             return "SIN TURNO"
@@ -607,17 +606,32 @@ def calcular(df_prep: pd.DataFrame, umbral_pallet: float = 60.0,
 
     elig["unidades_productivas"] = elig["cajas_sueltas"] + elig["pallets"]
 
-    # para granos por-persona, arrastrar cargo/turno (1er valor por usuario)
-    cargo_turno = (elig.sort_values("usuario")
-                       .drop_duplicates("usuario")
-                       .set_index("usuario")[["cargo", "turno"]])
+    cargo_por_usuario = (elig.sort_values("usuario")
+                             .drop_duplicates("usuario")
+                             .set_index("usuario")["cargo"])
+
+    def _turno_dominante(keys: list[str]) -> pd.Series:
+        orden = keys + ["horas", "turno"]
+        ascendentes = [True] * len(keys) + [False, True]
+        return (elig.groupby(keys + ["turno"], dropna=False)["horas"].sum()
+                    .reset_index()
+                    .sort_values(orden, ascending=ascendentes)
+                    .drop_duplicates(keys)
+                    .set_index(keys)["turno"])
+
+    turno_por_usuario = _turno_dominante(["usuario"])
+    turno_por_usuario_dia = _turno_dominante(["usuario", "dia"])
 
     def _enriquecer_persona(rows):
         for r in rows:
             u = r.get("usuario")
-            if u in cargo_turno.index:
-                r["cargo"] = str(cargo_turno.loc[u, "cargo"])
-                r["turno"] = str(cargo_turno.loc[u, "turno"])
+            if u in cargo_por_usuario.index:
+                r["cargo"] = str(cargo_por_usuario.loc[u])
+            dia = r.get("dia")
+            if dia is not None and (u, dia) in turno_por_usuario_dia.index:
+                r["turno"] = str(turno_por_usuario_dia.loc[(u, dia)])
+            elif u in turno_por_usuario.index:
+                r["turno"] = str(turno_por_usuario.loc[u])
         return rows
 
     resultado = {
