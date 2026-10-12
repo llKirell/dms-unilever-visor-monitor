@@ -1,0 +1,32 @@
+name: Probar Login W4W Cloud
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DINET_USER: ${{ secrets.DINET_USER }}
+      DINET_PASSWORD: ${{ secrets.DINET_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install -r productividad_pipeline/requirements.txt
+
+      - name: Validate W4W visual login
+        run: |
+          python -m playwright install --with-deps chromium
+          python productividad_pipeline/refresh_w4w_session.py --out "$RUNNER_TEMP/dinet_cookie.txt"
+          rm -f "$RUNNER_TEMP/dinet_cookie.txt"
