@@ -114,6 +114,10 @@ header.app{display:flex;align-items:center;gap:clamp(10px,1.4vw,22px);flex-wrap:
 .header-filters{display:flex;align-items:center;gap:6px;min-width:0}
 .header-filters label{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.35px}
 .header-filters select{min-width:0;width:clamp(84px,8vw,132px);padding:6px 7px;font-size:11px}
+.period-control{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.period-control span{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.35px}
+.period-control .seg button{padding:6px 10px;font-size:11px}
+.header-filters .is-hidden{display:none}
 .logo .sub{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
 .spacer{flex:1}
 .rango{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.5}
@@ -274,6 +278,7 @@ tbody tr:hover{background:var(--panel-2)}
       <div class="mk">P</div>
       <div><h1>Productividad</h1></div>
     </div>
+    <div class="period-control"><span>Periodo</span><div class="seg" id="f-period"></div></div>
     <div class="header-filters" id="f-filters"></div>
     <div class="spacer"></div>
     <div class="seg" id="f-metric"></div>
@@ -347,7 +352,7 @@ const METRICS = [
 ];
 const EFIC = {key:"efic"};  // métrica siempre visible como KPI (no en el selector)
 // rankMode: "auto" (turno por hora) | "1° TURNO" | "2° TURNO" | "3° TURNO" | "top15"
-let state = {mes:"", dia:"__ALL__", turno:"__ALL__", metric:"unidades_productivas", rankMode:"auto"};
+let state = {period:"mes", mes:"", dia:"__ALL__", turno:"__ALL__", metric:"unidades_productivas", rankMode:"auto"};
 
 // hora de LIMA (America/Lima, UTC-5) sin depender del reloj/zona del equipo
 function limaHour(){
@@ -371,8 +376,12 @@ function rateOf(rows, m){
   const num=rows.reduce((a,r)=>a+r[m.num],0),h=rows.reduce((a,r)=>a+r.horas,0);return h>0?num/h:0;
 }
 function filtered(){
-  return CUR.filter(r=>(state.dia==="__ALL__"||r.dia===state.dia)
+  const dia=state.period==="dia"?state.dia:"__ALL__";
+  return CUR.filter(r=>(dia==="__ALL__"||r.dia===dia)
     && (state.turno==="__ALL__"||r.turno===state.turno));
+}
+function trendFiltered(){
+  return CUR.filter(r=>state.turno==="__ALL__"||r.turno===state.turno);
 }
 function groupBy(rows, key){const m=new Map();for(const r of rows){if(!m.has(r[key]))m.set(r[key],[]);m.get(r[key]).push(r);}return m;}
 
@@ -384,15 +393,24 @@ function renderControls(){
     el.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x.dataset.k===state.metric));
     renderAll();};
 }
+function renderPeriod(){
+  const el=document.getElementById("f-period");
+  el.innerHTML=[["dia","Día"],["mes","Mes"]].map(([key,label])=>
+    `<button data-period="${key}" class="${state.period===key?'on':''}">${label}</button>`).join("");
+  el.onclick=e=>{const button=e.target.closest("button[data-period]");if(!button)return;
+    state.period=button.dataset.period;
+    renderFilters();renderPeriod();renderAll();};
+}
 function renderFilters(){
   const el=document.getElementById("f-filters");
   const monthOptions=MONTHS.slice().reverse().map(month=>`<option value="${month}" ${month===state.mes?'selected':''}>${mesLabel(month)}</option>`).join("");
   const days=[...new Set(CUR.map(r=>r.dia).filter(Boolean))].sort();
-  if(state.dia!=="__ALL__"&&!days.includes(state.dia)) state.dia="__ALL__";
+  if(state.period==="dia"&&(state.dia==="__ALL__"||!days.includes(state.dia))) state.dia=days[days.length-1]||"__ALL__";
+  if(state.period!=="dia"&&state.dia!=="__ALL__"&&!days.includes(state.dia)) state.dia="__ALL__";
   const dayOptions=days.map(day=>`<option value="${day}" ${day===state.dia?'selected':''}>${day.split("-").reverse().join("/")}</option>`).join("");
   const turns=["1° TURNO","2° TURNO","3° TURNO","SIN TURNO"];
   const turnOptions=turns.filter(turn=>CUR.some(r=>r.turno===turn)).map(turn=>`<option value="${turn}" ${turn===state.turno?'selected':''}>${turn}</option>`).join("");
-  el.innerHTML=`<label>Mes<select data-filter="mes">${monthOptions}</select></label><label>Día<select data-filter="dia"><option value="__ALL__">Todos</option>${dayOptions}</select></label><label>Turno<select data-filter="turno"><option value="__ALL__">Todos</option>${turnOptions}</select></label>`;
+  el.innerHTML=`<label>Mes<select data-filter="mes">${monthOptions}</select></label><label class="${state.period==='dia'?'':'is-hidden'}">Día<select data-filter="dia">${dayOptions}</select></label><label>Turno<select data-filter="turno"><option value="__ALL__">Todos</option>${turnOptions}</select></label>`;
   el.onchange=e=>{const select=e.target.closest("select[data-filter]");if(!select)return;
     state[select.dataset.filter]=select.value;
     if(select.dataset.filter==="mes"){state.dia="__ALL__";rebuildFromData();}
@@ -401,7 +419,7 @@ function renderFilters(){
 function renderKpis(){
   const m=metricDef();
   const main=rateOf(filtered(),m);
-  const badge=state.dia==="__ALL__"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
+  const badge=state.period==="mes"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
   document.getElementById("kpis").innerHTML=
     `<div class="kpi hero"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
     (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+`</div>`;
@@ -410,11 +428,11 @@ function renderKpis(){
 function renderTurnoMini(){
   const m=metricDef();
   const turnos=["1° TURNO","2° TURNO","3° TURNO"];
-  const base=CUR.filter(r=>state.dia==="__ALL__"||r.dia===state.dia);
+  const base=filtered();
   const foco=state.turno!=="__ALL__"?state.turno:(state.rankMode==="auto"?turnoActual():(state.rankMode==="top15"?turnoActual():state.rankMode));
   const html=turnos.map(t=>{
     const v=rateOf(base.filter(r=>r.turno===t),m);
-    const badge=deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m));
+    const badge=state.period==="mes"?deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m)):"";
     return `<div class="mini ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
            (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
   }).join("");
@@ -422,7 +440,7 @@ function renderTurnoMini(){
 }
 // Perfil de Pedidos: participacion caja vs pallet (como la nota) — fijo
 function renderMix(){
-  if(state.mes!==LATEST_M||state.dia!=="__ALL__"||state.turno!=="__ALL__"){
+  if(state.mes!==LATEST_M||state.period!=="mes"||state.turno!=="__ALL__"){
     document.getElementById("mix-per").textContent="Mes actual";
     document.getElementById("mix").innerHTML=`<div class="hint">El perfil de pedidos se muestra para el mes actual sin filtros.</div>`;
     return;
@@ -440,7 +458,7 @@ function renderMix(){
 }
 // participacion por familia (% de cajas sueltas) — fijo
 function renderFamilia(){
-  if(state.mes!==LATEST_M||state.dia!=="__ALL__"||state.turno!=="__ALL__"){
+  if(state.mes!==LATEST_M||state.period!=="mes"||state.turno!=="__ALL__"){
     document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Disponible para el mes actual sin filtros</div>`;
     return;
   }
@@ -523,7 +541,7 @@ function comboChart(svg, days, m){
 }
 function renderTrend(){
   const m=metricDef();
-  const base=filtered();
+  const base=trendFiltered();
   const g=groupBy(base,"dia");
   const keys=[...g.keys()].sort();
   document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}`;
@@ -623,7 +641,7 @@ async function loadHistorical(){
   }
 }
 rebuildFromData();
-renderControls();renderFilters();renderAll();
+renderControls();renderPeriod();renderFilters();renderAll();
 loadData();loadHistorical();
 setInterval(loadData, 5*60*1000);
 setInterval(loadHistorical, 10*60*1000);
