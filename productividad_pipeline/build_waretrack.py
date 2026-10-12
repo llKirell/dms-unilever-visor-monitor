@@ -107,6 +107,9 @@ header.app{display:flex;align-items:center;gap:clamp(10px,1.4vw,22px);flex-wrap:
 .logo .mk{width:clamp(34px,2.6vw,52px);height:clamp(34px,2.6vw,52px);border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
   display:grid;place-items:center;color:#fff;font-weight:800;font-size:clamp(17px,1.5vw,26px)}
 .logo h1{font-size:clamp(17px,1.35vw,24px);margin:0;letter-spacing:.3px}
+.header-filters{display:flex;align-items:center;gap:6px;min-width:0}
+.header-filters label{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.35px}
+.header-filters select{min-width:0;width:clamp(84px,8vw,132px);padding:6px 7px;font-size:11px}
 .logo .sub{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
 .spacer{flex:1}
 .rango{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.5}
@@ -256,6 +259,7 @@ tbody tr:hover{background:var(--panel-2)}
 .rankrow .vv{text-align:right;font-weight:700}
 .foot{margin-top:22px;font-size:11.5px;color:var(--muted);line-height:1.6}
 @media(min-width:820px){.cols.two{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){header.app{flex-wrap:wrap}.header-filters{order:3;width:100%}.header-filters select{width:30vw}}
 @media(max-width:560px){.three{grid-template-columns:1fr}.rankrow{grid-template-columns:20px 90px 1fr 54px}}
 </style>
 </head>
@@ -266,6 +270,7 @@ tbody tr:hover{background:var(--panel-2)}
       <div class="mk">P</div>
       <div><h1>Productividad</h1></div>
     </div>
+    <div class="header-filters" id="f-filters"></div>
     <div class="spacer"></div>
     <div class="seg" id="f-metric"></div>
     <button class="theme-btn" id="theme" title="Tema">◑</button>
@@ -307,8 +312,10 @@ tbody tr:hover{background:var(--panel-2)}
 
 <script>
 let DATA = window.__EMBED__ || __DATA__;
+let HISTORICAL = null;
 let CELLS = [];
 let MONTHS = [];
+let LATEST_M = "";
 let CUR_M = "";
 let PREV_M = null;
 let CUR = [];
@@ -336,7 +343,7 @@ const METRICS = [
 ];
 const EFIC = {key:"efic"};  // métrica siempre visible como KPI (no en el selector)
 // rankMode: "auto" (turno por hora) | "1° TURNO" | "2° TURNO" | "3° TURNO" | "top15"
-let state = {dia:"__ALL__", turno:"__ALL__", metric:"unidades_productivas", rankMode:"auto"};
+let state = {mes:"", dia:"__ALL__", turno:"__ALL__", metric:"unidades_productivas", rankMode:"auto"};
 
 // hora de LIMA (America/Lima, UTC-5) sin depender del reloj/zona del equipo
 function limaHour(){
@@ -360,7 +367,7 @@ function rateOf(rows, m){
   const num=rows.reduce((a,r)=>a+r[m.num],0),h=rows.reduce((a,r)=>a+r.horas,0);return h>0?num/h:0;
 }
 function filtered(){
-  return CELLS.filter(r=>(state.dia==="__ALL__"||r.dia===state.dia)
+  return CUR.filter(r=>(state.dia==="__ALL__"||r.dia===state.dia)
     && (state.turno==="__ALL__"||r.turno===state.turno));
 }
 function groupBy(rows, key){const m=new Map();for(const r of rows){if(!m.has(r[key]))m.set(r[key],[]);m.get(r[key]).push(r);}return m;}
@@ -373,10 +380,24 @@ function renderControls(){
     el.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x.dataset.k===state.metric));
     renderAll();};
 }
+function renderFilters(){
+  const el=document.getElementById("f-filters");
+  const monthOptions=MONTHS.slice().reverse().map(month=>`<option value="${month}" ${month===state.mes?'selected':''}>${mesLabel(month)}</option>`).join("");
+  const days=[...new Set(CUR.map(r=>r.dia).filter(Boolean))].sort();
+  if(state.dia!=="__ALL__"&&!days.includes(state.dia)) state.dia="__ALL__";
+  const dayOptions=days.map(day=>`<option value="${day}" ${day===state.dia?'selected':''}>${day.split("-").reverse().join("/")}</option>`).join("");
+  const turns=["1° TURNO","2° TURNO","3° TURNO","SIN TURNO"];
+  const turnOptions=turns.filter(turn=>CUR.some(r=>r.turno===turn)).map(turn=>`<option value="${turn}" ${turn===state.turno?'selected':''}>${turn}</option>`).join("");
+  el.innerHTML=`<label>Mes<select data-filter="mes">${monthOptions}</select></label><label>Día<select data-filter="dia"><option value="__ALL__">Todos</option>${dayOptions}</select></label><label>Turno<select data-filter="turno"><option value="__ALL__">Todos</option>${turnOptions}</select></label>`;
+  el.onchange=e=>{const select=e.target.closest("select[data-filter]");if(!select)return;
+    state[select.dataset.filter]=select.value;
+    if(select.dataset.filter==="mes"){state.dia="__ALL__";rebuildFromData();}
+    renderFilters();renderAll();};
+}
 function renderKpis(){
   const m=metricDef();
-  const main=rateOf(CUR,m);
-  const badge=deltaBadge(main, rateOf(PREV,m));
+  const main=rateOf(filtered(),m);
+  const badge=state.dia==="__ALL__"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
   document.getElementById("kpis").innerHTML=
     `<div class="kpi hero"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
     (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+`</div>`;
@@ -385,9 +406,10 @@ function renderKpis(){
 function renderTurnoMini(){
   const m=metricDef();
   const turnos=["1° TURNO","2° TURNO","3° TURNO"];
-  const foco=state.rankMode==="auto"?turnoActual():(state.rankMode==="top15"?turnoActual():state.rankMode);
+  const base=CUR.filter(r=>state.dia==="__ALL__"||r.dia===state.dia);
+  const foco=state.turno!=="__ALL__"?state.turno:(state.rankMode==="auto"?turnoActual():(state.rankMode==="top15"?turnoActual():state.rankMode));
   const html=turnos.map(t=>{
-    const v=rateOf(CUR.filter(r=>r.turno===t),m);
+    const v=rateOf(base.filter(r=>r.turno===t),m);
     const badge=deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m));
     return `<div class="mini ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
            (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
@@ -396,6 +418,11 @@ function renderTurnoMini(){
 }
 // Perfil de Pedidos: participacion caja vs pallet (como la nota) — fijo
 function renderMix(){
+  if(state.mes!==LATEST_M||state.dia!=="__ALL__"||state.turno!=="__ALL__"){
+    document.getElementById("mix-per").textContent="Mes actual";
+    document.getElementById("mix").innerHTML=`<div class="hint">El perfil de pedidos se muestra para el mes actual sin filtros.</div>`;
+    return;
+  }
   const mx=DATA.mix||{};
   const pc=+mx.pct_cajas||0, pp=+mx.pct_pallets||0;
   const per=document.getElementById("mix-per"); if(per) per.textContent=PERIODO_LABEL;
@@ -409,6 +436,10 @@ function renderMix(){
 }
 // participacion por familia (% de cajas sueltas) — fijo
 function renderFamilia(){
+  if(state.mes!==LATEST_M||state.dia!=="__ALL__"||state.turno!=="__ALL__"){
+    document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Disponible para el mes actual sin filtros</div>`;
+    return;
+  }
   const fam=DATA.por_familia||[];
   if(!fam.length){document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Sin datos de familia</div>`;return;}
   const max=Math.max(...fam.map(f=>f.pct),1);
@@ -421,10 +452,13 @@ const MESES_ABBR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","N
 const monthOf = c => (c.dia||"").slice(0,7);
 function mesLabel(ym){ if(!ym) return ""; const [y,mo]=ym.split("-"); return `${MESES_ABBR[(+mo)-1]}-${y.slice(2)}`; }
 function rebuildFromData(){
-  CELLS = normalizeCells(DATA);
+  CELLS = normalizeCells(HISTORICAL?.celdas?.length?HISTORICAL:DATA);
   MONTHS = [...new Set(CELLS.map(monthOf).filter(Boolean))].sort();
-  CUR_M = MONTHS[MONTHS.length-1] || "";
-  PREV_M = MONTHS.length>1 ? MONTHS[MONTHS.length-2] : null;
+  LATEST_M = MONTHS[MONTHS.length-1] || "";
+  if(!state.mes||!MONTHS.includes(state.mes)) state.mes=LATEST_M;
+  CUR_M = state.mes;
+  const currentIndex=MONTHS.indexOf(CUR_M);
+  PREV_M = currentIndex>0 ? MONTHS[currentIndex-1] : null;
   CUR = CELLS.filter(c=>monthOf(c)===CUR_M);           // mes en curso
   PREV = PREV_M ? CELLS.filter(c=>monthOf(c)===PREV_M) : [];  // mes anterior (si existe)
   PERIODO_LABEL = mesLabel(CUR_M);
@@ -485,7 +519,7 @@ function comboChart(svg, days, m){
 }
 function renderTrend(){
   const m=metricDef();
-  const base=CUR.filter(r=>state.turno==="__ALL__"||r.turno===state.turno);
+  const base=filtered();
   const g=groupBy(base,"dia");
   const keys=[...g.keys()].sort();
   document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}`;
@@ -517,13 +551,14 @@ function usersFrom(rows){
 // datos del ranking segun el modo (auto=turno por hora / manual / top 15)
 function rankData(){
   const m=metricDef();
+  const base=filtered();
   if(state.rankMode==="top15"){
-    const users=usersFrom(CUR).sort((a,b)=>b[m.key]-a[m.key]).slice(0,15);
+    const users=usersFrom(base).sort((a,b)=>b[m.key]-a[m.key]).slice(0,15);
     return {titulo:"Top 15 general", sub:`Los 15 más productivos · ${m.label}`,
-            tn:CUR.reduce((a,r)=>a+r.peso_tn,0), users, m};
+            tn:base.reduce((a,r)=>a+r.peso_tn,0), users, m};
   }
-  const t=state.rankMode==="auto"?turnoActual():state.rankMode;
-  const rows=CUR.filter(r=>r.turno===t);
+  const t=state.turno!=="__ALL__"?state.turno:(state.rankMode==="auto"?turnoActual():state.rankMode);
+  const rows=base.filter(r=>r.turno===t);
   const users=usersFrom(rows).sort((a,b)=>b[m.key]-a[m.key]);
   const sub=`${state.rankMode==="auto"?"Turno activo · ":""}${TURNO_HORARIO[t]||""} · ${users.length} oper.`;
   return {titulo:t, sub, tn:rows.reduce((a,r)=>a+r.peso_tn,0), users, m};
@@ -563,15 +598,31 @@ async function loadData(){
     if(!next || !Array.isArray(next.celdas)) return;
     DATA = next;
     rebuildFromData();
+    renderFilters();
     renderAll();
   }catch(e){
     // Mantiene el ultimo DATA valido, incluido el snapshot embebido.
   }
 }
+async function loadHistorical(){
+  try{
+    const res=await fetch("./historico_data.json?ts="+Date.now(),{cache:"no-store"});
+    if(!res.ok)return;
+    const next=await res.json();
+    if(!next||!Array.isArray(next.celdas)||!next.celdas.length)return;
+    HISTORICAL=next;
+    rebuildFromData();
+    renderFilters();
+    renderAll();
+  }catch(e){
+    // Mantiene la vista mensual si el archivo histórico aún no fue publicado.
+  }
+}
 rebuildFromData();
-renderControls();renderAll();
-loadData();
+renderControls();renderFilters();renderAll();
+loadData();loadHistorical();
 setInterval(loadData, 5*60*1000);
+setInterval(loadHistorical, 10*60*1000);
 // en modo Auto, revisa cada minuto si cambio el turno por la hora (Lima) y re-renderiza
 let _turnoPrev=turnoActual();
 setInterval(()=>{

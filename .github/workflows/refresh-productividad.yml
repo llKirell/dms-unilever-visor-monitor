@@ -80,13 +80,24 @@ jobs:
           fi
           python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
 
+      - name: Export historical filters
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Secretos de Supabase no configurados; se omite el histórico público."
+            exit 0
+          fi
+          python productividad_pipeline/publicar_historial_dashboard.py --out productividad/historico_data.json
+
       - name: Commit refreshed JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add productividad/dash_data.json
+          git add productividad/dash_data.json productividad/historico_data.json
           if git diff --cached --quiet; then
-            echo "No hay cambios en dash_data.json"
+            echo "No hay cambios en los JSON de productividad"
             exit 0
           fi
           git commit -m "Refresca productividad W4W"
