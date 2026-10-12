@@ -230,8 +230,8 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
     d["peso_tn"]     = d["peso"].fillna(0) / 1000.0
 
     # tiempo de preparacion
-    ini = _to_datetime(df_raw[cols["fec_inicio"]])
-    fin = _to_datetime(df_raw[cols["fec_fin"]])
+    ini = _to_datetime(df_raw[cols["fec_inicio"]]) - pd.Timedelta(hours=5)
+    fin = _to_datetime(df_raw[cols["fec_fin"]]) - pd.Timedelta(hours=5)
     d["horas"] = (fin - ini).dt.total_seconds() / 3600.0
     d["t_real_min"] = d["horas"] * 60.0   # tiempo real en minutos (para eficiencia)
 
