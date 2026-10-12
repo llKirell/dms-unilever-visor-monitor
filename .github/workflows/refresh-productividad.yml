@@ -49,11 +49,14 @@ jobs:
         run: |
           python -m playwright install --with-deps chromium
           python productividad_pipeline/refresh_w4w_session.py --out "$RUNNER_TEMP/dinet_cookie.txt"
-          {
-            echo "DINET_W4W_COOKIE=$(cat \"$RUNNER_TEMP/dinet_cookie.txt\")"
-            echo "DINET_USER="
-            echo "DINET_PASSWORD="
-          } >> "$GITHUB_ENV"
+          COOKIE="$(tr -d '\r\n' < "$RUNNER_TEMP/dinet_cookie.txt")"
+          if [ -z "$COOKIE" ]; then
+            echo "No se genero la cookie W4W."
+            exit 1
+          fi
+          echo "DINET_W4W_COOKIE=$COOKIE" >> "$GITHUB_ENV"
+          echo "DINET_USER=" >> "$GITHUB_ENV"
+          echo "DINET_PASSWORD=" >> "$GITHUB_ENV"
 
       - name: Refresh productivity data
         run: |
