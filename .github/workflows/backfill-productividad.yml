@@ -69,7 +69,7 @@ jobs:
           for MONTH in $(seq "$START" "$END"); do
             PERIOD="$(printf '%04d-%02d' "$YEAR" "$MONTH")"
             echo "[INFO] Cargando $PERIOD"
-            python productividad_pipeline/refresh_productividad_online.py --month "$PERIOD"
+            python productividad_pipeline/refresh_productividad_online.py --month "$PERIOD" --publish-html
             python productividad_pipeline/publish_productividad_supabase.py --json productividad_pipeline/dash_data.json
           done
 
@@ -83,7 +83,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add productividad/dash_data.json productividad/historico_data.json
+          git add productividad/dash_data.json productividad/historico_data.json productividad/waretrack.html
           if git diff --cached --quiet; then
             echo "No hay cambios en los JSON de productividad"
             exit 0
