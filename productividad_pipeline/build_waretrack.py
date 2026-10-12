@@ -24,7 +24,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 
-def recompute() -> None:
+def recompute(operational_from: str = "", operational_to: str = "") -> None:
     cmd = [sys.executable, str(BASE_DIR / "motor_productividad.py"),
            "--tareas", str(BASE_DIR / "ReportTareas.xlsx"),
            "--maestro-usuario", str(BASE_DIR / "maestro_usuario.xlsx"),
@@ -36,6 +36,10 @@ def recompute() -> None:
         cmd.extend(["--flujo", str(flujo)])
         if maestro_articulo.exists():
             cmd.extend(["--maestro-articulo", str(maestro_articulo)])
+    if operational_from:
+        cmd.extend(["--operational-from", operational_from])
+    if operational_to:
+        cmd.extend(["--operational-to", operational_to])
     import os
     subprocess.check_call(cmd, env=dict(os.environ, PYTHONUTF8="1"))
 
@@ -641,10 +645,12 @@ def main() -> int:
     ap.add_argument("--json", default=str(BASE_DIR / "productividad.json"))
     ap.add_argument("--out", default=str(BASE_DIR / "waretrack.html"))
     ap.add_argument("--recompute", action="store_true", help="Corre el motor antes de construir.")
+    ap.add_argument("--operational-from", default="", help="Primer dia operativo YYYY-MM-DD.")
+    ap.add_argument("--operational-to", default="", help="Ultimo dia operativo YYYY-MM-DD.")
     args = ap.parse_args()
 
     if args.recompute:
-        recompute()
+        recompute(args.operational_from, args.operational_to)
 
     prod = json.loads(Path(args.json).read_text(encoding="utf-8"))
     dash = build_dash_data(prod)

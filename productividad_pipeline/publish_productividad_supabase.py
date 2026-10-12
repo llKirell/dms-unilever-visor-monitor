@@ -111,6 +111,11 @@ def delete_year(year: int) -> None:
         f"{base_url}/rest/v1/productividad_snapshots?anio=eq.{year}",
         headers,
     )
+    supabase_request(
+        "DELETE",
+        f"{base_url}/rest/v1/productividad_objetivos?anio=eq.{year}",
+        headers,
+    )
     print(f"[OK] Supabase: eliminado el histórico del año {year}")
 
 

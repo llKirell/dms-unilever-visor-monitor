@@ -19,7 +19,7 @@ import calendar
 import shutil
 import subprocess
 import sys
-from datetime import date
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -39,20 +39,22 @@ def run(cmd: list[str], *, cwd: Path = PIPELINE_DIR) -> None:
 
 def month_bounds(month: str, tz_name: str) -> tuple[date, date]:
     try:
-        today = __import__("datetime").datetime.now(ZoneInfo(tz_name)).date()
+        now = datetime.now(ZoneInfo(tz_name))
     except Exception:
-        today = date.today()
+        now = datetime.now()
+    today = now.date()
+    operational_today = today - timedelta(days=1) if now.hour < 7 else today
 
     if month:
         year, month_num = [int(part) for part in month.split("-", 1)]
         start = date(year, month_num, 1)
         if (today.year, today.month) == (year, month_num):
-            end = today
+            end = operational_today
         else:
             end = date(year, month_num, calendar.monthrange(year, month_num)[1])
         return start, end
 
-    return today.replace(day=1), today
+    return operational_today.replace(day=1), operational_today
 
 
 def main() -> int:
@@ -67,6 +69,17 @@ def main() -> int:
 
     start, end = month_bounds(args.month, args.timezone)
     print(f"[INFO] Rango operativo: {start}..{end}", flush=True)
+    if end < start:
+        print("[INFO] Aun no existe un dia operativo completo para el mes solicitado.", flush=True)
+        return 0
+
+    try:
+        calendar_today = datetime.now(ZoneInfo(args.timezone)).date()
+    except Exception:
+        calendar_today = date.today()
+    fetch_start = start - timedelta(days=1)
+    fetch_end = min(end + timedelta(days=1), calendar_today)
+    print(f"[INFO] Rango fuente W4W: {fetch_start}..{fetch_end}", flush=True)
 
     if not args.skip_fetch:
         if not os.getenv("DINET_W4W_COOKIE", "").strip():
@@ -75,9 +88,9 @@ def main() -> int:
             sys.executable,
             "fetch_tareas.py",
             "--desde",
-            start.isoformat(),
+            fetch_start.isoformat(),
             "--hasta",
-            end.isoformat(),
+            fetch_end.isoformat(),
             "--chunk-days",
             str(args.chunk_days),
             "--out",
@@ -93,7 +106,15 @@ def main() -> int:
     if not (PIPELINE_DIR / "ReportTareas.xlsx").exists():
         raise FileNotFoundError("No existe ReportTareas.xlsx para recalcular productividad.")
 
-    run([sys.executable, "build_waretrack.py", "--recompute"])
+    run([
+        sys.executable,
+        "build_waretrack.py",
+        "--recompute",
+        "--operational-from",
+        start.isoformat(),
+        "--operational-to",
+        end.isoformat(),
+    ])
 
     source_json = PIPELINE_DIR / "dash_data.json"
     source_html = PIPELINE_DIR / "waretrack.html"

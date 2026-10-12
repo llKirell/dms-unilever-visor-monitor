@@ -248,15 +248,15 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
         return "3° TURNO"
     d["turno_hora"] = ini.dt.hour.map(_turno_por_hora)
 
-    # fecha operativa (dia / mes) desde Fecha Tarea; fallback: fecha fin ejecucion
-    if "fecha_tarea" in cols:
-        fecha = _to_datetime(df_raw[cols["fecha_tarea"]])
-    else:
-        fecha = fin
-    fecha = fecha.fillna(fin)
-    d["fecha"] = fecha.dt.normalize()
-    d["dia"]   = fecha.dt.strftime("%Y-%m-%d")
-    d["mes"]   = fecha.dt.strftime("%Y-%m")
+    # Dia operativo: inicia a las 07:00 y termina a las 06:59 del calendario
+    # siguiente. La tarea se asigna por su inicio; asi el turno 3 completo queda
+    # en el mismo dia operativo en lugar de dividirse a medianoche.
+    fecha = ini.fillna(fin)
+    madrugada = fecha.dt.hour.lt(7).fillna(False)
+    fecha_operativa = fecha.dt.normalize() - pd.to_timedelta(madrugada.astype(int), unit="D")
+    d["fecha"] = fecha_operativa
+    d["dia"]   = fecha_operativa.dt.strftime("%Y-%m-%d")
+    d["mes"]   = fecha_operativa.dt.strftime("%Y-%m")
 
     # ------------------------------------------------------------------ #
     # CLASIFICACION UOM (NUEVA) -- pallet-move vs picking de detalle.
@@ -836,6 +836,8 @@ def main() -> int:
     ap.add_argument("--efic-c", type=float, default=None, help="Fijar coef. por visita.")
     ap.add_argument("--out-json", default="productividad.json")
     ap.add_argument("--out-xlsx", default="", help="Excel con una hoja por grano (opcional)")
+    ap.add_argument("--operational-from", default="", help="Primer dia operativo YYYY-MM-DD.")
+    ap.add_argument("--operational-to", default="", help="Ultimo dia operativo YYYY-MM-DD.")
     args = ap.parse_args()
 
     df_raw = read_any(args.tareas)
@@ -847,6 +849,14 @@ def main() -> int:
 
     df_prep = preparar_tareas(df_raw, maestro, umbral_pallet=args.umbral_pallet,
                               horas_max=args.horas_max)
+    operational_from = pd.to_datetime(args.operational_from).normalize() if args.operational_from else None
+    operational_to = pd.to_datetime(args.operational_to).normalize() if args.operational_to else None
+    if operational_from is not None and operational_to is not None and operational_from > operational_to:
+        raise ValueError("--operational-from no puede ser posterior a --operational-to.")
+    if operational_from is not None:
+        df_prep = df_prep.loc[df_prep["fecha"] >= operational_from].copy()
+    if operational_to is not None:
+        df_prep = df_prep.loc[df_prep["fecha"] <= operational_to].copy()
     resultado = calcular(df_prep, umbral_pallet=args.umbral_pallet,
                          efic_override=efic_override, flujo_raw=flujo,
                          maestro_articulo=m_articulo)

@@ -15,6 +15,10 @@ on:
         description: "Mes final (1-12)"
         required: true
         default: "10"
+      replace_year:
+        description: "Eliminar el histórico existente del año antes de recrearlo"
+        required: true
+        default: "false"
 
 permissions:
   contents: write
@@ -56,6 +60,10 @@ jobs:
           echo "DINET_W4W_COOKIE=$COOKIE" >> "$GITHUB_ENV"
           echo "DINET_USER=" >> "$GITHUB_ENV"
           echo "DINET_PASSWORD=" >> "$GITHUB_ENV"
+
+      - name: Replace yearly historical data
+        if: ${{ inputs.replace_year == 'true' }}
+        run: python productividad_pipeline/publish_productividad_supabase.py --delete-year "${{ inputs.year }}"
 
       - name: Load months into Supabase
         run: |
