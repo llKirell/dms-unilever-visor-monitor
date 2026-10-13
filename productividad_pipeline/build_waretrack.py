@@ -192,15 +192,18 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .rank-tn span{font-size:clamp(9px,.68vw,12px);color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .rank-ctrl{margin:0 clamp(14px,1.2vw,20px) clamp(6px,.8vh,10px);align-self:flex-start}
 .rank-ctrl button{padding:clamp(4px,.6vh,8px) clamp(8px,.8vw,14px);font-size:clamp(10px,.78vw,13px)}
+.rank-columns{display:grid;grid-template-columns:clamp(18px,1.3vw,26px) 1fr clamp(48px,3.6vw,74px) clamp(40px,3vw,58px);gap:9px;align-items:end;margin:0 clamp(10px,1vw,16px);padding:0 0 3px;color:var(--muted);font-size:clamp(8px,.62vw,11px);font-weight:800;text-transform:uppercase;letter-spacing:.35px}
+.rank-columns .prod,.rank-columns .hrs{text-align:right}
 .rank-list{flex:1;min-height:0;overflow-y:auto;padding:4px clamp(10px,1vw,16px) clamp(8px,1vh,12px)}
 .rank-list::-webkit-scrollbar{width:9px}
 .rank-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 /* filas del ranking (columna derecha): mas grandes, legibles de lejos */
 .rank-list .ranklist{gap:clamp(5px,.75vh,11px)}
-.rank-list .rankrow{grid-template-columns:clamp(18px,1.3vw,26px) 1fr clamp(48px,3.6vw,74px);gap:9px;font-size:clamp(10px,.8vw,14px)}
+.rank-list .rankrow{grid-template-columns:clamp(18px,1.3vw,26px) 1fr clamp(48px,3.6vw,74px) clamp(40px,3vw,58px);gap:9px;font-size:clamp(10px,.8vw,14px)}
 .rank-list .rankrow .mid .nm2{font-size:clamp(10px,.8vw,14px)}
 .rank-list .rankrow .mid .track{height:clamp(6px,.8vh,11px)}
 .rank-list .rankrow .vv{font-size:clamp(11px,.9vw,15px)}
+.rank-list .rankrow .hh{font-size:clamp(10px,.76vw,13px)}
 .rank-list .rankrow .rk{font-size:clamp(10px,.75vw,13px)}
 .empty{padding:22px 14px;color:var(--muted);text-align:center;font-size:clamp(12px,.9vw,15px)}
 /* barras de participacion (mix y familia) */
@@ -279,6 +282,7 @@ tbody tr:hover{background:var(--panel-2)}
 .track{height:9px;background:var(--panel-2);border-radius:999px;overflow:hidden}
 .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px}
 .rankrow .vv{text-align:right;font-weight:700}
+.rankrow .hh{text-align:right;font-weight:800;color:var(--muted);white-space:nowrap}
 .rankrow.status-green .fill{background:var(--accent-2)} .rankrow.status-yellow .fill{background:var(--warn)} .rankrow.status-red .fill{background:var(--bad)}
 .rankrow.status-green .vv{color:var(--accent-2)} .rankrow.status-yellow .vv{color:var(--warn)} .rankrow.status-red .vv{color:var(--bad)}
 .foot{margin-top:22px;font-size:11.5px;color:var(--muted);line-height:1.6}
@@ -329,6 +333,7 @@ tbody tr:hover{background:var(--panel-2)}
         <div class="rank-tn"><b id="rank-tn">0</b><span>Tn turno</span></div>
       </div>
       <div class="seg rank-ctrl" id="rank-ctrl"></div>
+      <div class="rank-columns"><span>#</span><span>Usuario</span><span class="prod">Prod.</span><span class="hrs">Hrs</span></div>
       <div class="rank-list" id="rank-list"></div>
     </div>
   </div>
@@ -674,7 +679,8 @@ function renderRanking(){
     <div class="rankrow status-${semaforo(u[m.key],target).key}"><div class="rk">${i+1}</div>
       <div class="mid"><div class="nm2" title="${u.usuario}">${u.usuario}</div>
         <div class="track"><div class="fill" style="width:${Math.max(2,(u[m.key]/max)*100)}%"></div></div></div>
-      <div class="vv" title="Eficiencia ${fmt(u.efic,0)}% · ${fmt(u.horas,0)} h">${fmt(u[m.key],m.dec)}</div></div>`).join("")+`</div>`;
+      <div class="vv" title="Eficiencia ${fmt(u.efic,0)}%">${fmt(u[m.key],m.dec)}</div>
+      <div class="hh">${fmt(u.horas,1)} h</div></div>`).join("")+`</div>`;
 }
 function renderRankCtrl(){
   const opts=[["auto","Auto"],["1° TURNO","1°"],["2° TURNO","2°"],["3° TURNO","3°"],["top15","Top 15"]];
