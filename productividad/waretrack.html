@@ -506,6 +506,7 @@ function comboChart(svg, days, m, target){
   const slot=pw/n, bw=Math.min(slot*0.66,50);
   const xC=i=>L+slot*i+slot/2;
   const uni=m.unit.replace("/h","");
+  const totalLabel={unidades_productivas:"T.Unds",volumen_m3:"T.m³",peso_tn:"T.Tn",ubicaciones:"T.Ubic",tareas:"T.Tareas"}[m.key]||`T.${uni}`;
   let o=`<rect width="${W}" height="${H}" fill="transparent"/>`;
   // grilla + eje izq (tasa, tinta) + eje der (total, azul)
   for(let i=0;i<=4;i++){const y=T+ph*i/4;
@@ -531,9 +532,9 @@ function comboChart(svg, days, m, target){
   pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--ink)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${fmt(p[2].rate,m.dec)}</text>`;});
   // leyenda arriba-derecha
   const lx=W-R-370, ly=9;
-  o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
+  o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${totalLabel}</text>`;
   o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--ink)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent-2)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
-  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Objetivo</text>`;
+  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Obj</text>`;
   svg.innerHTML=o;
 }
 function renderTrend(){
