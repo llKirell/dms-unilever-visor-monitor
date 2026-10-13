@@ -70,6 +70,7 @@ def build_dash_data(prod: dict) -> dict:
         "comparativo": prod.get("comparativo"),
         "mix": prod.get("mix"),
         "por_familia": prod.get("por_familia", []),
+        "familias": prod.get("por_familia_dia", []),
         "celdas": celdas,
     }
 
@@ -323,6 +324,7 @@ tbody tr:hover{background:var(--panel-2)}
 let DATA = window.__EMBED__ || __DATA__;
 let HISTORICAL = null;
 let CELLS = [];
+let FAMILIAS = [];
 let MONTHS = [];
 let LATEST_M = "";
 let CUR_M = "";
@@ -341,6 +343,12 @@ function normalizeCells(data){
   ubicaciones:+c.ubicaciones||0, detalle:+c.detalle||0,
   t_std_min:+c.t_std_min||0, t_real_min:+c.t_real_min||0
 }));
+}
+function normalizeFamilias(data){
+  return (data?.familias||[]).map(row=>({
+    dia:row.dia, turno:row.turno||"SIN TURNO", familia:row.familia||"(SIN FAMILIA)",
+    cajas_sueltas:+row.cajas_sueltas||0, cajas:+row.cajas||0
+  }));
 }
 // Selector de métricas operativas normalizadas y de volumen.
 const METRICS = [
@@ -440,14 +448,12 @@ function renderTurnoMini(){
 }
 // Perfil de Pedidos: participacion caja vs pallet (como la nota) — fijo
 function renderMix(){
-  if(state.mes!==LATEST_M||state.period!=="mes"||state.turno!=="__ALL__"){
-    document.getElementById("mix-per").textContent="Mes actual";
-    document.getElementById("mix").innerHTML=`<div class="hint">El perfil de pedidos se muestra para el mes actual sin filtros.</div>`;
-    return;
-  }
-  const mx=DATA.mix||{};
-  const pc=+mx.pct_cajas||0, pp=+mx.pct_pallets||0;
-  const per=document.getElementById("mix-per"); if(per) per.textContent=PERIODO_LABEL;
+  const rows=filtered();
+  const cajas=rows.reduce((sum,row)=>sum+row.cajas,0);
+  const sueltas=rows.reduce((sum,row)=>sum+row.cajas_sueltas,0);
+  const pallet=Math.max(cajas-sueltas,0), total=sueltas+pallet;
+  const pc=total?sueltas/total*100:0, pp=total?pallet/total*100:0;
+  const per=document.getElementById("mix-per"); if(per) per.textContent=selectedPeriodLabel();
   document.getElementById("mix").innerHTML=`
     <div class="perfil">
       <div class="prow"><span class="pl">Caja</span><span class="pv">${fmt(pc,1)}%</span></div>
@@ -458,11 +464,20 @@ function renderMix(){
 }
 // participacion por familia (% de cajas sueltas) — fijo
 function renderFamilia(){
-  if(state.mes!==LATEST_M||state.period!=="mes"||state.turno!=="__ALL__"){
-    document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Disponible para el mes actual sin filtros</div>`;
-    return;
-  }
-  const fam=DATA.por_familia||[];
+  const dia=state.period==="dia"?state.dia:"__ALL__";
+  const grupos=new Map();
+  FAMILIAS.filter(row=>monthOf(row)===state.mes
+    && (dia==="__ALL__"||row.dia===dia)
+    && (state.turno==="__ALL__"||row.turno===state.turno))
+    .forEach(row=>{
+      const value=grupos.get(row.familia)||{familia:row.familia,cajas_sueltas:0,cajas:0};
+      value.cajas_sueltas+=row.cajas_sueltas;
+      value.cajas+=row.cajas;
+      grupos.set(row.familia,value);
+    });
+  const total=[...grupos.values()].reduce((sum,row)=>sum+row.cajas_sueltas,0);
+  const fam=[...grupos.values()].map(row=>({...row,pct:total?row.cajas_sueltas/total*100:0}))
+    .sort((a,b)=>b.cajas_sueltas-a.cajas_sueltas);
   if(!fam.length){document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Sin datos de familia</div>`;return;}
   const max=Math.max(...fam.map(f=>f.pct),1);
   document.getElementById("familia").innerHTML=fam.map((f,i)=>`
@@ -473,8 +488,14 @@ const MESES_ABBR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","N
 // --- mes actual vs mes anterior (comparacion) ---
 const monthOf = c => (c.dia||"").slice(0,7);
 function mesLabel(ym){ if(!ym) return ""; const [y,mo]=ym.split("-"); return `${MESES_ABBR[(+mo)-1]}-${y.slice(2)}`; }
+function selectedPeriodLabel(){
+  return state.period==="dia"&&state.dia!=="__ALL__" ? state.dia.split("-").reverse().join("/") : mesLabel(state.mes);
+}
 function rebuildFromData(){
-  CELLS = normalizeCells(HISTORICAL?.celdas?.length?HISTORICAL:DATA);
+  const source=HISTORICAL?.celdas?.length?HISTORICAL:DATA;
+  CELLS = normalizeCells(source);
+  FAMILIAS = normalizeFamilias(source);
+  if(!FAMILIAS.length&&source!==DATA) FAMILIAS=normalizeFamilias(DATA);
   MONTHS = [...new Set(CELLS.map(monthOf).filter(Boolean))].sort();
   LATEST_M = MONTHS[MONTHS.length-1] || "";
   if(!state.mes||!MONTHS.includes(state.mes)) state.mes=LATEST_M;

@@ -74,10 +74,17 @@ def main() -> int:
         f"anio=eq.{args.year}&select=metrica,turno,objetivo,amarillo_min,verde_min,horas_base,jornadas_base,criterio",
         headers,
     )
+    familias = read_pages(
+        base_url,
+        "productividad_familia_dia",
+        "anio=eq.{}&select=dia,turno,familia,cajas_sueltas,cajas&order=dia.asc,familia.asc".format(args.year),
+        headers,
+    )
     payload = {
         "anio": args.year,
         "actualizado_en": datetime.now(TIMEZONE).isoformat(),
         "celdas": cells,
+        "familias": familias,
         "objetivos": targets,
     }
     output = Path(args.out)

@@ -69,6 +69,28 @@ def publish(payload: dict) -> None:
             json=rows,
         )
 
+    family_rows = []
+    for family in payload.get("familias", []):
+        day = str(family.get("dia") or "")
+        if len(day) != 10:
+            continue
+        family_rows.append({
+            "anio": int(day[:4]),
+            "dia": day,
+            "turno": str(family.get("turno") or "SIN TURNO"),
+            "familia": str(family.get("familia") or "(SIN FAMILIA)"),
+            "cajas_sueltas": family.get("cajas_sueltas", 0),
+            "cajas": family.get("cajas", 0),
+            "actualizado_en": datetime.now(timezone.utc).isoformat(),
+        })
+    if family_rows:
+        supabase_request(
+            "POST",
+            f"{base_url}/rest/v1/productividad_familia_dia?on_conflict=anio,dia,turno,familia",
+            {**headers, "Prefer": "resolution=merge-duplicates,return=minimal"},
+            json=family_rows,
+        )
+
     meta = payload.get("meta") or {}
     rango = meta.get("rango_fechas") or [None, None]
     start, end = rango[0], rango[1]
@@ -94,7 +116,7 @@ def publish(payload: dict) -> None:
         {**headers, "Prefer": "resolution=merge-duplicates,return=minimal"},
         json=[snapshot],
     )
-    print(f"[OK] Supabase: {len(rows)} filas persona-dia, snapshot {snapshot_key}")
+    print(f"[OK] Supabase: {len(rows)} filas persona-dia, {len(family_rows)} filas familia-dia, snapshot {snapshot_key}")
 
 
 def delete_year(year: int) -> None:
@@ -114,6 +136,11 @@ def delete_year(year: int) -> None:
     supabase_request(
         "DELETE",
         f"{base_url}/rest/v1/productividad_objetivos?anio=eq.{year}",
+        headers,
+    )
+    supabase_request(
+        "DELETE",
+        f"{base_url}/rest/v1/productividad_familia_dia?anio=eq.{year}",
         headers,
     )
     print(f"[OK] Supabase: eliminado el histórico del año {year}")

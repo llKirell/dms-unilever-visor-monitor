@@ -723,6 +723,21 @@ def calcular(df_prep: pd.DataFrame, umbral_pallet: float = 60.0,
         fam_rows.sort(key=lambda x: x["cajas_sueltas"], reverse=True)
     resultado["por_familia"] = fam_rows
 
+    familia_dia_rows = []
+    if len(elig) and "familia" in elig.columns:
+        familia_dia = (elig.groupby(["dia", "turno", "familia"], dropna=False)[["cajas_sueltas", "cajas"]]
+                           .sum()
+                           .reset_index())
+        for _, r in familia_dia.iterrows():
+            familia_dia_rows.append({
+                "dia": str(r["dia"]),
+                "turno": str(r["turno"]),
+                "familia": str(r["familia"]),
+                "cajas_sueltas": round(float(r["cajas_sueltas"]), 2),
+                "cajas": round(float(r["cajas"]), 2),
+            })
+    resultado["por_familia_dia"] = familia_dia_rows
+
     # panel de excepciones
     exc = df_prep[~df_prep["elegible"]]
     resultado["excepciones"] = {
