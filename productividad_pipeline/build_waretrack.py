@@ -589,7 +589,8 @@ function comboChart(svg, days, m, target){
   if(!days.some(d=>d.total||d.rate!=null)){o+=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--muted)" font-size="18">Sin datos</text>`;svg.innerHTML=o;return;}
   // barras = total del dia; total escrito VERTICAL en la base (blanco con halo oscuro -> legible siempre)
   days.forEach((d,i)=>{const h=ph*(d.total/maxBar), x=xC(i)-bw/2, yTop=T+ph-h, yBase=T+ph;
-    o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="var(--accent)" opacity=".92"><title>${d.label}: ${fmt(d.total,0)} ${uni}</title></rect>`;
+    const status=semaforo(d.rate,target,d.rate!=null);
+    o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="${semaforoColor(status)}" opacity=".92"><title>${d.label}: ${fmt(d.total,0)} ${uni} · ${status.label}</title></rect>`;
     if(d.total>0){const ty=yBase-8;
       o+=`<text x="${xC(i)}" y="${ty}" text-anchor="start" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff" stroke="rgba(10,16,28,.6)" stroke-width="2.8" paint-order="stroke" stroke-linejoin="round" transform="rotate(-90 ${xC(i)} ${ty})">${fmt(d.total,0)}</text>`;}
     o+=`<text x="${xC(i)}" y="${yBase+10}" text-anchor="end" font-size="14.5" font-weight="800" fill="var(--ink)" transform="rotate(-90 ${xC(i)} ${yBase+10})">${d.label}</text>`;});
@@ -598,17 +599,16 @@ function comboChart(svg, days, m, target){
   if(target?.objetivo){
     const goalY=yR(target.objetivo);
     o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="9 7" opacity=".9"/>`;
-    o+=`<text x="${W-R-4}" y="${goalY-7}" text-anchor="end" font-size="14" fill="var(--accent-2)" font-weight="800">Meta ${fmt(target.objetivo,m.dec)}</text>`;
   }
   const pts=days.map((d,i)=>d.rate==null?null:[xC(i),yR(d.rate),d]).filter(Boolean);
   if(pts.length>1)o+=`<path d="${smoothPath(pts)}" fill="none" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
   pts.forEach((p,i)=>{const status=semaforo(p[2].rate,target,true);o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${semaforoColor(status)}" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].rate,m.dec)} ${m.unit} · ${status.label}</title></circle>`;});
   pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--ink)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${fmt(p[2].rate,m.dec)}</text>`;});
   // leyenda arriba-derecha
-  const lx=W-R-240, ly=2;
-  o+=`<rect x="${lx}" y="${ly}" width="18" height="18" rx="3" fill="var(--accent)"/><text x="${lx+25}" y="${ly+15}" font-size="16" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
-  o+=`<line x1="${lx+160}" y1="${ly+9}" x2="${lx+196}" y2="${ly+9}" stroke="var(--ink)" stroke-width="3.5"/><circle cx="${lx+178}" cy="${ly+9}" r="5" fill="var(--accent-2)"/><text x="${lx+204}" y="${ly+15}" font-size="16" fill="var(--ink)" font-weight="800">${m.label}</text>`;
-  if(target?.objetivo)o+=`<line x1="${lx}" y1="${ly+32}" x2="${lx+34}" y2="${ly+32}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+42}" y="${ly+37}" font-size="14" fill="var(--accent-2)" font-weight="800">Meta ${fmt(target.objetivo,m.dec)} ${m.unit}</text>`;
+  const lx=W-R-370, ly=9;
+  o+=`<rect x="${lx}" y="${ly-8}" width="5" height="16" rx="2" fill="var(--bad)"/><rect x="${lx+5}" y="${ly-8}" width="5" height="16" fill="var(--warn)"/><rect x="${lx+10}" y="${ly-8}" width="6" height="16" rx="2" fill="var(--accent-2)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
+  o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--ink)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent-2)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
+  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Objetivo</text>`;
   svg.innerHTML=o;
 }
 function renderTrend(){
@@ -617,7 +617,7 @@ function renderTrend(){
   const g=groupBy(base,"dia");
   const keys=[...g.keys()].sort();
   const target=targetFor(m.key);
-  document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}${target?` · Meta ${fmt(target.objetivo,m.dec)}`:""}`;
+  document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}`;
   if(!keys.length){comboChart(document.getElementById("trend"),[],m,target);return;}
   const mm=keys[keys.length-1].split("-")[1], mesAb=MESES_ABBR[(+mm)-1];
   const maxDay=Math.max(...keys.map(k=>+k.split("-")[2]));
