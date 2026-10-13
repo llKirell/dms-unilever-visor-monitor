@@ -145,6 +145,16 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .kpi.hero{border-left:5px solid var(--accent);display:flex;flex-direction:column;justify-content:center;padding:clamp(8px,1.3vh,16px) clamp(12px,1.1vw,18px);height:100%}
 .kpi.hero .k{font-size:clamp(9px,.65vw,12px)}
 .kpi.hero .v{font-size:clamp(24px,2.6vw,42px)}
+.kpi.hero.status-green{border-left-color:var(--accent-2)}
+.kpi.hero.status-yellow{border-left-color:var(--warn)}
+.kpi.hero.status-red{border-left-color:var(--bad)}
+.goal{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:clamp(6px,.8vh,10px);padding-top:clamp(5px,.7vh,8px);border-top:1px solid var(--line);font-size:clamp(9px,.68vw,12px);font-weight:700;color:var(--muted)}
+.goal b{font-size:clamp(12px,.9vw,16px);color:var(--ink)}
+.goal .goal-state{border-radius:999px;padding:2px 7px;font-size:clamp(8px,.62vw,11px);font-weight:800}
+.goal.green .goal-state{color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 16%,transparent)}
+.goal.yellow .goal-state{color:var(--warn);background:color-mix(in srgb,var(--warn) 18%,transparent)}
+.goal.red .goal-state{color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent)}
+.goal.neutral .goal-state{color:var(--muted);background:var(--panel-2)}
 /* === LAYOUT: izquierda (banda + tendencia) | derecha (ranking a toda altura) === */
 .layout{display:grid;grid-template-columns:1fr clamp(340px,34vw,640px);gap:clamp(8px,1vw,16px);min-height:0}
 .left{display:grid;grid-template-rows:auto 1fr;gap:clamp(8px,1.1vh,14px);min-height:0}
@@ -159,6 +169,7 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .mini:nth-child(3){border-left-color:var(--warn)}
 .mini .mk2{font-size:clamp(8px,.6vw,11px);font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
 .mini .mv{font-size:clamp(14px,1.4vw,22px);font-weight:800;line-height:1.05;margin-top:1px}
+.mini.status-green .mv{color:var(--accent-2)} .mini.status-yellow .mv{color:var(--warn)} .mini.status-red .mv{color:var(--bad)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;min-height:0;display:flex;flex-direction:column}
 .card.ranking{height:100%}
 .card.trend .body,.card.compact .body{flex:1;min-height:0}
@@ -266,6 +277,8 @@ tbody tr:hover{background:var(--panel-2)}
 .track{height:9px;background:var(--panel-2);border-radius:999px;overflow:hidden}
 .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px}
 .rankrow .vv{text-align:right;font-weight:700}
+.rankrow.status-green .fill{background:var(--accent-2)} .rankrow.status-yellow .fill{background:var(--warn)} .rankrow.status-red .fill{background:var(--bad)}
+.rankrow.status-green .vv{color:var(--accent-2)} .rankrow.status-yellow .vv{color:var(--warn)} .rankrow.status-red .vv{color:var(--bad)}
 .foot{margin-top:22px;font-size:11.5px;color:var(--muted);line-height:1.6}
 @media(min-width:820px){.cols.two{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){header.app{flex-wrap:wrap}.header-filters{order:3;width:100%}.header-filters select{width:30vw}}
@@ -325,6 +338,7 @@ let DATA = window.__EMBED__ || __DATA__;
 let HISTORICAL = null;
 let CELLS = [];
 let FAMILIAS = [];
+let OBJETIVOS = [];
 let MONTHS = [];
 let LATEST_M = "";
 let CUR_M = "";
@@ -348,6 +362,13 @@ function normalizeFamilias(data){
   return (data?.familias||[]).map(row=>({
     dia:row.dia, turno:row.turno||"SIN TURNO", familia:row.familia||"(SIN FAMILIA)",
     cajas_sueltas:+row.cajas_sueltas||0, cajas:+row.cajas||0
+  }));
+}
+function normalizeObjetivos(data){
+  return (data?.objetivos||[]).map(row=>({
+    metrica:row.metrica, turno:String(row.turno||"TODOS").toUpperCase(),
+    objetivo:+row.objetivo||0, amarillo_min:+row.amarillo_min||0,
+    verde_min:+row.verde_min||(+row.objetivo||0)
   }));
 }
 // Selector de métricas operativas normalizadas y de volumen.
@@ -382,6 +403,21 @@ const metricDef=()=>METRICS.find(m=>m.key===state.metric);
 function rateOf(rows, m){
   if(m.key==="efic"){const ts=rows.reduce((a,r)=>a+r.t_std_min,0),tr=rows.reduce((a,r)=>a+r.t_real_min,0);return tr>0?ts/tr*100:0;}
   const num=rows.reduce((a,r)=>a+r[m.num],0),h=rows.reduce((a,r)=>a+r.horas,0);return h>0?num/h:0;
+}
+function targetFor(metricKey){
+  return OBJETIVOS.find(row=>row.metrica===metricKey&&row.turno==="TODOS")
+    || OBJETIVOS.find(row=>row.metrica===metricKey)
+    || null;
+}
+function semaforo(value, target, hasData=true){
+  if(!hasData)return {key:"neutral",label:"Sin datos"};
+  if(!target||!target.objetivo)return {key:"neutral",label:"Meta no disponible"};
+  if(value>=target.verde_min)return {key:"green",label:"En meta"};
+  if(value>=target.amarillo_min)return {key:"yellow",label:"En observación"};
+  return {key:"red",label:"Bajo meta"};
+}
+function semaforoColor(status){
+  return status.key==="green"?"var(--accent-2)":status.key==="yellow"?"var(--warn)":status.key==="red"?"var(--bad)":"var(--muted)";
 }
 function filtered(){
   const dia=state.period==="dia"?state.dia:"__ALL__";
@@ -426,11 +462,15 @@ function renderFilters(){
 }
 function renderKpis(){
   const m=metricDef();
-  const main=rateOf(filtered(),m);
+  const rows=filtered();
+  const main=rateOf(rows,m);
+  const target=targetFor(m.key);
+  const status=semaforo(main,target,rows.length>0);
   const badge=state.period==="mes"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
   document.getElementById("kpis").innerHTML=
-    `<div class="kpi hero"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
-    (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+`</div>`;
+    `<div class="kpi hero status-${status.key}"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
+    (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+
+    `<div class="goal ${status.key}"><span>Objetivo</span><b>${target?fmt(target.objetivo,m.dec):"—"}</b><span class="goal-state">${status.label}</span></div></div>`;
 }
 // mini tarjetas por turno — resalta el turno activo (o el seleccionado) + delta vs mes anterior
 function renderTurnoMini(){
@@ -438,10 +478,13 @@ function renderTurnoMini(){
   const turnos=["1° TURNO","2° TURNO","3° TURNO"];
   const base=filtered();
   const foco=state.turno!=="__ALL__"?state.turno:(state.rankMode==="auto"?turnoActual():(state.rankMode==="top15"?turnoActual():state.rankMode));
+  const target=targetFor(m.key);
   const html=turnos.map(t=>{
-    const v=rateOf(base.filter(r=>r.turno===t),m);
+    const rows=base.filter(r=>r.turno===t);
+    const v=rateOf(rows,m);
+    const status=semaforo(v,target,rows.length>0);
     const badge=state.period==="mes"?deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m)):"";
-    return `<div class="mini ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
+    return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
            (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
   }).join("");
   document.getElementById("turno-mini").innerHTML=html;
@@ -496,6 +539,8 @@ function rebuildFromData(){
   CELLS = normalizeCells(source);
   FAMILIAS = normalizeFamilias(source);
   if(!FAMILIAS.length&&source!==DATA) FAMILIAS=normalizeFamilias(DATA);
+  OBJETIVOS = normalizeObjetivos(source);
+  if(!OBJETIVOS.length&&source!==DATA) OBJETIVOS=normalizeObjetivos(DATA);
   MONTHS = [...new Set(CELLS.map(monthOf).filter(Boolean))].sort();
   LATEST_M = MONTHS[MONTHS.length-1] || "";
   if(!state.mes||!MONTHS.includes(state.mes)) state.mes=LATEST_M;
@@ -527,11 +572,11 @@ function smoothPath(pts, t=0.18){
 }
 function kfmt(v){v=+v||0; return v>=1000?(v/1000).toLocaleString("es-PE",{maximumFractionDigits:0})+"k":v.toLocaleString("es-PE",{maximumFractionDigits:0});}
 // Combo: BARRAS = total del dia (volumen) · LINEA = productividad (tasa/h). Colores de marca.
-function comboChart(svg, days, m){
+function comboChart(svg, days, m, target){
   const W=1000,H=600,L=64,R=72,T=46,B=98,pw=W-L-R,ph=H-T-B;
   const n=days.length||1;
   const maxBar=Math.max(...days.map(d=>d.total),1);
-  const maxRate=Math.max(...days.map(d=>d.rate||0),1);
+  const maxRate=Math.max(...days.map(d=>d.rate||0),target?.objetivo||0,1);
   const slot=pw/n, bw=Math.min(slot*0.66,50);
   const xC=i=>L+slot*i+slot/2;
   const uni=m.unit.replace("/h","");
@@ -550,14 +595,20 @@ function comboChart(svg, days, m){
     o+=`<text x="${xC(i)}" y="${yBase+10}" text-anchor="end" font-size="14.5" font-weight="800" fill="var(--ink)" transform="rotate(-90 ${xC(i)} ${yBase+10})">${d.label}</text>`;});
   // linea = productividad (tasa) con valores (halo del color del panel para que no los tape la linea)
   const yR=v=>T+ph-(v/maxRate)*ph;
+  if(target?.objetivo){
+    const goalY=yR(target.objetivo);
+    o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="9 7" opacity=".9"/>`;
+    o+=`<text x="${W-R-4}" y="${goalY-7}" text-anchor="end" font-size="14" fill="var(--accent-2)" font-weight="800">Meta ${fmt(target.objetivo,m.dec)}</text>`;
+  }
   const pts=days.map((d,i)=>d.rate==null?null:[xC(i),yR(d.rate),d]).filter(Boolean);
   if(pts.length>1)o+=`<path d="${smoothPath(pts)}" fill="none" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  pts.forEach((p,i)=>{o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--accent-2)" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].rate,m.dec)} ${m.unit}</title></circle>`;});
+  pts.forEach((p,i)=>{const status=semaforo(p[2].rate,target,true);o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${semaforoColor(status)}" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].rate,m.dec)} ${m.unit} · ${status.label}</title></circle>`;});
   pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--ink)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${fmt(p[2].rate,m.dec)}</text>`;});
   // leyenda arriba-derecha
   const lx=W-R-240, ly=2;
   o+=`<rect x="${lx}" y="${ly}" width="18" height="18" rx="3" fill="var(--accent)"/><text x="${lx+25}" y="${ly+15}" font-size="16" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
   o+=`<line x1="${lx+160}" y1="${ly+9}" x2="${lx+196}" y2="${ly+9}" stroke="var(--ink)" stroke-width="3.5"/><circle cx="${lx+178}" cy="${ly+9}" r="5" fill="var(--accent-2)"/><text x="${lx+204}" y="${ly+15}" font-size="16" fill="var(--ink)" font-weight="800">${m.label}</text>`;
+  if(target?.objetivo)o+=`<line x1="${lx}" y1="${ly+32}" x2="${lx+34}" y2="${ly+32}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+42}" y="${ly+37}" font-size="14" fill="var(--accent-2)" font-weight="800">Meta ${fmt(target.objetivo,m.dec)} ${m.unit}</text>`;
   svg.innerHTML=o;
 }
 function renderTrend(){
@@ -565,8 +616,9 @@ function renderTrend(){
   const base=trendFiltered();
   const g=groupBy(base,"dia");
   const keys=[...g.keys()].sort();
-  document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}`;
-  if(!keys.length){comboChart(document.getElementById("trend"),[],m);return;}
+  const target=targetFor(m.key);
+  document.getElementById("trend-title").textContent=`Tendencia diaria · ${m.label}${target?` · Meta ${fmt(target.objetivo,m.dec)}`:""}`;
+  if(!keys.length){comboChart(document.getElementById("trend"),[],m,target);return;}
   const mm=keys[keys.length-1].split("-")[1], mesAb=MESES_ABBR[(+mm)-1];
   const maxDay=Math.max(...keys.map(k=>+k.split("-")[2]));
   const byDay={}; keys.forEach(k=>byDay[+k.split("-")[2]]=g.get(k));
@@ -577,7 +629,7 @@ function renderTrend(){
       ? {label:`${d}-${mesAb}`, total:rows.reduce((a,r)=>a+r[m.num],0), rate:rateOf(rows,m)}
       : {label:`${d}-${mesAb}`, total:0, rate:null});
   }
-  comboChart(document.getElementById("trend"),days,m);
+  comboChart(document.getElementById("trend"),days,m,target);
 }
 // Usuarios de un conjunto de celdas (una tarjeta de turno), con su tasa por metrica.
 function usersFrom(rows){
@@ -614,8 +666,9 @@ function renderRanking(){
   const list=document.getElementById("rank-list");
   if(!users.length){list.innerHTML=`<div class="empty">Iniciando turno · aún sin tareas registradas</div>`;return;}
   const max=Math.max(...users.map(u=>u[m.key]),1);
+  const target=targetFor(m.key);
   list.innerHTML=`<div class="ranklist">`+users.map((u,i)=>`
-    <div class="rankrow"><div class="rk">${i+1}</div>
+    <div class="rankrow status-${semaforo(u[m.key],target).key}"><div class="rk">${i+1}</div>
       <div class="mid"><div class="nm2" title="${u.usuario}">${u.usuario}</div>
         <div class="track"><div class="fill" style="width:${Math.max(2,(u[m.key]/max)*100)}%"></div></div></div>
       <div class="vv" title="Eficiencia ${fmt(u.efic,0)}% · ${fmt(u.horas,0)} h">${fmt(u[m.key],m.dec)}</div></div>`).join("")+`</div>`;
