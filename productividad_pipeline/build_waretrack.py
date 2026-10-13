@@ -170,6 +170,8 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .mini .mk2{font-size:clamp(8px,.6vw,11px);font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
 .mini .mv{font-size:clamp(14px,1.4vw,22px);font-weight:800;line-height:1.05;margin-top:1px}
 .mini.status-green .mv{color:var(--accent-2)} .mini.status-yellow .mv{color:var(--warn)} .mini.status-red .mv{color:var(--bad)}
+.mini-goal{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:4px;padding-top:3px;border-top:2px dashed var(--accent-2);font-size:clamp(8px,.6vw,10px);font-weight:800;color:var(--muted)}
+.mini-goal b{font-size:clamp(9px,.68vw,12px);color:var(--accent-2)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;min-height:0;display:flex;flex-direction:column}
 .card.ranking{height:100%}
 .card.trend .body,.card.compact .body{flex:1;min-height:0}
@@ -485,6 +487,7 @@ function renderTurnoMini(){
     const status=semaforo(v,target,rows.length>0);
     const badge=state.period==="mes"?deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m)):"";
     return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
+           (target?`<div class="mini-goal"><span>Objetivo</span><b>${fmt(target.objetivo,m.dec)}</b></div>`:``)+
            (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
   }).join("");
   document.getElementById("turno-mini").innerHTML=html;
@@ -589,8 +592,7 @@ function comboChart(svg, days, m, target){
   if(!days.some(d=>d.total||d.rate!=null)){o+=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--muted)" font-size="18">Sin datos</text>`;svg.innerHTML=o;return;}
   // barras = total del dia; total escrito VERTICAL en la base (blanco con halo oscuro -> legible siempre)
   days.forEach((d,i)=>{const h=ph*(d.total/maxBar), x=xC(i)-bw/2, yTop=T+ph-h, yBase=T+ph;
-    const status=semaforo(d.rate,target,d.rate!=null);
-    o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="${semaforoColor(status)}" opacity=".92"><title>${d.label}: ${fmt(d.total,0)} ${uni} · ${status.label}</title></rect>`;
+    o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="var(--accent)" opacity=".92"><title>${d.label}: ${fmt(d.total,0)} ${uni}</title></rect>`;
     if(d.total>0){const ty=yBase-8;
       o+=`<text x="${xC(i)}" y="${ty}" text-anchor="start" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff" stroke="rgba(10,16,28,.6)" stroke-width="2.8" paint-order="stroke" stroke-linejoin="round" transform="rotate(-90 ${xC(i)} ${ty})">${fmt(d.total,0)}</text>`;}
     o+=`<text x="${xC(i)}" y="${yBase+10}" text-anchor="end" font-size="14.5" font-weight="800" fill="var(--ink)" transform="rotate(-90 ${xC(i)} ${yBase+10})">${d.label}</text>`;});
@@ -606,7 +608,7 @@ function comboChart(svg, days, m, target){
   pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--ink)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${fmt(p[2].rate,m.dec)}</text>`;});
   // leyenda arriba-derecha
   const lx=W-R-370, ly=9;
-  o+=`<rect x="${lx}" y="${ly-8}" width="5" height="16" rx="2" fill="var(--bad)"/><rect x="${lx+5}" y="${ly-8}" width="5" height="16" fill="var(--warn)"/><rect x="${lx+10}" y="${ly-8}" width="6" height="16" rx="2" fill="var(--accent-2)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
+  o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Total ${uni}</text>`;
   o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--ink)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent-2)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
   if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Objetivo</text>`;
   svg.innerHTML=o;
