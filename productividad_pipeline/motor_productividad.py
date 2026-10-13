@@ -230,8 +230,14 @@ def preparar_tareas(df_raw: pd.DataFrame, maestro_usuario: pd.DataFrame | None =
     d["peso_tn"]     = d["peso"].fillna(0) / 1000.0
 
     # tiempo de preparacion
-    ini = _to_datetime(df_raw[cols["fec_inicio"]]) - pd.Timedelta(hours=5)
-    fin = _to_datetime(df_raw[cols["fec_fin"]]) - pd.Timedelta(hours=5)
+    ini_fuente = _to_datetime(df_raw[cols["fec_inicio"]])
+    fin_fuente = _to_datetime(df_raw[cols["fec_fin"]])
+    ini = ini_fuente - pd.Timedelta(hours=5)
+    fin = fin_fuente - pd.Timedelta(hours=5)
+    d["inicio_fuente"] = ini_fuente
+    d["fin_fuente"] = fin_fuente
+    d["inicio_lima"] = ini
+    d["fin_lima"] = fin
     d["horas"] = (fin - ini).dt.total_seconds() / 3600.0
     d["t_real_min"] = d["horas"] * 60.0   # tiempo real en minutos (para eficiencia)
 
@@ -856,6 +862,8 @@ def main() -> int:
     ap.add_argument("--efic-c", type=float, default=None, help="Fijar coef. por visita.")
     ap.add_argument("--out-json", default="productividad.json")
     ap.add_argument("--out-xlsx", default="", help="Excel con una hoja por grano (opcional)")
+    ap.add_argument("--out-audit", default="", help="CSV de auditoria por tarea (opcional)")
+    ap.add_argument("--audit-user", default="", help="Usuario opcional para limitar el CSV de auditoria.")
     ap.add_argument("--operational-from", default="", help="Primer dia operativo YYYY-MM-DD.")
     ap.add_argument("--operational-to", default="", help="Ultimo dia operativo YYYY-MM-DD.")
     args = ap.parse_args()
@@ -873,10 +881,22 @@ def main() -> int:
     operational_to = pd.to_datetime(args.operational_to).normalize() if args.operational_to else None
     if operational_from is not None and operational_to is not None and operational_from > operational_to:
         raise ValueError("--operational-from no puede ser posterior a --operational-to.")
+    df_prep["en_rango_operativo"] = True
     if operational_from is not None:
-        df_prep = df_prep.loc[df_prep["fecha"] >= operational_from].copy()
+        df_prep["en_rango_operativo"] &= df_prep["fecha"] >= operational_from
     if operational_to is not None:
-        df_prep = df_prep.loc[df_prep["fecha"] <= operational_to].copy()
+        df_prep["en_rango_operativo"] &= df_prep["fecha"] <= operational_to
+    if args.out_audit:
+        audit_cols = ["nro_tarea", "nro_picking", "usuario", "estado", "inicio_fuente",
+                      "fin_fuente", "inicio_lima", "fin_lima", "dia", "turno", "cajas",
+                      "horas", "elegible", "en_rango_operativo", "motivo_exclusion"]
+        audit = df_prep[audit_cols].copy()
+        audit["incluida_kpi"] = audit["elegible"] & audit["en_rango_operativo"]
+        if args.audit_user:
+            audit = audit.loc[audit["usuario"].eq(args.audit_user.strip())]
+        audit.to_csv(args.out_audit, index=False, encoding="utf-8-sig")
+        print(f"[OK] Auditoria -> {args.out_audit} ({len(audit)} tareas)")
+    df_prep = df_prep.loc[df_prep["en_rango_operativo"]].copy()
     resultado = calcular(df_prep, umbral_pallet=args.umbral_pallet,
                          efic_override=efic_override, flujo_raw=flujo,
                          maestro_articulo=m_articulo)

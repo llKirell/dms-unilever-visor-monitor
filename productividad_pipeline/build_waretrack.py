@@ -24,7 +24,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 
-def recompute(operational_from: str = "", operational_to: str = "") -> None:
+def recompute(operational_from: str = "", operational_to: str = "",
+              audit_out: str = "", audit_user: str = "") -> None:
     cmd = [sys.executable, str(BASE_DIR / "motor_productividad.py"),
            "--tareas", str(BASE_DIR / "ReportTareas.xlsx"),
            "--maestro-usuario", str(BASE_DIR / "maestro_usuario.xlsx"),
@@ -40,6 +41,10 @@ def recompute(operational_from: str = "", operational_to: str = "") -> None:
         cmd.extend(["--operational-from", operational_from])
     if operational_to:
         cmd.extend(["--operational-to", operational_to])
+    if audit_out:
+        cmd.extend(["--out-audit", audit_out])
+    if audit_user:
+        cmd.extend(["--audit-user", audit_user])
     import os
     subprocess.check_call(cmd, env=dict(os.environ, PYTHONUTF8="1"))
 
@@ -748,10 +753,12 @@ def main() -> int:
     ap.add_argument("--recompute", action="store_true", help="Corre el motor antes de construir.")
     ap.add_argument("--operational-from", default="", help="Primer dia operativo YYYY-MM-DD.")
     ap.add_argument("--operational-to", default="", help="Ultimo dia operativo YYYY-MM-DD.")
+    ap.add_argument("--audit-out", default="", help="CSV de auditoria por tarea (opcional).")
+    ap.add_argument("--audit-user", default="", help="Usuario opcional para limitar la auditoria.")
     args = ap.parse_args()
 
     if args.recompute:
-        recompute(args.operational_from, args.operational_to)
+        recompute(args.operational_from, args.operational_to, args.audit_out, args.audit_user)
 
     prod = json.loads(Path(args.json).read_text(encoding="utf-8"))
     dash = build_dash_data(prod)

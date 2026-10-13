@@ -65,6 +65,7 @@ def main() -> int:
     parser.add_argument("--skip-fetch", action="store_true", help="Usa ReportTareas.xlsx existente.")
     parser.add_argument("--set-context", action="store_true", help="Fuerza contexto HUACHIPA/UNILEVER antes de consultar.")
     parser.add_argument("--publish-html", action="store_true", help="Tambien reemplaza waretrack.html publico.")
+    parser.add_argument("--audit-user", default="", help="Usuario opcional para generar auditoria por tarea.")
     args = parser.parse_args()
 
     start, end = month_bounds(args.month, args.timezone)
@@ -114,6 +115,9 @@ def main() -> int:
         start.isoformat(),
         "--operational-to",
         end.isoformat(),
+        "--audit-out",
+        str(PIPELINE_DIR / "auditoria_tareas.csv"),
+    ] + (["--audit-user", args.audit_user] if args.audit_user else []) + [
     ])
 
     source_json = PIPELINE_DIR / "dash_data.json"

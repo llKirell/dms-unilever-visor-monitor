@@ -11,6 +11,10 @@ on:
         description: "Usar ReportTareas.xlsx existente en el repo, sin consultar W4W."
         required: false
         default: "false"
+      audit_user:
+        description: "Usuario opcional para generar auditoria privada por tarea."
+        required: false
+        default: ""
   schedule:
     # GitHub Actions usa UTC; cada 10 minutos se refresca el mes actual.
     - cron: "*/10 * * * *"
@@ -54,6 +58,7 @@ jobs:
             echo "No se genero la cookie W4W."
             exit 1
           fi
+          echo "::add-mask::$COOKIE"
           echo "DINET_W4W_COOKIE=$COOKIE" >> "$GITHUB_ENV"
           echo "DINET_USER=" >> "$GITHUB_ENV"
           echo "DINET_PASSWORD=" >> "$GITHUB_ENV"
@@ -67,7 +72,19 @@ jobs:
           if [ "${{ github.event.inputs.skip_fetch }}" = "true" ]; then
             ARGS="$ARGS --skip-fetch"
           fi
+          if [ "${{ github.event.inputs.audit_user }}" != "" ]; then
+            ARGS="$ARGS --audit-user ${{ github.event.inputs.audit_user }}"
+          fi
           python productividad_pipeline/refresh_productividad_online.py $ARGS --publish-html
+
+      - name: Upload private task audit
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.audit_user != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-productividad-${{ github.run_id }}
+          path: productividad_pipeline/auditoria_tareas.csv
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Archive productivity in Supabase
         env:
