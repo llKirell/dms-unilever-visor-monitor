@@ -157,6 +157,7 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .rank-list .rankrow .mid .track{height:clamp(6px,.8vh,11px)}
 .rank-list .rankrow .vv{font-size:clamp(11px,.9vw,15px)}
 .rank-list .rankrow .hh{font-size:clamp(10px,.76vw,13px)}
+.rank-list .rankrow .hh.strong{color:var(--ink);font-weight:800}
 .rank-list .rankrow .rk{font-size:clamp(10px,.75vw,13px)}
 .empty{padding:22px 14px;color:var(--muted);text-align:center;font-size:clamp(12px,.9vw,15px)}
 /* barras de participacion (mix y familia) */
@@ -637,6 +638,13 @@ function usersFrom(rows){
 function rankData(){
   const m=metricDef();
   const base=filtered();
+  if(state.rankMode==="horas"){
+    const dia=state.period==="dia"?state.dia:"__ALL__";
+    const all=CUR.filter(r=>dia==="__ALL__"||r.dia===dia);   // todos los turnos, sin importar el turno ni Auto
+    const users=usersFrom(all).sort((a,b)=>b.horas-a.horas);
+    return {titulo:"Por horas", sub:`Todos los turnos · ${users.length} oper.`,
+            tn:all.reduce((a,r)=>a+r.peso_tn,0), users, m, sortKey:"horas"};
+  }
   if(state.rankMode==="top15"){
     const users=usersFrom(base).sort((a,b)=>b[m.key]-a[m.key]).slice(0,15);
     return {titulo:"Top 15 general", sub:`Los 15 más productivos · ${m.label}`,
@@ -649,23 +657,27 @@ function rankData(){
   return {titulo:t, sub, tn:rows.reduce((a,r)=>a+r.peso_tn,0), users, m};
 }
 function renderRanking(){
-  const {titulo,sub,tn,users,m}=rankData();
+  const {titulo,sub,tn,users,m,sortKey}=rankData();
+  const byHoras=sortKey==="horas";
   document.getElementById("rank-turno").textContent=titulo;
   document.getElementById("rank-sub").textContent=sub;
   document.getElementById("rank-tn").textContent=fmt(tn,1);
   const list=document.getElementById("rank-list");
   if(!users.length){list.innerHTML=`<div class="empty">Iniciando turno · aún sin tareas registradas</div>`;return;}
-  const max=Math.max(...users.map(u=>u[m.key]),1);
+  const max=Math.max(...users.map(u=>byHoras?u.horas:u[m.key]),1);
   const target=targetFor(m.key);
-  list.innerHTML=`<div class="ranklist">`+users.map((u,i)=>`
-    <div class="rankrow status-${semaforo(u[m.key],target).key}"><div class="rk">${i+1}</div>
+  list.innerHTML=`<div class="ranklist">`+users.map((u,i)=>{
+    const barVal=byHoras?u.horas:u[m.key];
+    const st=byHoras?"":` status-${semaforo(u[m.key],target).key}`;
+    return `
+    <div class="rankrow${st}"><div class="rk">${i+1}</div>
       <div class="mid"><div class="nm2" title="${u.usuario}">${u.usuario}</div>
-        <div class="track"><div class="fill" style="width:${Math.max(2,(u[m.key]/max)*100)}%"></div></div></div>
+        <div class="track"><div class="fill" style="width:${Math.max(2,(barVal/max)*100)}%"></div></div></div>
       <div class="vv" title="Eficiencia ${fmt(u.efic,0)}%">${fmt(u[m.key],m.dec)}</div>
-      <div class="hh">${fmt(u.horas,1)} h</div></div>`).join("")+`</div>`;
+      <div class="hh${byHoras?' strong':''}">${fmt(u.horas,1)} h</div></div>`;}).join("")+`</div>`;
 }
 function renderRankCtrl(){
-  const opts=[["auto","Auto"],["1° TURNO","1°"],["2° TURNO","2°"],["3° TURNO","3°"],["top15","Top 15"]];
+  const opts=[["auto","Auto"],["1° TURNO","1°"],["2° TURNO","2°"],["3° TURNO","3°"],["top15","Top 15"],["horas","Horas"]];
   const el=document.getElementById("rank-ctrl");
   el.innerHTML=opts.map(([k,l])=>`<button data-k="${k}" class="${state.rankMode===k?'on':''}">${l}</button>`).join("");
   el.onclick=e=>{const b=e.target.closest("button");if(!b)return;state.rankMode=b.dataset.k;renderTurnoMini();renderRanking();renderRankCtrl();};
