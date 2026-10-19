@@ -506,8 +506,12 @@ function kfmt(v){v=+v||0; return v>=1000?(v/1000).toLocaleString("es-PE",{maximu
 function comboChart(svg, days, m, target){
   const W=1000,H=600,L=64,R=72,T=46,B=98,pw=W-L-R,ph=H-T-B;
   const n=days.length||1;
-  const maxRate=Math.max(...days.map(d=>d.rate||0),target?.objetivo||0,1);
-  const maxTot=Math.max(...days.map(d=>d.total),1);
+  // escala robusta: ignora dias parciales/atipicos (tope por P95 de dias validos) para que un dia degenerado no aplaste el resto
+  const niceUp=v=>{if(!(v>0))return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e,k=f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10;return k*e;};
+  const okRates=days.filter(d=>d.rate!=null&&!d.partial).map(d=>d.rate).sort((a,b)=>a-b);
+  const p95=okRates.length?okRates[Math.min(okRates.length-1,Math.floor(okRates.length*0.95))]:0;
+  const maxRate=niceUp(Math.max(p95,(target?.objetivo||0)*1.15,1));
+  const maxTot=Math.max(...days.filter(d=>!d.partial).map(d=>d.total),1);
   const slot=pw/n, bw=Math.min(slot*0.66,50);
   const xC=i=>L+slot*i+slot/2;
   const uni=m.unit.replace("/h","");
@@ -521,11 +525,13 @@ function comboChart(svg, days, m, target){
   if(!days.some(d=>d.total||d.rate!=null)){o+=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--muted)" font-size="18">Sin datos</text>`;svg.innerHTML=o;return;}
   // barras = productividad (tasa) coloreadas por semaforo; valor VERTICAL en la base (blanco con halo oscuro -> legible siempre)
   days.forEach((d,i)=>{const x=xC(i)-bw/2, yBase=T+ph;
-    if(d.rate!=null){const h=ph*(d.rate/maxRate), yTop=T+ph-h;
+    if(d.rate!=null&&!d.partial){const clipped=d.rate>maxRate, h=Math.min(ph,ph*(d.rate/maxRate)), yTop=T+ph-h;
       const st=semaforo(d.rate,target,true), col=semaforoColor(st);
       o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="${col}" opacity=".92"><title>${d.label}: ${fmt(d.rate,m.dec)} ${m.unit} · ${st.label}</title></rect>`;
+      if(clipped)o+=`<text x="${xC(i)}" y="${yTop-3}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">▲</text>`;
       if(d.rate>0){const ty=yBase-8;
         o+=`<text x="${xC(i)}" y="${ty}" text-anchor="start" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff" stroke="rgba(10,16,28,.6)" stroke-width="2.8" paint-order="stroke" stroke-linejoin="round" transform="rotate(-90 ${xC(i)} ${ty})">${fmt(d.rate,m.dec)}</text>`;}}
+    else if(d.partial){o+=`<text x="${xC(i)}" y="${yBase-6}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)">parcial</text>`;}
     o+=`<text x="${xC(i)}" y="${yBase+10}" text-anchor="end" font-size="14.5" font-weight="800" fill="var(--ink)" transform="rotate(-90 ${xC(i)} ${yBase+10})">${d.label}</text>`;});
   // objetivo (linea punteada sobre la escala de tasa, igual que las barras)
   if(target?.objetivo){
@@ -534,7 +540,7 @@ function comboChart(svg, days, m, target){
   }
   // linea = total del dia (volumen) con valores (halo del color del panel para que no los tape la linea)
   const yT=v=>T+ph-(v/maxTot)*ph;
-  const pts=days.map((d,i)=>d.rate==null?null:[xC(i),yT(d.total),d]).filter(Boolean);
+  const pts=days.map((d,i)=>(d.rate==null||d.partial)?null:[xC(i),yT(d.total),d]).filter(Boolean);
   if(pts.length>1)o+=`<path d="${smoothPath(pts)}" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
   pts.forEach((p)=>{o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--accent)" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].total,0)} ${uni}</title></circle>`;});
   pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--accent)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${kfmt(p[2].total)}</text>`;});
@@ -556,12 +562,13 @@ function renderTrend(){
   const mm=keys[keys.length-1].split("-")[1], mesAb=MESES_ABBR[(+mm)-1];
   const maxDay=Math.max(...keys.map(k=>+k.split("-")[2]));
   const byDay={}; keys.forEach(k=>byDay[+k.split("-")[2]]=g.get(k));
+  const MINH=4; // dia con < 4 h trabajadas = parcial / tasa poco fiable (ej. dia en curso)
   const days=[];
   for(let d=1;d<=maxDay;d++){
     const rows=byDay[d];
     days.push(rows
-      ? {label:`${d}-${mesAb}`, total:rows.reduce((a,r)=>a+r[m.num],0), rate:rateOf(rows,m)}
-      : {label:`${d}-${mesAb}`, total:0, rate:null});
+      ? (()=>{const horas=rows.reduce((a,r)=>a+r.horas,0);return {label:`${d}-${mesAb}`, total:rows.reduce((a,r)=>a+r[m.num],0), rate:rateOf(rows,m), horas, partial:horas<MINH};})()
+      : {label:`${d}-${mesAb}`, total:0, rate:null, horas:0, partial:false});
   }
   comboChart(document.getElementById("trend"),days,m,target);
 }
