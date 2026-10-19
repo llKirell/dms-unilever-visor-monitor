@@ -162,12 +162,42 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .goal.neutral .goal-state{color:var(--muted);background:var(--panel-2)}
 /* === LAYOUT: izquierda (banda + tendencia) | derecha (ranking a toda altura) === */
 .layout{display:grid;grid-template-columns:1fr clamp(340px,34vw,640px);gap:clamp(8px,1vw,16px);min-height:0}
-.left{display:grid;grid-template-rows:auto 1fr;gap:clamp(8px,1.1vh,14px);min-height:0}
+.left{display:grid;grid-template-rows:auto 1fr;gap:clamp(6px,.8vh,10px);min-height:0}
 .topband{display:flex;gap:clamp(7px,.8vw,13px);align-items:stretch;min-height:0}
-.grid-kpi{flex:0 0 auto;display:flex}
 .turno-mini{display:flex;flex-direction:column;gap:clamp(5px,.6vh,9px);flex:0 0 auto}
-.mixcard{flex:0 1 auto;min-width:clamp(170px,14vw,250px)}
-.famcard{flex:1 1 auto;min-width:clamp(210px,18vw,340px)}
+/* banda superior = 3 columnas de igual altura (la del texto) */
+.prodcard{flex:1.5 1 0;min-width:clamp(220px,22vw,380px)}
+.mixcard{flex:1 1 0;min-width:clamp(150px,13vw,230px)}
+.famcard{flex:1 1 0;min-width:clamp(160px,14vw,250px)}
+/* las 4 tarjetas de productividad en grilla 2x2 del mismo tamaño dentro de prodcard */
+.prodcard>.prod-2x2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:clamp(5px,.6vw,10px);padding:clamp(5px,.7vh,10px);flex:1;min-height:0}
+.prod-2x2 .grid-kpi{display:flex;min-height:0}
+.prod-2x2 .grid-kpi>.kpi{flex:1;width:100%}
+.prod-2x2 .turno-mini{display:contents}
+/* valor + delta en la MISMA linea (el delta no cambia la altura al pasar de Dia a Mes) */
+.prod-2x2 .vrow{display:flex;align-items:baseline;justify-content:space-between;gap:6px;min-height:0}
+.prod-2x2 .vrow .vs{margin:0}
+.prod-2x2 .kpi,.prod-2x2 .mini{height:100%;margin:0;min-height:0;border-radius:9px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px);justify-content:center}
+.prod-2x2 .kpi.hero{border-left-width:4px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px)}
+.prod-2x2 .kpi.hero .v{font-size:clamp(15px,1.5vw,24px)}
+.prod-2x2 .kpi.hero .k{font-size:clamp(8px,.6vw,11px)}
+.prod-2x2 .kpi.hero .goal{margin-top:3px;padding-top:3px}
+.prod-2x2 .kpi.hero .goal .goal-state,.prod-2x2 .kpi.hero .vslab{display:none}
+.prod-2x2 .mini .mv{font-size:clamp(14px,1.4vw,22px)}
+/* participacion por familia sin barras: solo nombre + % */
+.famlist{display:flex;flex-direction:column;gap:clamp(3px,.6vh,8px);height:100%;justify-content:center}
+.frow{display:flex;align-items:center;gap:8px}
+.frow .fdot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.frow .fnm{flex:1;font-size:clamp(11px,.9vw,15px);font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frow .fpc{font-size:clamp(12px,1vw,17px);font-weight:800;color:var(--accent)}
+/* Perfil de Pedidos: dona (Caja azul / Pallet ambar) + leyenda */
+.perfil-donut{display:flex;align-items:center;gap:clamp(8px,1vw,16px);height:100%;justify-content:center}
+.donut{width:clamp(66px,6vw,96px);height:clamp(66px,6vw,96px);flex:0 0 auto}
+.perfil-leg{display:flex;flex-direction:column;gap:clamp(6px,1vh,12px)}
+.perfil-leg .lg{display:flex;align-items:center;gap:7px}
+.perfil-leg .lg .d{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.perfil-leg .lg .n{font-size:clamp(11px,.85vw,15px);color:var(--muted);font-weight:700}
+.perfil-leg .lg .v{font-size:clamp(13px,1.1vw,18px);font-weight:800;color:var(--ink);margin-left:auto;padding-left:10px}
 .mini{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:clamp(5px,.8vh,11px) clamp(9px,.8vw,15px);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;border-left:4px solid var(--accent);flex:1}
 .mini.on{outline:2px solid var(--accent);outline-offset:-1px}
 .mini:nth-child(2){border-left-color:var(--accent-2)}
@@ -182,8 +212,8 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .card.trend .body,.card.compact .body{flex:1;min-height:0}
 .card.trend .body{padding:4px 12px 8px}
 .card.trend svg{width:100%;height:100%}
-.card.compact .body{padding:6px 12px 10px;overflow-y:auto}
-.card h2{font-size:clamp(10px,.78vw,13px);margin:0;padding:clamp(6px,.9vh,12px) 14px 0;letter-spacing:.2px}
+.card.compact .body{padding:4px 12px 7px;overflow-y:auto}
+.card h2{font-size:clamp(10px,.78vw,13px);margin:0;padding:clamp(4px,.6vh,8px) 14px 0;letter-spacing:.2px}
 .card .hint{font-size:clamp(9px,.7vw,12px);color:var(--muted);padding:1px 14px 0}
 .card .body{padding:12px 14px}
 /* columna de ranking (turno activo / manual / top 15) */
@@ -209,6 +239,7 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .rank-list .rankrow .mid .track{height:clamp(6px,.8vh,11px)}
 .rank-list .rankrow .vv{font-size:clamp(11px,.9vw,15px)}
 .rank-list .rankrow .hh{font-size:clamp(10px,.76vw,13px)}
+.rank-list .rankrow .hh.strong{color:var(--ink);font-weight:800}
 .rank-list .rankrow .rk{font-size:clamp(10px,.75vw,13px)}
 .empty{padding:22px 14px;color:var(--muted);text-align:center;font-size:clamp(12px,.9vw,15px)}
 /* barras de participacion (mix y familia) */
@@ -314,8 +345,12 @@ tbody tr:hover{background:var(--panel-2)}
     <!-- COLUMNA IZQUIERDA: banda superior + tendencia -->
     <div class="left">
       <div class="topband">
-        <div class="grid-kpi" id="kpis"></div>
-        <div class="turno-mini" id="turno-mini"></div>
+        <div class="card compact prodcard">
+          <div class="prod-2x2">
+            <div class="grid-kpi" id="kpis"></div>
+            <div class="turno-mini" id="turno-mini"></div>
+          </div>
+        </div>
         <div class="card compact mixcard">
           <div class="card-hd"><h2>Perfil de Pedidos</h2><span class="per" id="mix-per"></span></div>
           <div class="body" id="mix"></div>
@@ -480,8 +515,8 @@ function renderKpis(){
   const status=semaforo(main,target,rows.length>0);
   const badge=state.period==="mes"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
   document.getElementById("kpis").innerHTML=
-    `<div class="kpi hero status-${status.key}"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
-    (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+
+    `<div class="kpi hero status-${status.key}"><div class="k">${m.label}</div>`+
+    `<div class="vrow"><div class="v">${fmt(main,m.dec)}</div>${badge?`<span class="vs">${badge}</span>`:``}</div>`+
     `<div class="goal ${status.key}"><span>Objetivo</span><b>${target?fmt(target.objetivo,m.dec):"—"}</b><span class="goal-state">${status.label}</span></div></div>`;
 }
 // mini tarjetas por turno — resalta el turno activo (o el seleccionado) + delta vs mes anterior
@@ -496,13 +531,25 @@ function renderTurnoMini(){
     const v=rateOf(rows,m);
     const status=semaforo(v,target,rows.length>0);
     const badge=state.period==="mes"?deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m)):"";
-    return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
-           (target?`<div class="mini-goal"><span>Objetivo</span><b>${fmt(target.objetivo,m.dec)}</b></div>`:``)+
-           (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
+    return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div>`+
+           `<div class="vrow"><div class="mv">${fmt(v,m.dec)}</div>${badge?`<span class="vs">${badge}</span>`:``}</div>`+
+           (target?`<div class="mini-goal"><span>Objetivo</span><b>${fmt(target.objetivo,m.dec)}</b></div>`:``)+`</div>`;
   }).join("");
   document.getElementById("turno-mini").innerHTML=html;
 }
-// Perfil de Pedidos: participacion caja vs pallet (como la nota) — fijo
+// Perfil de Pedidos: participacion caja vs pallet — dona (Caja azul / Pallet ambar) + leyenda
+function donutMix(pc){
+  const C=213.628, caja=Math.max(0,Math.min(100,pc))/100*C, pal=C-caja;
+  return `<svg class="donut" viewBox="0 0 90 90" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Caja ${fmt(pc,0)}%">
+    <circle cx="45" cy="45" r="34" fill="none" stroke="var(--panel-2)" stroke-width="13"/>
+    <g transform="rotate(-90 45 45)">
+      <circle cx="45" cy="45" r="34" fill="none" stroke="var(--accent)" stroke-width="13" stroke-dasharray="${caja.toFixed(1)} ${C}"/>
+      <circle cx="45" cy="45" r="34" fill="none" stroke="var(--warn)" stroke-width="13" stroke-dasharray="${pal.toFixed(1)} ${C}" stroke-dashoffset="${(-caja).toFixed(1)}"/>
+    </g>
+    <text x="45" y="42" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="800">${fmt(pc,0)}%</text>
+    <text x="45" y="55" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="700">Caja</text>
+  </svg>`;
+}
 function renderMix(){
   const rows=filtered();
   const cajas=rows.reduce((sum,row)=>sum+row.cajas,0);
@@ -511,11 +558,12 @@ function renderMix(){
   const pc=total?sueltas/total*100:0, pp=total?pallet/total*100:0;
   const per=document.getElementById("mix-per"); if(per) per.textContent=selectedPeriodLabel();
   document.getElementById("mix").innerHTML=`
-    <div class="perfil">
-      <div class="prow"><span class="pl">Caja</span><span class="pv">${fmt(pc,1)}%</span></div>
-      <div class="ptrk"><div class="pfl c" style="width:${pc}%"></div></div>
-      <div class="prow"><span class="pl">Pallet</span><span class="pv">${fmt(pp,1)}%</span></div>
-      <div class="ptrk"><div class="pfl p" style="width:${pp}%"></div></div>
+    <div class="perfil-donut">
+      ${donutMix(pc)}
+      <div class="perfil-leg">
+        <div class="lg"><span class="d" style="background:var(--accent)"></span><span class="n">Caja</span><span class="v">${fmt(pc,1)}%</span></div>
+        <div class="lg"><span class="d" style="background:var(--warn)"></span><span class="n">Pallet</span><span class="v">${fmt(pp,1)}%</span></div>
+      </div>
     </div>`;
 }
 // participacion por familia (% de cajas sueltas) — fijo
@@ -523,6 +571,7 @@ function renderFamilia(){
   const dia=state.period==="dia"?state.dia:"__ALL__";
   const grupos=new Map();
   FAMILIAS.filter(row=>monthOf(row)===state.mes
+    && row.familia!=="(SIN FAMILIA)"   // se oculta: dato sin clasificar en W4W (~0.1%); se excluye tambien del total
     && (dia==="__ALL__"||row.dia===dia)
     && (state.turno==="__ALL__"||row.turno===state.turno))
     .forEach(row=>{
@@ -535,10 +584,11 @@ function renderFamilia(){
   const fam=[...grupos.values()].map(row=>({...row,pct:total?row.cajas_sueltas/total*100:0}))
     .sort((a,b)=>b.cajas_sueltas-a.cajas_sueltas);
   if(!fam.length){document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Sin datos de familia</div>`;return;}
-  const max=Math.max(...fam.map(f=>f.pct),1);
-  document.getElementById("familia").innerHTML=fam.map((f,i)=>`
-    <div class="pbar fam${i%6}"><div class="lab"><span class="nm" title="${f.familia}">${f.familia}</span><span class="pc">${fmt(f.pct,1)}%</span></div>
-      <div class="trk"><div class="fl" style="width:${(f.pct/max)*100}%"></div></div></div>`).join("");
+  const FAM_COLORS=["#1f6feb","#2da44e","#8250df","#d4a72c","#1aa3c2","#bc4c00"];
+  document.getElementById("familia").innerHTML=`<div class="famlist">`+fam.map((f,i)=>{
+    const c=FAM_COLORS[i%6];
+    return `<div class="frow"><span class="fdot" style="background:${c}"></span><span class="fnm" title="${f.familia}">${f.familia}</span><span class="fpc" style="color:${c}">${fmt(f.pct,1)}%</span></div>`;
+  }).join("")+`</div>`;
 }
 const MESES_ABBR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
 // --- mes actual vs mes anterior (comparacion) ---
@@ -584,44 +634,53 @@ function smoothPath(pts, t=0.18){
   return d;
 }
 function kfmt(v){v=+v||0; return v>=1000?(v/1000).toLocaleString("es-PE",{maximumFractionDigits:0})+"k":v.toLocaleString("es-PE",{maximumFractionDigits:0});}
-// Combo: BARRAS = total del dia (volumen) · LINEA = productividad (tasa/h). Colores de marca.
+// Combo: BARRAS = productividad (tasa/h) con colores de semaforo · LINEA = total del dia (volumen).
 function comboChart(svg, days, m, target){
-  const W=1000,H=600,L=64,R=72,T=46,B=98,pw=W-L-R,ph=H-T-B;
+  const W=1000,H=600,L=64,R=72,T=40,B=84,pw=W-L-R,ph=H-T-B;
   const n=days.length||1;
-  const maxBar=Math.max(...days.map(d=>d.total),1);
-  const maxRate=Math.max(...days.map(d=>d.rate||0),target?.objetivo||0,1);
+  // escala ajustada: barras protagonistas -> tope FINO sobre P95 con poco margen (antes saltaba a 1/2/5x10^n y dejaba las barras a media altura)
+  const niceCeil=v=>{if(!(v>0))return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),step=e/5;return Math.ceil(v/step)*step;};
+  const okRates=days.filter(d=>d.rate!=null&&!d.partial).map(d=>d.rate).sort((a,b)=>a-b);
+  const p95=okRates.length?okRates[Math.min(okRates.length-1,Math.floor(okRates.length*0.95))]:0;
+  const maxRate=niceCeil(Math.max(p95,(target?.objetivo||0)*1.1,1)*1.06);
+  const maxTot=Math.max(...days.filter(d=>!d.partial).map(d=>d.total),1);
   const slot=pw/n, bw=Math.min(slot*0.66,50);
   const xC=i=>L+slot*i+slot/2;
   const uni=m.unit.replace("/h","");
   const totalLabel={unidades_productivas:"T.Unds",volumen_m3:"T.m³",peso_tn:"T.Tn",ubicaciones:"T.Ubic",tareas:"T.Tareas"}[m.key]||`T.${uni}`;
   let o=`<rect width="${W}" height="${H}" fill="transparent"/>`;
-  // grilla + eje izq (tasa, tinta) + eje der (total, azul)
+  // grilla + eje izq (tasa, tinta -> barras) + eje der (total, azul -> linea)
   for(let i=0;i<=4;i++){const y=T+ph*i/4;
     o+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="var(--chart-grid)"/>`;
     o+=`<text x="${L-10}" y="${y+5}" text-anchor="end" font-size="16" fill="var(--ink)" font-weight="800">${fmt(maxRate*(1-i/4),m.dec)}</text>`;
-    o+=`<text x="${W-R+10}" y="${y+5}" text-anchor="start" font-size="16" fill="var(--accent)" font-weight="800">${kfmt(maxBar*(1-i/4))}</text>`;}
+    o+=`<text x="${W-R+10}" y="${y+5}" text-anchor="start" font-size="16" fill="var(--accent)" font-weight="800">${kfmt(maxTot*(1-i/4))}</text>`;}
   if(!days.some(d=>d.total||d.rate!=null)){o+=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--muted)" font-size="18">Sin datos</text>`;svg.innerHTML=o;return;}
-  // barras = total del dia; total escrito VERTICAL en la base (blanco con halo oscuro -> legible siempre)
-  days.forEach((d,i)=>{const h=ph*(d.total/maxBar), x=xC(i)-bw/2, yTop=T+ph-h, yBase=T+ph;
-    o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="var(--accent)" opacity=".92"><title>${d.label}: ${fmt(d.total,0)} ${uni}</title></rect>`;
-    if(d.total>0){const ty=yBase-8;
-      o+=`<text x="${xC(i)}" y="${ty}" text-anchor="start" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff" stroke="rgba(10,16,28,.6)" stroke-width="2.8" paint-order="stroke" stroke-linejoin="round" transform="rotate(-90 ${xC(i)} ${ty})">${fmt(d.total,0)}</text>`;}
+  // barras = productividad (tasa) coloreadas por semaforo; valor VERTICAL en la base (blanco con halo oscuro -> legible siempre)
+  days.forEach((d,i)=>{const x=xC(i)-bw/2, yBase=T+ph;
+    if(d.rate!=null&&!d.partial){const clipped=d.rate>maxRate, h=Math.min(ph,ph*(d.rate/maxRate)), yTop=T+ph-h;
+      const st=semaforo(d.rate,target,true), col=semaforoColor(st);
+      o+=`<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(0,h)}" rx="2" fill="${col}" opacity=".92"><title>${d.label}: ${fmt(d.rate,m.dec)} ${m.unit} · ${st.label}</title></rect>`;
+      if(clipped)o+=`<text x="${xC(i)}" y="${yTop-3}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">▲</text>`;
+      if(d.rate>0){const ty=yBase-8;
+        o+=`<text x="${xC(i)}" y="${ty}" text-anchor="start" dominant-baseline="central" font-size="15" font-weight="800" fill="#fff" stroke="rgba(10,16,28,.6)" stroke-width="2.8" paint-order="stroke" stroke-linejoin="round" transform="rotate(-90 ${xC(i)} ${ty})">${fmt(d.rate,m.dec)}</text>`;}}
+    else if(d.partial){o+=`<text x="${xC(i)}" y="${yBase-6}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)">parcial</text>`;}
     o+=`<text x="${xC(i)}" y="${yBase+10}" text-anchor="end" font-size="14.5" font-weight="800" fill="var(--ink)" transform="rotate(-90 ${xC(i)} ${yBase+10})">${d.label}</text>`;});
-  // linea = productividad (tasa) con valores (halo del color del panel para que no los tape la linea)
-  const yR=v=>T+ph-(v/maxRate)*ph;
+  // objetivo (linea punteada sobre la escala de tasa, igual que las barras)
   if(target?.objetivo){
-    const goalY=yR(target.objetivo);
-    o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="9 7" opacity=".9"/>`;
+    const goalY=T+ph-(target.objetivo/maxRate)*ph;
+    o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="9 7" opacity=".55"/>`;
   }
-  const pts=days.map((d,i)=>d.rate==null?null:[xC(i),yR(d.rate),d]).filter(Boolean);
-  if(pts.length>1)o+=`<path d="${smoothPath(pts)}" fill="none" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  pts.forEach((p,i)=>{const status=semaforo(p[2].rate,target,true);o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${semaforoColor(status)}" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].rate,m.dec)} ${m.unit} · ${status.label}</title></circle>`;});
-  pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--ink)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${fmt(p[2].rate,m.dec)}</text>`;});
+  // linea = total del dia (volumen) con valores (halo del color del panel para que no los tape la linea)
+  const yT=v=>T+ph-(v/maxTot)*ph;
+  const pts=days.map((d,i)=>(d.rate==null||d.partial)?null:[xC(i),yT(d.total),d]).filter(Boolean);
+  if(pts.length>1)o+=`<path d="${smoothPath(pts)}" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((p)=>{o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--accent)" stroke="var(--panel)" stroke-width="2"><title>${p[2].label}: ${fmt(p[2].total,0)} ${uni}</title></circle>`;});
+  pts.forEach((p,i)=>{if(n<=18||i%2===0)o+=`<text x="${p[0]}" y="${p[1]-13}" text-anchor="middle" font-size="14.5" fill="var(--accent)" font-weight="800" stroke="var(--panel)" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">${kfmt(p[2].total)}</text>`;});
   // leyenda arriba-derecha
   const lx=W-R-370, ly=9;
-  o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${totalLabel}</text>`;
-  o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--ink)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent-2)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
-  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--accent-2)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Obj</text>`;
+  o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent-2)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
+  o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--accent)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${totalLabel}</text>`;
+  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="7 5" opacity=".55"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Obj</text>`;
   svg.innerHTML=o;
 }
 function renderTrend(){
@@ -635,12 +694,13 @@ function renderTrend(){
   const mm=keys[keys.length-1].split("-")[1], mesAb=MESES_ABBR[(+mm)-1];
   const maxDay=Math.max(...keys.map(k=>+k.split("-")[2]));
   const byDay={}; keys.forEach(k=>byDay[+k.split("-")[2]]=g.get(k));
+  const MINH=4; // dia con < 4 h trabajadas = parcial / tasa poco fiable (ej. dia en curso)
   const days=[];
   for(let d=1;d<=maxDay;d++){
     const rows=byDay[d];
     days.push(rows
-      ? {label:`${d}-${mesAb}`, total:rows.reduce((a,r)=>a+r[m.num],0), rate:rateOf(rows,m)}
-      : {label:`${d}-${mesAb}`, total:0, rate:null});
+      ? (()=>{const horas=rows.reduce((a,r)=>a+r.horas,0);return {label:`${d}-${mesAb}`, total:rows.reduce((a,r)=>a+r[m.num],0), rate:rateOf(rows,m), horas, partial:horas<MINH};})()
+      : {label:`${d}-${mesAb}`, total:0, rate:null, horas:0, partial:false});
   }
   comboChart(document.getElementById("trend"),days,m,target);
 }
@@ -667,25 +727,27 @@ function rankData(){
   }
   const t=state.turno!=="__ALL__"?state.turno:(state.rankMode==="auto"?turnoActual():state.rankMode);
   const rows=base.filter(r=>r.turno===t);
-  const users=usersFrom(rows).sort((a,b)=>b[m.key]-a[m.key]);
+  const users=usersFrom(rows).sort((a,b)=>b.horas-a.horas);   // vistas por turno: orden por HORAS (no por productividad)
   const sub=`${state.rankMode==="auto"?"Turno activo · ":""}${TURNO_HORARIO[t]||""} · ${users.length} oper.`;
-  return {titulo:t, sub, tn:rows.reduce((a,r)=>a+r.peso_tn,0), users, m};
+  return {titulo:t, sub, tn:rows.reduce((a,r)=>a+r.peso_tn,0), users, m, byHoras:true};
 }
 function renderRanking(){
-  const {titulo,sub,tn,users,m}=rankData();
+  const {titulo,sub,tn,users,m,byHoras}=rankData();
   document.getElementById("rank-turno").textContent=titulo;
   document.getElementById("rank-sub").textContent=sub;
   document.getElementById("rank-tn").textContent=fmt(tn,1);
   const list=document.getElementById("rank-list");
   if(!users.length){list.innerHTML=`<div class="empty">Iniciando turno · aún sin tareas registradas</div>`;return;}
-  const max=Math.max(...users.map(u=>u[m.key]),1);
+  const max=Math.max(...users.map(u=>byHoras?u.horas:u[m.key]),1);
   const target=targetFor(m.key);
-  list.innerHTML=`<div class="ranklist">`+users.map((u,i)=>`
+  list.innerHTML=`<div class="ranklist">`+users.map((u,i)=>{
+    const barVal=byHoras?u.horas:u[m.key];
+    return `
     <div class="rankrow status-${semaforo(u[m.key],target).key}"><div class="rk">${i+1}</div>
       <div class="mid"><div class="nm2" title="${u.usuario}">${u.usuario}</div>
-        <div class="track"><div class="fill" style="width:${Math.max(2,(u[m.key]/max)*100)}%"></div></div></div>
+        <div class="track"><div class="fill" style="width:${Math.max(2,(barVal/max)*100)}%"></div></div></div>
       <div class="vv" title="Eficiencia ${fmt(u.efic,0)}%">${fmt(u[m.key],m.dec)}</div>
-      <div class="hh">${fmt(u.horas,1)} h</div></div>`).join("")+`</div>`;
+      <div class="hh${byHoras?' strong':''}">${fmt(u.horas,1)} h</div></div>`;}).join("")+`</div>`;
 }
 function renderRankCtrl(){
   const opts=[["auto","Auto"],["1° TURNO","1°"],["2° TURNO","2°"],["3° TURNO","3°"],["top15","Top 15"]];
