@@ -88,7 +88,7 @@ HTML = r"""<!doctype html>
 <title>WareTrack — Productividad Picking Unilever/KCC</title>
 <style>
 :root{
-  --accent:#1f6feb; --accent-2:#2da44e; --warn:#d4a72c; --bad:#cf222e;
+  --accent:#1f6feb; --accent-2:#2da44e; --warn:#d4a72c; --bad:#cf222e; --goal:#c026d3;
   --bg:#f6f8fa; --panel:#ffffff; --panel-2:#f0f3f6; --ink:#1f2328;
   --muted:#656d76; --line:#d0d7de; --shadow:0 1px 3px rgba(31,35,40,.08),0 8px 24px rgba(31,35,40,.06);
   --chart-grid:#e6ebf1;
@@ -97,12 +97,12 @@ HTML = r"""<!doctype html>
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0d1117; --panel:#161b22; --panel-2:#1c2330; --ink:#e6edf3;
   --muted:#8b949e; --line:#30363d; --shadow:0 1px 3px rgba(1,4,9,.4),0 8px 24px rgba(1,4,9,.5);
-  --accent:#4493f8; --accent-2:#3fb950; --warn:#d29922; --bad:#f85149; --chart-grid:#21262d;
+  --accent:#4493f8; --accent-2:#3fb950; --warn:#d29922; --bad:#f85149; --chart-grid:#21262d; --goal:#e24ff0;
 }}
 :root[data-theme="dark"]{
   --bg:#0d1117; --panel:#161b22; --panel-2:#1c2330; --ink:#e6edf3;
   --muted:#8b949e; --line:#30363d; --shadow:0 1px 3px rgba(1,4,9,.4),0 8px 24px rgba(1,4,9,.5);
-  --accent:#4493f8; --accent-2:#3fb950; --warn:#d29922; --bad:#f85149; --chart-grid:#21262d;
+  --accent:#4493f8; --accent-2:#3fb950; --warn:#d29922; --bad:#f85149; --chart-grid:#21262d; --goal:#e24ff0;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;overflow:hidden}
@@ -672,7 +672,7 @@ function comboChart(svg, days, m, target){
   // objetivo (linea punteada sobre la escala de tasa, igual que las barras)
   if(target?.objetivo){
     const goalY=T+ph-(target.objetivo/maxRate)*ph;
-    o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="9 7" opacity=".55"/>`;
+    o+=`<line x1="${L}" y1="${goalY}" x2="${W-R}" y2="${goalY}" stroke="var(--goal)" stroke-width="2.8" stroke-dasharray="10 6" opacity="1"/>`;
   }
   // linea = total del dia (volumen) con valores (halo del color del panel para que no los tape la linea)
   const yT=v=>T+ph-(v/maxTot)*ph;
@@ -684,7 +684,7 @@ function comboChart(svg, days, m, target){
   const lx=W-R-370, ly=9;
   o+=`<rect x="${lx}" y="${ly-8}" width="16" height="16" rx="3" fill="var(--accent-2)"/><text x="${lx+22}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${m.label}</text>`;
   o+=`<line x1="${lx+108}" y1="${ly}" x2="${lx+136}" y2="${ly}" stroke="var(--accent)" stroke-width="3"/><circle cx="${lx+122}" cy="${ly}" r="4" fill="var(--accent)"/><text x="${lx+143}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">${totalLabel}</text>`;
-  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="7 5" opacity=".55"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Obj</text>`;
+  if(target?.objetivo)o+=`<line x1="${lx+228}" y1="${ly}" x2="${lx+257}" y2="${ly}" stroke="var(--goal)" stroke-width="2.8" stroke-dasharray="7 5" opacity="1"/><text x="${lx+264}" y="${ly+5}" font-size="13" fill="var(--ink)" font-weight="800">Obj</text>`;
   svg.innerHTML=o;
 }
 function renderTrend(){
