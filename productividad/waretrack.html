@@ -90,7 +90,11 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 /* las 4 tarjetas de productividad en grilla 2x2 del mismo tamaño dentro de prodcard */
 .prodcard>.prod-2x2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:clamp(5px,.6vw,10px);padding:clamp(5px,.7vh,10px);flex:1;min-height:0}
 .prod-2x2 .grid-kpi{display:flex;min-height:0}
+.prod-2x2 .grid-kpi>.kpi{flex:1;width:100%}
 .prod-2x2 .turno-mini{display:contents}
+/* valor + delta en la MISMA linea (el delta no cambia la altura al pasar de Dia a Mes) */
+.prod-2x2 .vrow{display:flex;align-items:baseline;justify-content:space-between;gap:6px;min-height:0}
+.prod-2x2 .vrow .vs{margin:0}
 .prod-2x2 .kpi,.prod-2x2 .mini{height:100%;margin:0;min-height:0;border-radius:9px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px);justify-content:center}
 .prod-2x2 .kpi.hero{border-left-width:4px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px)}
 .prod-2x2 .kpi.hero .v{font-size:clamp(15px,1.5vw,24px)}
@@ -419,8 +423,8 @@ function renderKpis(){
   const status=semaforo(main,target,rows.length>0);
   const badge=state.period==="mes"&&state.turno==="__ALL__"?deltaBadge(main, rateOf(PREV,m)):"";
   document.getElementById("kpis").innerHTML=
-    `<div class="kpi hero status-${status.key}"><div class="k">${m.label}</div><div class="v">${fmt(main,m.dec)}</div>`+
-    (badge?`<div class="vs">${badge}<span class="vslab">vs mes ant.</span></div>`:``)+
+    `<div class="kpi hero status-${status.key}"><div class="k">${m.label}</div>`+
+    `<div class="vrow"><div class="v">${fmt(main,m.dec)}</div>${badge?`<span class="vs">${badge}</span>`:``}</div>`+
     `<div class="goal ${status.key}"><span>Objetivo</span><b>${target?fmt(target.objetivo,m.dec):"—"}</b><span class="goal-state">${status.label}</span></div></div>`;
 }
 // mini tarjetas por turno — resalta el turno activo (o el seleccionado) + delta vs mes anterior
@@ -435,9 +439,9 @@ function renderTurnoMini(){
     const v=rateOf(rows,m);
     const status=semaforo(v,target,rows.length>0);
     const badge=state.period==="mes"?deltaBadge(v, rateOf(PREV.filter(r=>r.turno===t),m)):"";
-    return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div><div class="mv">${fmt(v,m.dec)}</div>`+
-           (target?`<div class="mini-goal"><span>Objetivo</span><b>${fmt(target.objetivo,m.dec)}</b></div>`:``)+
-           (badge?`<div class="vs">${badge}</div>`:``)+`</div>`;
+    return `<div class="mini status-${status.key} ${t===foco?'on':''}"><div class="mk2">${t}</div>`+
+           `<div class="vrow"><div class="mv">${fmt(v,m.dec)}</div>${badge?`<span class="vs">${badge}</span>`:``}</div>`+
+           (target?`<div class="mini-goal"><span>Objetivo</span><b>${fmt(target.objetivo,m.dec)}</b></div>`:``)+`</div>`;
   }).join("");
   document.getElementById("turno-mini").innerHTML=html;
 }
