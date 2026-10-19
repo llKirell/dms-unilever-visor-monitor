@@ -441,6 +441,7 @@ function renderFamilia(){
   const dia=state.period==="dia"?state.dia:"__ALL__";
   const grupos=new Map();
   FAMILIAS.filter(row=>monthOf(row)===state.mes
+    && row.familia!=="(SIN FAMILIA)"   // se oculta: dato sin clasificar en W4W (~0.1%); se excluye tambien del total
     && (dia==="__ALL__"||row.dia===dia)
     && (state.turno==="__ALL__"||row.turno===state.turno))
     .forEach(row=>{
