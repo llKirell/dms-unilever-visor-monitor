@@ -103,10 +103,19 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .prod-2x2 .kpi.hero .goal .goal-state,.prod-2x2 .kpi.hero .vslab{display:none}
 .prod-2x2 .mini .mv{font-size:clamp(14px,1.4vw,22px)}
 /* participacion por familia sin barras: solo nombre + % */
-.famlist{display:flex;flex-direction:column;gap:clamp(3px,.5vh,7px);height:100%;justify-content:center}
-.frow{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.frow .fnm{font-size:clamp(11px,.9vw,15px);font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.famlist{display:flex;flex-direction:column;gap:clamp(3px,.6vh,8px);height:100%;justify-content:center}
+.frow{display:flex;align-items:center;gap:8px}
+.frow .fdot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.frow .fnm{flex:1;font-size:clamp(11px,.9vw,15px);font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .frow .fpc{font-size:clamp(12px,1vw,17px);font-weight:800;color:var(--accent)}
+/* Perfil de Pedidos: dona (Caja azul / Pallet ambar) + leyenda */
+.perfil-donut{display:flex;align-items:center;gap:clamp(8px,1vw,16px);height:100%;justify-content:center}
+.donut{width:clamp(66px,6vw,96px);height:clamp(66px,6vw,96px);flex:0 0 auto}
+.perfil-leg{display:flex;flex-direction:column;gap:clamp(6px,1vh,12px)}
+.perfil-leg .lg{display:flex;align-items:center;gap:7px}
+.perfil-leg .lg .d{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.perfil-leg .lg .n{font-size:clamp(11px,.85vw,15px);color:var(--muted);font-weight:700}
+.perfil-leg .lg .v{font-size:clamp(13px,1.1vw,18px);font-weight:800;color:var(--ink);margin-left:auto;padding-left:10px}
 .mini{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:clamp(5px,.8vh,11px) clamp(9px,.8vw,15px);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;border-left:4px solid var(--accent);flex:1}
 .mini.on{outline:2px solid var(--accent);outline-offset:-1px}
 .mini:nth-child(2){border-left-color:var(--accent-2)}
@@ -445,7 +454,19 @@ function renderTurnoMini(){
   }).join("");
   document.getElementById("turno-mini").innerHTML=html;
 }
-// Perfil de Pedidos: participacion caja vs pallet (como la nota) — fijo
+// Perfil de Pedidos: participacion caja vs pallet — dona (Caja azul / Pallet ambar) + leyenda
+function donutMix(pc){
+  const C=213.628, caja=Math.max(0,Math.min(100,pc))/100*C, pal=C-caja;
+  return `<svg class="donut" viewBox="0 0 90 90" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Caja ${fmt(pc,0)}%">
+    <circle cx="45" cy="45" r="34" fill="none" stroke="var(--panel-2)" stroke-width="13"/>
+    <g transform="rotate(-90 45 45)">
+      <circle cx="45" cy="45" r="34" fill="none" stroke="var(--accent)" stroke-width="13" stroke-dasharray="${caja.toFixed(1)} ${C}"/>
+      <circle cx="45" cy="45" r="34" fill="none" stroke="var(--warn)" stroke-width="13" stroke-dasharray="${pal.toFixed(1)} ${C}" stroke-dashoffset="${(-caja).toFixed(1)}"/>
+    </g>
+    <text x="45" y="42" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="800">${fmt(pc,0)}%</text>
+    <text x="45" y="55" text-anchor="middle" fill="var(--muted)" font-size="9" font-weight="700">Caja</text>
+  </svg>`;
+}
 function renderMix(){
   const rows=filtered();
   const cajas=rows.reduce((sum,row)=>sum+row.cajas,0);
@@ -454,9 +475,12 @@ function renderMix(){
   const pc=total?sueltas/total*100:0, pp=total?pallet/total*100:0;
   const per=document.getElementById("mix-per"); if(per) per.textContent=selectedPeriodLabel();
   document.getElementById("mix").innerHTML=`
-    <div class="perfil">
-      <div class="prow"><span class="pl">Caja</span><span class="pv">${fmt(pc,1)}%</span></div>
-      <div class="prow"><span class="pl">Pallet</span><span class="pv">${fmt(pp,1)}%</span></div>
+    <div class="perfil-donut">
+      ${donutMix(pc)}
+      <div class="perfil-leg">
+        <div class="lg"><span class="d" style="background:var(--accent)"></span><span class="n">Caja</span><span class="v">${fmt(pc,1)}%</span></div>
+        <div class="lg"><span class="d" style="background:var(--warn)"></span><span class="n">Pallet</span><span class="v">${fmt(pp,1)}%</span></div>
+      </div>
     </div>`;
 }
 // participacion por familia (% de cajas sueltas) — fijo
@@ -477,8 +501,11 @@ function renderFamilia(){
   const fam=[...grupos.values()].map(row=>({...row,pct:total?row.cajas_sueltas/total*100:0}))
     .sort((a,b)=>b.cajas_sueltas-a.cajas_sueltas);
   if(!fam.length){document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Sin datos de familia</div>`;return;}
-  document.getElementById("familia").innerHTML=`<div class="famlist">`+fam.map(f=>
-    `<div class="frow"><span class="fnm" title="${f.familia}">${f.familia}</span><span class="fpc">${fmt(f.pct,1)}%</span></div>`).join("")+`</div>`;
+  const FAM_COLORS=["#1f6feb","#2da44e","#8250df","#d4a72c","#1aa3c2","#bc4c00"];
+  document.getElementById("familia").innerHTML=`<div class="famlist">`+fam.map((f,i)=>{
+    const c=FAM_COLORS[i%6];
+    return `<div class="frow"><span class="fdot" style="background:${c}"></span><span class="fnm" title="${f.familia}">${f.familia}</span><span class="fpc" style="color:${c}">${fmt(f.pct,1)}%</span></div>`;
+  }).join("")+`</div>`;
 }
 const MESES_ABBR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
 // --- mes actual vs mes anterior (comparacion) ---
