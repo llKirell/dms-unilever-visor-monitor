@@ -82,10 +82,27 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .layout{display:grid;grid-template-columns:1fr clamp(340px,34vw,640px);gap:clamp(8px,1vw,16px);min-height:0}
 .left{display:grid;grid-template-rows:auto 1fr;gap:clamp(8px,1.1vh,14px);min-height:0}
 .topband{display:flex;gap:clamp(7px,.8vw,13px);align-items:stretch;min-height:0}
-.grid-kpi{flex:0 0 auto;display:flex}
 .turno-mini{display:flex;flex-direction:column;gap:clamp(5px,.6vh,9px);flex:0 0 auto}
-.mixcard{flex:0 1 auto;min-width:clamp(170px,14vw,250px)}
-.famcard{flex:1 1 auto;min-width:clamp(210px,18vw,340px)}
+/* banda superior = 3 columnas de igual altura (la del texto) */
+.prodcard{flex:1.5 1 0;min-width:clamp(220px,22vw,380px)}
+.mixcard{flex:1 1 0;min-width:clamp(150px,13vw,230px)}
+.famcard{flex:1 1 0;min-width:clamp(160px,14vw,250px)}
+/* las 4 tarjetas de productividad en grilla 2x2 del mismo tamaño dentro de prodcard */
+.prodcard>.prod-2x2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:clamp(5px,.6vw,10px);padding:clamp(5px,.7vh,10px);flex:1;min-height:0}
+.prod-2x2 .grid-kpi{display:flex;min-height:0}
+.prod-2x2 .turno-mini{display:contents}
+.prod-2x2 .kpi,.prod-2x2 .mini{height:100%;margin:0;min-height:0;border-radius:9px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px);justify-content:center}
+.prod-2x2 .kpi.hero{border-left-width:4px;padding:clamp(4px,.6vh,9px) clamp(7px,.7vw,12px)}
+.prod-2x2 .kpi.hero .v{font-size:clamp(15px,1.5vw,24px)}
+.prod-2x2 .kpi.hero .k{font-size:clamp(8px,.6vw,11px)}
+.prod-2x2 .kpi.hero .goal{margin-top:3px;padding-top:3px}
+.prod-2x2 .kpi.hero .goal .goal-state,.prod-2x2 .kpi.hero .vslab{display:none}
+.prod-2x2 .mini .mv{font-size:clamp(14px,1.4vw,22px)}
+/* participacion por familia sin barras: solo nombre + % */
+.famlist{display:flex;flex-direction:column;gap:clamp(3px,.5vh,7px);height:100%;justify-content:center}
+.frow{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.frow .fnm{font-size:clamp(11px,.9vw,15px);font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frow .fpc{font-size:clamp(12px,1vw,17px);font-weight:800;color:var(--accent)}
 .mini{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:clamp(5px,.8vh,11px) clamp(9px,.8vw,15px);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;border-left:4px solid var(--accent);flex:1}
 .mini.on{outline:2px solid var(--accent);outline-offset:-1px}
 .mini:nth-child(2){border-left-color:var(--accent-2)}
@@ -232,8 +249,12 @@ tbody tr:hover{background:var(--panel-2)}
     <!-- COLUMNA IZQUIERDA: banda superior + tendencia -->
     <div class="left">
       <div class="topband">
-        <div class="grid-kpi" id="kpis"></div>
-        <div class="turno-mini" id="turno-mini"></div>
+        <div class="card compact prodcard">
+          <div class="prod-2x2">
+            <div class="grid-kpi" id="kpis"></div>
+            <div class="turno-mini" id="turno-mini"></div>
+          </div>
+        </div>
         <div class="card compact mixcard">
           <div class="card-hd"><h2>Perfil de Pedidos</h2><span class="per" id="mix-per"></span></div>
           <div class="body" id="mix"></div>
@@ -431,9 +452,7 @@ function renderMix(){
   document.getElementById("mix").innerHTML=`
     <div class="perfil">
       <div class="prow"><span class="pl">Caja</span><span class="pv">${fmt(pc,1)}%</span></div>
-      <div class="ptrk"><div class="pfl c" style="width:${pc}%"></div></div>
       <div class="prow"><span class="pl">Pallet</span><span class="pv">${fmt(pp,1)}%</span></div>
-      <div class="ptrk"><div class="pfl p" style="width:${pp}%"></div></div>
     </div>`;
 }
 // participacion por familia (% de cajas sueltas) — fijo
@@ -454,10 +473,8 @@ function renderFamilia(){
   const fam=[...grupos.values()].map(row=>({...row,pct:total?row.cajas_sueltas/total*100:0}))
     .sort((a,b)=>b.cajas_sueltas-a.cajas_sueltas);
   if(!fam.length){document.getElementById("familia").innerHTML=`<div class="hint" style="padding:8px 0">Sin datos de familia</div>`;return;}
-  const max=Math.max(...fam.map(f=>f.pct),1);
-  document.getElementById("familia").innerHTML=fam.map((f,i)=>`
-    <div class="pbar fam${i%6}"><div class="lab"><span class="nm" title="${f.familia}">${f.familia}</span><span class="pc">${fmt(f.pct,1)}%</span></div>
-      <div class="trk"><div class="fl" style="width:${(f.pct/max)*100}%"></div></div></div>`).join("");
+  document.getElementById("familia").innerHTML=`<div class="famlist">`+fam.map(f=>
+    `<div class="frow"><span class="fnm" title="${f.familia}">${f.familia}</span><span class="fpc">${fmt(f.pct,1)}%</span></div>`).join("")+`</div>`;
 }
 const MESES_ABBR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
 // --- mes actual vs mes anterior (comparacion) ---
