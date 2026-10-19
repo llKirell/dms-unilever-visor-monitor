@@ -80,7 +80,7 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .goal.neutral .goal-state{color:var(--muted);background:var(--panel-2)}
 /* === LAYOUT: izquierda (banda + tendencia) | derecha (ranking a toda altura) === */
 .layout{display:grid;grid-template-columns:1fr clamp(340px,34vw,640px);gap:clamp(8px,1vw,16px);min-height:0}
-.left{display:grid;grid-template-rows:auto 1fr;gap:clamp(8px,1.1vh,14px);min-height:0}
+.left{display:grid;grid-template-rows:auto 1fr;gap:clamp(6px,.8vh,10px);min-height:0}
 .topband{display:flex;gap:clamp(7px,.8vw,13px);align-items:stretch;min-height:0}
 .turno-mini{display:flex;flex-direction:column;gap:clamp(5px,.6vh,9px);flex:0 0 auto}
 /* banda superior = 3 columnas de igual altura (la del texto) */
@@ -130,8 +130,8 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .card.trend .body,.card.compact .body{flex:1;min-height:0}
 .card.trend .body{padding:4px 12px 8px}
 .card.trend svg{width:100%;height:100%}
-.card.compact .body{padding:6px 12px 10px;overflow-y:auto}
-.card h2{font-size:clamp(10px,.78vw,13px);margin:0;padding:clamp(6px,.9vh,12px) 14px 0;letter-spacing:.2px}
+.card.compact .body{padding:4px 12px 7px;overflow-y:auto}
+.card h2{font-size:clamp(10px,.78vw,13px);margin:0;padding:clamp(4px,.6vh,8px) 14px 0;letter-spacing:.2px}
 .card .hint{font-size:clamp(9px,.7vw,12px);color:var(--muted);padding:1px 14px 0}
 .card .body{padding:12px 14px}
 /* columna de ranking (turno activo / manual / top 15) */
@@ -554,13 +554,13 @@ function smoothPath(pts, t=0.18){
 function kfmt(v){v=+v||0; return v>=1000?(v/1000).toLocaleString("es-PE",{maximumFractionDigits:0})+"k":v.toLocaleString("es-PE",{maximumFractionDigits:0});}
 // Combo: BARRAS = productividad (tasa/h) con colores de semaforo · LINEA = total del dia (volumen).
 function comboChart(svg, days, m, target){
-  const W=1000,H=600,L=64,R=72,T=46,B=98,pw=W-L-R,ph=H-T-B;
+  const W=1000,H=600,L=64,R=72,T=40,B=84,pw=W-L-R,ph=H-T-B;
   const n=days.length||1;
-  // escala robusta: ignora dias parciales/atipicos (tope por P95 de dias validos) para que un dia degenerado no aplaste el resto
-  const niceUp=v=>{if(!(v>0))return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e,k=f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10;return k*e;};
+  // escala ajustada: barras protagonistas -> tope FINO sobre P95 con poco margen (antes saltaba a 1/2/5x10^n y dejaba las barras a media altura)
+  const niceCeil=v=>{if(!(v>0))return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),step=e/5;return Math.ceil(v/step)*step;};
   const okRates=days.filter(d=>d.rate!=null&&!d.partial).map(d=>d.rate).sort((a,b)=>a-b);
   const p95=okRates.length?okRates[Math.min(okRates.length-1,Math.floor(okRates.length*0.95))]:0;
-  const maxRate=niceUp(Math.max(p95,(target?.objetivo||0)*1.15,1));
+  const maxRate=niceCeil(Math.max(p95,(target?.objetivo||0)*1.1,1)*1.06);
   const maxTot=Math.max(...days.filter(d=>!d.partial).map(d=>d.total),1);
   const slot=pw/n, bw=Math.min(slot*0.66,50);
   const xC=i=>L+slot*i+slot/2;
