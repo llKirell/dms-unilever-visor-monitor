@@ -16,8 +16,9 @@ on:
         required: false
         default: ""
   schedule:
-    # GitHub Actions usa UTC; cada 10 minutos se refresca el mes actual.
-    - cron: "*/10 * * * *"
+    # GitHub Actions usa UTC; cada 10 minutos, desplazado 3 minutos
+    # para evitar la carga de los minutos exactos de cada hora.
+    - cron: "3-59/10 * * * *"
 
 permissions:
   contents: write
