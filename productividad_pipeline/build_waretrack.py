@@ -241,6 +241,7 @@ select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);b
 .rank-list .rankrow .hh{font-size:clamp(10px,.76vw,13px)}
 .rank-list .rankrow .hh.strong{color:var(--ink);font-weight:800}
 .rank-list .rankrow .rk{font-size:clamp(10px,.75vw,13px)}
+.last-update{padding:6px 14px 9px;text-align:right;color:var(--muted);font-size:clamp(9px,.62vw,11px);font-weight:700;white-space:nowrap}
 .empty{padding:22px 14px;color:var(--muted);text-align:center;font-size:clamp(12px,.9vw,15px)}
 /* barras de participacion (mix y familia) */
 .pbar{margin-bottom:clamp(5px,.8vh,10px)}
@@ -375,6 +376,7 @@ tbody tr:hover{background:var(--panel-2)}
       <div class="seg rank-ctrl" id="rank-ctrl"></div>
       <div class="rank-columns"><span>#</span><span>Usuario</span><span class="prod">Prod.</span><span class="hrs">Hrs</span></div>
       <div class="rank-list" id="rank-list"></div>
+      <div class="last-update" id="last-update">Última actualización de datos: --</div>
     </div>
   </div>
 
@@ -753,13 +755,24 @@ function renderRanking(){
       <div class="vv" title="Eficiencia ${fmt(u.efic,0)}%">${fmt(u[m.key],m.dec)}</div>
       <div class="hh${byHoras?' strong':''}">${fmt(u.horas,1)} h</div></div>`;}).join("")+`</div>`;
 }
+function formatDataDate(value){
+  if(!value)return "--";
+  const parts=String(value).split("-");
+  return parts.length===3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : String(value);
+}
+function renderLastUpdate(){
+  const el=document.getElementById("last-update");
+  if(!el)return;
+  const latest=DATA?.meta?.rango_fechas?.[1] || "";
+  el.textContent=`Última actualización de datos: ${formatDataDate(latest)}`;
+}
 function renderRankCtrl(){
   const opts=[["auto","Auto"],["1° TURNO","1°"],["2° TURNO","2°"],["3° TURNO","3°"],["top15","Top 15"]];
   const el=document.getElementById("rank-ctrl");
   el.innerHTML=opts.map(([k,l])=>`<button data-k="${k}" class="${state.rankMode===k?'on':''}">${l}</button>`).join("");
   el.onclick=e=>{const b=e.target.closest("button");if(!b)return;state.rankMode=b.dataset.k;renderTurnoMini();renderRanking();renderRankCtrl();};
 }
-function renderAll(){renderKpis();renderTurnoMini();renderTrend();renderMix();renderFamilia();renderRankCtrl();renderRanking();}
+function renderAll(){renderKpis();renderTurnoMini();renderTrend();renderMix();renderFamilia();renderRankCtrl();renderRanking();renderLastUpdate();}
 // tema
 const tb=document.getElementById("theme");
 tb.onclick=()=>{const r=document.documentElement;const cur=r.getAttribute("data-theme");
