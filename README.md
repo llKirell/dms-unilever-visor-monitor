@@ -63,3 +63,12 @@ Notas:
 - las vistas usan `hash routes`, por ejemplo:
   - `https://llKirell.github.io/dms-unilever-visor-monitor/#/rampas-voz`
   - `https://llKirell.github.io/dms-unilever-visor-monitor/#/dashboard-web`
+
+## Actualización automática
+
+El Worker de Cloudflare incluye un Cron Trigger cada 10 minutos que dispara el
+workflow `Refresh Productividad` de GitHub. Para activarlo, crea un token
+fine-grained de GitHub con permiso `Actions: Read and write` únicamente para
+este repositorio y guárdalo en Cloudflare Workers como el secreto:
+
+`GITHUB_ACTIONS_TOKEN`
