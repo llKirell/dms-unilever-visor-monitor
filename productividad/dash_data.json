@@ -6,23 +6,23 @@
     ],
     "personas": 52,
     "dias": 16,
-    "tareas_total": 2701,
-    "tareas_elegibles": 2638,
+    "tareas_total": 2705,
+    "tareas_elegibles": 2642,
     "tareas_excepcion": 63,
-    "horas_totales": 1551.49,
+    "horas_totales": 1557.26,
     "umbral_pallet_cajas_por_ubic": 60.0,
     "modelo_estandar": {
-      "a": 11.6626,
-      "b": 0.04254,
-      "c": 2.7837,
+      "a": 11.7144,
+      "b": 0.04247,
+      "c": 2.7888,
       "r2": 0.297,
       "operarios_eval": 52,
-      "tareas_eval": 2638,
+      "tareas_eval": 2642,
       "formula": "t_estandar(min) = a + b*unidades + c*visitas",
       "nota": "100% = promedio de la operacion. Limitacion: sobreestima tareas muy cortas (eficiencias extremas con muchas tareas chicas).",
       "rango_efic_persona": [
-        34.8,
-        10197.4
+        34.9,
+        10237.6
       ]
     },
     "cobertura": {
@@ -32,55 +32,55 @@
       "n_articulos_sin_factor": 0
     },
     "flujo": {
-      "lineas_flujo": 19400,
-      "lineas_cj": 18773,
-      "lineas_pallet": 627,
-      "pallets_completos": 842.0,
-      "cajas_sueltas": 329513.0,
-      "cajas_eq_total": 441107.0,
-      "pct_pallet": 25.3,
-      "cruce_pct": 93.9,
+      "lineas_flujo": 19971,
+      "lineas_cj": 19328,
+      "lineas_pallet": 643,
+      "pallets_completos": 861.0,
+      "cajas_sueltas": 337971.0,
+      "cajas_eq_total": 450880.0,
+      "pct_pallet": 25.0,
+      "cruce_pct": 96.9,
       "n_articulos_sin_factor": 0
     }
   },
   "comparativo": {
     "metodo_jefes_global": {
-      "cajas_hr": 265.36,
-      "horas": 1551.495,
-      "tareas": 2638,
+      "cajas_hr": 264.67,
+      "horas": 1557.264,
+      "tareas": 2642,
       "nota": "Forma actual de los jefes: cuenta toda caja por igual (los pallets completos inflan la tasa)."
     },
     "metodo_nuevo": {
       "detalle_pick": {
-        "cajas_hr": 169.58,
-        "horas": 1311.63,
-        "tareas": 1715,
-        "pct_horas": 84.5
+        "cajas_hr": 169.19,
+        "horas": 1317.399,
+        "tareas": 1719,
+        "pct_horas": 84.6
       },
       "pallet_move": {
         "pallets_hr": 5.76,
         "cajas_hr": 789.08,
         "horas": 239.865,
         "tareas": 923,
-        "pct_horas": 15.5
+        "pct_horas": 15.4
       },
       "nota": "Normaliza la unidad de medida (estandar 3PL/WMS): el picking de detalle se mide en cajas/h REAL (sin distorsion de pallets) y el movimiento de pallet en pallets/h (1 pallet = 1 ubicacion)."
     }
   },
   "mix": {
-    "cajas_sueltas": 309772.0,
-    "cajas_equiv_pallet": 101927.0,
-    "total_equiv": 411699.0,
-    "pct_cajas": 75.2,
-    "pct_pallets": 24.8,
-    "pallets": 788.0
+    "cajas_sueltas": 310251.0,
+    "cajas_equiv_pallet": 101908.0,
+    "total_equiv": 412159.0,
+    "pct_cajas": 75.3,
+    "pct_pallets": 24.7,
+    "pallets": 789.0
   },
   "por_familia": [
     {
       "familia": "HPC",
-      "cajas_sueltas": 219765.0,
-      "cajas": 297408.0,
-      "pct": 70.9
+      "cajas_sueltas": 220474.0,
+      "cajas": 297758.0,
+      "pct": 71.1
     },
     {
       "familia": "AEROSOLES",
@@ -90,20 +90,20 @@
     },
     {
       "familia": "HC",
-      "cajas_sueltas": 12110.0,
-      "cajas": 13012.0,
+      "cajas_sueltas": 12147.0,
+      "cajas": 13118.0,
       "pct": 3.9
     },
     {
       "familia": "FOODS",
-      "cajas_sueltas": 4447.0,
+      "cajas_sueltas": 4231.0,
       "cajas": 6795.0,
       "pct": 1.4
     },
     {
       "familia": "DETERGENTES",
-      "cajas_sueltas": 1811.0,
-      "cajas": 3406.0,
+      "cajas_sueltas": 1760.0,
+      "cajas": 3410.0,
       "pct": 0.6
     },
     {
@@ -1077,7 +1077,7 @@
       "dia": "2026-11-17",
       "turno": "3° TURNO",
       "familia": "DETERGENTES",
-      "cajas_sueltas": 204.0,
+      "cajas_sueltas": 149.0,
       "cajas": 204.0
     },
     {
@@ -1091,14 +1091,14 @@
       "dia": "2026-11-17",
       "turno": "3° TURNO",
       "familia": "HC",
-      "cajas_sueltas": 689.0,
+      "cajas_sueltas": 620.0,
       "cajas": 689.0
     },
     {
       "dia": "2026-11-17",
       "turno": "3° TURNO",
       "familia": "HPC",
-      "cajas_sueltas": 8367.0,
+      "cajas_sueltas": 8683.0,
       "cajas": 15324.0
     },
     {
@@ -1126,7 +1126,7 @@
       "dia": "2026-11-18",
       "turno": "1° TURNO",
       "familia": "HPC",
-      "cajas_sueltas": 3720.0,
+      "cajas_sueltas": 3763.0,
       "cajas": 4637.0
     },
     {
@@ -1167,23 +1167,30 @@
     {
       "dia": "2026-11-18",
       "turno": "3° TURNO",
+      "familia": "DETERGENTES",
+      "cajas_sueltas": 4.0,
+      "cajas": 4.0
+    },
+    {
+      "dia": "2026-11-18",
+      "turno": "3° TURNO",
       "familia": "FOODS",
-      "cajas_sueltas": 627.0,
+      "cajas_sueltas": 411.0,
       "cajas": 627.0
     },
     {
       "dia": "2026-11-18",
       "turno": "3° TURNO",
       "familia": "HC",
-      "cajas_sueltas": 321.0,
-      "cajas": 1029.0
+      "cajas_sueltas": 427.0,
+      "cajas": 1135.0
     },
     {
       "dia": "2026-11-18",
       "turno": "3° TURNO",
       "familia": "HPC",
-      "cajas_sueltas": 7002.0,
-      "cajas": 14805.0
+      "cajas_sueltas": 7352.0,
+      "cajas": 15155.0
     }
   ],
   "celdas": [
@@ -1202,7 +1209,7 @@
       "peso_tn": 3.046,
       "ubicaciones": 39.0,
       "detalle": 39.0,
-      "t_std_min": 200.99,
+      "t_std_min": 201.32,
       "t_real_min": 959.28,
       "efic": 21.0
     },
@@ -1221,9 +1228,9 @@
       "peso_tn": 7.531,
       "ubicaciones": 71.0,
       "detalle": 73.0,
-      "t_std_min": 413.36,
+      "t_std_min": 414.29,
       "t_real_min": 851.07,
-      "efic": 48.6
+      "efic": 48.7
     },
     {
       "usuario": "MHUAMANI",
@@ -1240,9 +1247,9 @@
       "peso_tn": 3.522,
       "ubicaciones": 92.0,
       "detalle": 95.0,
-      "t_std_min": 391.51,
+      "t_std_min": 392.25,
       "t_real_min": 795.83,
-      "efic": 49.2
+      "efic": 49.3
     },
     {
       "usuario": "CCELESTINO",
@@ -1259,9 +1266,9 @@
       "peso_tn": 5.488,
       "ubicaciones": 40.0,
       "detalle": 43.0,
-      "t_std_min": 267.83,
+      "t_std_min": 268.41,
       "t_real_min": 775.62,
-      "efic": 34.5
+      "efic": 34.6
     },
     {
       "usuario": "JSULCAS",
@@ -1278,9 +1285,9 @@
       "peso_tn": 4.723,
       "ubicaciones": 84.0,
       "detalle": 86.0,
-      "t_std_min": 367.24,
+      "t_std_min": 367.95,
       "t_real_min": 728.9,
-      "efic": 50.4
+      "efic": 50.5
     },
     {
       "usuario": "MICHPASA",
@@ -1297,9 +1304,9 @@
       "peso_tn": 9.015,
       "ubicaciones": 97.0,
       "detalle": 102.0,
-      "t_std_min": 588.9,
+      "t_std_min": 590.29,
       "t_real_min": 714.72,
-      "efic": 82.4
+      "efic": 82.6
     },
     {
       "usuario": "JCARDENASBA",
@@ -1316,9 +1323,9 @@
       "peso_tn": 4.633,
       "ubicaciones": 123.0,
       "detalle": 124.0,
-      "t_std_min": 520.1,
+      "t_std_min": 521.08,
       "t_real_min": 701.72,
-      "efic": 74.1
+      "efic": 74.3
     },
     {
       "usuario": "JSULCAS",
@@ -1335,9 +1342,9 @@
       "peso_tn": 4.243,
       "ubicaciones": 106.0,
       "detalle": 108.0,
-      "t_std_min": 413.54,
+      "t_std_min": 414.32,
       "t_real_min": 690.17,
-      "efic": 59.9
+      "efic": 60.0
     },
     {
       "usuario": "IDELGADOJ",
@@ -1354,9 +1361,9 @@
       "peso_tn": 10.733,
       "ubicaciones": 104.0,
       "detalle": 124.0,
-      "t_std_min": 635.23,
+      "t_std_min": 636.61,
       "t_real_min": 688.57,
-      "efic": 92.3
+      "efic": 92.5
     },
     {
       "usuario": "JCHILINGANOA",
@@ -1373,9 +1380,9 @@
       "peso_tn": 4.558,
       "ubicaciones": 57.0,
       "detalle": 59.0,
-      "t_std_min": 307.02,
+      "t_std_min": 307.63,
       "t_real_min": 682.87,
-      "efic": 45.0
+      "efic": 45.1
     },
     {
       "usuario": "IDELGADOJ",
@@ -1392,9 +1399,9 @@
       "peso_tn": 9.003,
       "ubicaciones": 146.0,
       "detalle": 148.0,
-      "t_std_min": 738.2,
+      "t_std_min": 739.47,
       "t_real_min": 655.28,
-      "efic": 112.7
+      "efic": 112.8
     },
     {
       "usuario": "JSANTAMARIA",
@@ -1411,9 +1418,9 @@
       "peso_tn": 10.474,
       "ubicaciones": 151.0,
       "detalle": 153.0,
-      "t_std_min": 764.75,
+      "t_std_min": 766.45,
       "t_real_min": 630.5,
-      "efic": 121.3
+      "efic": 121.6
     },
     {
       "usuario": "CCASTRO",
@@ -1430,9 +1437,9 @@
       "peso_tn": 9.06,
       "ubicaciones": 70.0,
       "detalle": 70.0,
-      "t_std_min": 473.72,
+      "t_std_min": 474.69,
       "t_real_min": 597.92,
-      "efic": 79.2
+      "efic": 79.4
     },
     {
       "usuario": "OHUAYTAL",
@@ -1449,7 +1456,7 @@
       "peso_tn": 3.178,
       "ubicaciones": 26.0,
       "detalle": 26.0,
-      "t_std_min": 154.21,
+      "t_std_min": 154.57,
       "t_real_min": 596.25,
       "efic": 25.9
     },
@@ -1468,9 +1475,9 @@
       "peso_tn": 8.626,
       "ubicaciones": 102.0,
       "detalle": 105.0,
-      "t_std_min": 576.97,
+      "t_std_min": 578.15,
       "t_real_min": 588.57,
-      "efic": 98.0
+      "efic": 98.2
     },
     {
       "usuario": "CJAIMEH",
@@ -1487,9 +1494,9 @@
       "peso_tn": 5.983,
       "ubicaciones": 82.0,
       "detalle": 164.0,
-      "t_std_min": 429.92,
+      "t_std_min": 430.65,
       "t_real_min": 566.8,
-      "efic": 75.9
+      "efic": 76.0
     },
     {
       "usuario": "NCAMACHOJ",
@@ -1506,7 +1513,7 @@
       "peso_tn": 0.882,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 46.59,
+      "t_std_min": 46.67,
       "t_real_min": 561.85,
       "efic": 8.3
     },
@@ -1525,9 +1532,9 @@
       "peso_tn": 3.173,
       "ubicaciones": 71.0,
       "detalle": 71.0,
-      "t_std_min": 361.19,
+      "t_std_min": 361.99,
       "t_real_min": 558.23,
-      "efic": 64.7
+      "efic": 64.8
     },
     {
       "usuario": "JCONTRERASC",
@@ -1544,9 +1551,9 @@
       "peso_tn": 9.501,
       "ubicaciones": 83.0,
       "detalle": 87.0,
-      "t_std_min": 505.83,
+      "t_std_min": 506.86,
       "t_real_min": 551.63,
-      "efic": 91.7
+      "efic": 91.9
     },
     {
       "usuario": "MLAZONM",
@@ -1563,7 +1570,7 @@
       "peso_tn": 4.301,
       "ubicaciones": 44.0,
       "detalle": 50.0,
-      "t_std_min": 215.51,
+      "t_std_min": 215.93,
       "t_real_min": 544.67,
       "efic": 39.6
     },
@@ -1582,9 +1589,9 @@
       "peso_tn": 6.06,
       "ubicaciones": 120.0,
       "detalle": 124.0,
-      "t_std_min": 522.69,
+      "t_std_min": 523.7,
       "t_real_min": 536.77,
-      "efic": 97.4
+      "efic": 97.6
     },
     {
       "usuario": "CCASTRO",
@@ -1601,9 +1608,9 @@
       "peso_tn": 6.596,
       "ubicaciones": 141.0,
       "detalle": 150.0,
-      "t_std_min": 635.52,
+      "t_std_min": 636.62,
       "t_real_min": 533.45,
-      "efic": 119.1
+      "efic": 119.3
     },
     {
       "usuario": "MCARILLO",
@@ -1620,9 +1627,9 @@
       "peso_tn": 6.028,
       "ubicaciones": 113.0,
       "detalle": 113.0,
-      "t_std_min": 498.96,
+      "t_std_min": 500.01,
       "t_real_min": 526.73,
-      "efic": 94.7
+      "efic": 94.9
     },
     {
       "usuario": "JCONTRERASC",
@@ -1639,9 +1646,9 @@
       "peso_tn": 5.776,
       "ubicaciones": 83.0,
       "detalle": 83.0,
-      "t_std_min": 417.4,
+      "t_std_min": 418.3,
       "t_real_min": 526.5,
-      "efic": 79.3
+      "efic": 79.4
     },
     {
       "usuario": "MCARILLO",
@@ -1651,16 +1658,16 @@
       "horas": 8.737,
       "tareas": 9,
       "cajas": 1593.0,
-      "cajas_sueltas": 1309.0,
-      "pallets": 4.0,
-      "unidades_productivas": 1313.0,
+      "cajas_sueltas": 1437.0,
+      "pallets": 2.0,
+      "unidades_productivas": 1439.0,
       "volumen_m3": 15.748,
       "peso_tn": 7.294,
       "ubicaciones": 71.0,
       "detalle": 74.0,
-      "t_std_min": 370.37,
+      "t_std_min": 371.09,
       "t_real_min": 524.23,
-      "efic": 70.7
+      "efic": 70.8
     },
     {
       "usuario": "AMIRANDAT",
@@ -1677,9 +1684,9 @@
       "peso_tn": 16.259,
       "ubicaciones": 78.0,
       "detalle": 78.0,
-      "t_std_min": 582.52,
+      "t_std_min": 583.8,
       "t_real_min": 519.02,
-      "efic": 112.2
+      "efic": 112.5
     },
     {
       "usuario": "JCONTRERASC",
@@ -1696,9 +1703,9 @@
       "peso_tn": 4.886,
       "ubicaciones": 107.0,
       "detalle": 166.0,
-      "t_std_min": 471.58,
+      "t_std_min": 472.62,
       "t_real_min": 513.7,
-      "efic": 91.8
+      "efic": 92.0
     },
     {
       "usuario": "CCASTRO",
@@ -1715,9 +1722,9 @@
       "peso_tn": 8.796,
       "ubicaciones": 87.0,
       "detalle": 88.0,
-      "t_std_min": 491.69,
+      "t_std_min": 492.79,
       "t_real_min": 513.3,
-      "efic": 95.8
+      "efic": 96.0
     },
     {
       "usuario": "JCHAVARRIM",
@@ -1727,16 +1734,16 @@
       "horas": 8.539,
       "tareas": 17,
       "cajas": 1277.0,
-      "cajas_sueltas": 1277.0,
-      "pallets": 0.0,
-      "unidades_productivas": 1277.0,
+      "cajas_sueltas": 1222.0,
+      "pallets": 1.0,
+      "unidades_productivas": 1223.0,
       "volumen_m3": 13.956,
       "peso_tn": 6.236,
       "ubicaciones": 93.0,
       "detalle": 130.0,
-      "t_std_min": 511.47,
+      "t_std_min": 512.74,
       "t_real_min": 512.32,
-      "efic": 99.8
+      "efic": 100.1
     },
     {
       "usuario": "MHUAMANI",
@@ -1753,9 +1760,9 @@
       "peso_tn": 6.773,
       "ubicaciones": 108.0,
       "detalle": 136.0,
-      "t_std_min": 509.71,
+      "t_std_min": 510.7,
       "t_real_min": 504.58,
-      "efic": 101.0
+      "efic": 101.2
     },
     {
       "usuario": "CCASTRO",
@@ -1772,9 +1779,9 @@
       "peso_tn": 7.189,
       "ubicaciones": 82.0,
       "detalle": 87.0,
-      "t_std_min": 427.81,
+      "t_std_min": 428.68,
       "t_real_min": 503.3,
-      "efic": 85.0
+      "efic": 85.2
     },
     {
       "usuario": "IDELGADOJ",
@@ -1791,9 +1798,9 @@
       "peso_tn": 6.572,
       "ubicaciones": 68.0,
       "detalle": 68.0,
-      "t_std_min": 417.27,
+      "t_std_min": 418.24,
       "t_real_min": 498.2,
-      "efic": 83.8
+      "efic": 83.9
     },
     {
       "usuario": "MCARILLO",
@@ -1810,9 +1817,9 @@
       "peso_tn": 5.181,
       "ubicaciones": 101.0,
       "detalle": 101.0,
-      "t_std_min": 523.31,
+      "t_std_min": 524.49,
       "t_real_min": 496.17,
-      "efic": 105.5
+      "efic": 105.7
     },
     {
       "usuario": "RGUIZADOL",
@@ -1829,7 +1836,7 @@
       "peso_tn": 0.929,
       "ubicaciones": 4.0,
       "detalle": 4.0,
-      "t_std_min": 29.31,
+      "t_std_min": 29.37,
       "t_real_min": 494.0,
       "efic": 5.9
     },
@@ -1848,9 +1855,9 @@
       "peso_tn": 8.189,
       "ubicaciones": 74.0,
       "detalle": 104.0,
-      "t_std_min": 409.63,
+      "t_std_min": 410.52,
       "t_real_min": 483.63,
-      "efic": 84.7
+      "efic": 84.9
     },
     {
       "usuario": "JCONTRERASC",
@@ -1867,9 +1874,9 @@
       "peso_tn": 6.287,
       "ubicaciones": 61.0,
       "detalle": 61.0,
-      "t_std_min": 392.97,
+      "t_std_min": 393.76,
       "t_real_min": 482.7,
-      "efic": 81.4
+      "efic": 81.6
     },
     {
       "usuario": "CCELESTINO",
@@ -1886,7 +1893,7 @@
       "peso_tn": 3.236,
       "ubicaciones": 28.0,
       "detalle": 28.0,
-      "t_std_min": 211.98,
+      "t_std_min": 212.33,
       "t_real_min": 480.05,
       "efic": 44.2
     },
@@ -1905,9 +1912,9 @@
       "peso_tn": 2.729,
       "ubicaciones": 125.0,
       "detalle": 128.0,
-      "t_std_min": 464.43,
+      "t_std_min": 465.23,
       "t_real_min": 477.92,
-      "efic": 97.2
+      "efic": 97.3
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -1924,9 +1931,9 @@
       "peso_tn": 4.262,
       "ubicaciones": 52.0,
       "detalle": 52.0,
-      "t_std_min": 302.49,
+      "t_std_min": 303.0,
       "t_real_min": 476.92,
-      "efic": 63.4
+      "efic": 63.5
     },
     {
       "usuario": "CCELESTINO",
@@ -1943,9 +1950,9 @@
       "peso_tn": 3.089,
       "ubicaciones": 49.0,
       "detalle": 50.0,
-      "t_std_min": 231.09,
+      "t_std_min": 231.61,
       "t_real_min": 476.07,
-      "efic": 48.5
+      "efic": 48.7
     },
     {
       "usuario": "IDELGADOJ",
@@ -1962,9 +1969,9 @@
       "peso_tn": 8.231,
       "ubicaciones": 96.0,
       "detalle": 99.0,
-      "t_std_min": 528.06,
+      "t_std_min": 529.19,
       "t_real_min": 475.43,
-      "efic": 111.1
+      "efic": 111.3
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -1981,9 +1988,9 @@
       "peso_tn": 4.195,
       "ubicaciones": 125.0,
       "detalle": 174.0,
-      "t_std_min": 488.39,
+      "t_std_min": 489.29,
       "t_real_min": 475.33,
-      "efic": 102.7
+      "efic": 102.9
     },
     {
       "usuario": "JSULCAS",
@@ -2000,9 +2007,9 @@
       "peso_tn": 4.103,
       "ubicaciones": 76.0,
       "detalle": 91.0,
-      "t_std_min": 330.08,
+      "t_std_min": 330.77,
       "t_real_min": 475.33,
-      "efic": 69.4
+      "efic": 69.6
     },
     {
       "usuario": "MBELLIDOO",
@@ -2019,9 +2026,9 @@
       "peso_tn": 6.275,
       "ubicaciones": 77.0,
       "detalle": 82.0,
-      "t_std_min": 434.41,
+      "t_std_min": 435.36,
       "t_real_min": 474.58,
-      "efic": 91.5
+      "efic": 91.7
     },
     {
       "usuario": "MICHPASA",
@@ -2038,9 +2045,9 @@
       "peso_tn": 10.298,
       "ubicaciones": 133.0,
       "detalle": 135.0,
-      "t_std_min": 646.34,
+      "t_std_min": 647.7,
       "t_real_min": 474.47,
-      "efic": 136.2
+      "efic": 136.5
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2057,9 +2064,9 @@
       "peso_tn": 6.801,
       "ubicaciones": 66.0,
       "detalle": 67.0,
-      "t_std_min": 335.52,
+      "t_std_min": 336.17,
       "t_real_min": 472.92,
-      "efic": 70.9
+      "efic": 71.1
     },
     {
       "usuario": "MBELLIDOO",
@@ -2076,9 +2083,9 @@
       "peso_tn": 9.074,
       "ubicaciones": 97.0,
       "detalle": 103.0,
-      "t_std_min": 530.47,
+      "t_std_min": 531.67,
       "t_real_min": 472.33,
-      "efic": 112.3
+      "efic": 112.6
     },
     {
       "usuario": "IDELGADOJ",
@@ -2088,16 +2095,16 @@
       "horas": 7.868,
       "tareas": 21,
       "cajas": 2214.0,
-      "cajas_sueltas": 1467.0,
-      "pallets": 8.0,
-      "unidades_productivas": 1475.0,
+      "cajas_sueltas": 1434.0,
+      "pallets": 9.0,
+      "unidades_productivas": 1443.0,
       "volumen_m3": 23.993,
       "peso_tn": 10.327,
       "ubicaciones": 100.0,
       "detalle": 138.0,
-      "t_std_min": 617.47,
+      "t_std_min": 618.91,
       "t_real_min": 472.1,
-      "efic": 130.8
+      "efic": 131.1
     },
     {
       "usuario": "JESPINOZAH",
@@ -2114,9 +2121,9 @@
       "peso_tn": 5.994,
       "ubicaciones": 69.0,
       "detalle": 69.0,
-      "t_std_min": 343.53,
+      "t_std_min": 344.28,
       "t_real_min": 470.68,
-      "efic": 73.0
+      "efic": 73.1
     },
     {
       "usuario": "MHUAMANI",
@@ -2133,9 +2140,9 @@
       "peso_tn": 4.597,
       "ubicaciones": 107.0,
       "detalle": 122.0,
-      "t_std_min": 460.93,
+      "t_std_min": 461.85,
       "t_real_min": 470.5,
-      "efic": 98.0
+      "efic": 98.2
     },
     {
       "usuario": "MBELLIDOO",
@@ -2152,9 +2159,9 @@
       "peso_tn": 7.303,
       "ubicaciones": 126.0,
       "detalle": 146.0,
-      "t_std_min": 576.96,
+      "t_std_min": 578.01,
       "t_real_min": 469.38,
-      "efic": 122.9
+      "efic": 123.1
     },
     {
       "usuario": "MBELLIDOO",
@@ -2171,9 +2178,9 @@
       "peso_tn": 5.035,
       "ubicaciones": 72.0,
       "detalle": 72.0,
-      "t_std_min": 368.9,
+      "t_std_min": 369.55,
       "t_real_min": 469.3,
-      "efic": 78.6
+      "efic": 78.7
     },
     {
       "usuario": "AMIRANDAT",
@@ -2190,9 +2197,9 @@
       "peso_tn": 5.545,
       "ubicaciones": 72.0,
       "detalle": 71.0,
-      "t_std_min": 346.4,
+      "t_std_min": 347.16,
       "t_real_min": 466.37,
-      "efic": 74.3
+      "efic": 74.4
     },
     {
       "usuario": "JESPINOZAH",
@@ -2209,9 +2216,9 @@
       "peso_tn": 8.768,
       "ubicaciones": 63.0,
       "detalle": 63.0,
-      "t_std_min": 390.41,
+      "t_std_min": 391.23,
       "t_real_min": 466.17,
-      "efic": 83.7
+      "efic": 83.9
     },
     {
       "usuario": "GBAUTISTAT",
@@ -2228,9 +2235,9 @@
       "peso_tn": 3.125,
       "ubicaciones": 51.0,
       "detalle": 53.0,
-      "t_std_min": 251.21,
+      "t_std_min": 251.72,
       "t_real_min": 464.67,
-      "efic": 54.1
+      "efic": 54.2
     },
     {
       "usuario": "CJAIMEH",
@@ -2247,9 +2254,9 @@
       "peso_tn": 3.99,
       "ubicaciones": 94.0,
       "detalle": 96.0,
-      "t_std_min": 398.74,
+      "t_std_min": 399.49,
       "t_real_min": 464.05,
-      "efic": 85.9
+      "efic": 86.1
     },
     {
       "usuario": "JESPINOZAH",
@@ -2266,9 +2273,9 @@
       "peso_tn": 8.076,
       "ubicaciones": 67.0,
       "detalle": 68.0,
-      "t_std_min": 465.75,
+      "t_std_min": 466.62,
       "t_real_min": 463.77,
-      "efic": 100.4
+      "efic": 100.6
     },
     {
       "usuario": "IDELGADOJ",
@@ -2285,9 +2292,9 @@
       "peso_tn": 6.167,
       "ubicaciones": 87.0,
       "detalle": 93.0,
-      "t_std_min": 409.59,
+      "t_std_min": 410.32,
       "t_real_min": 460.2,
-      "efic": 89.0
+      "efic": 89.2
     },
     {
       "usuario": "MBELLIDOO",
@@ -2304,9 +2311,9 @@
       "peso_tn": 4.586,
       "ubicaciones": 91.0,
       "detalle": 91.0,
-      "t_std_min": 446.29,
+      "t_std_min": 447.0,
       "t_real_min": 459.77,
-      "efic": 97.1
+      "efic": 97.2
     },
     {
       "usuario": "CJAIMEH",
@@ -2323,9 +2330,9 @@
       "peso_tn": 6.237,
       "ubicaciones": 70.0,
       "detalle": 71.0,
-      "t_std_min": 410.27,
+      "t_std_min": 411.05,
       "t_real_min": 459.38,
-      "efic": 89.3
+      "efic": 89.5
     },
     {
       "usuario": "CJAIMEH",
@@ -2342,9 +2349,9 @@
       "peso_tn": 6.65,
       "ubicaciones": 57.0,
       "detalle": 61.0,
-      "t_std_min": 334.97,
+      "t_std_min": 335.61,
       "t_real_min": 455.93,
-      "efic": 73.5
+      "efic": 73.6
     },
     {
       "usuario": "CJAIMEH",
@@ -2361,9 +2368,9 @@
       "peso_tn": 6.456,
       "ubicaciones": 41.0,
       "detalle": 42.0,
-      "t_std_min": 317.58,
+      "t_std_min": 318.09,
       "t_real_min": 455.88,
-      "efic": 69.7
+      "efic": 69.8
     },
     {
       "usuario": "CJAIMEH",
@@ -2380,9 +2387,9 @@
       "peso_tn": 7.755,
       "ubicaciones": 37.0,
       "detalle": 36.0,
-      "t_std_min": 346.53,
+      "t_std_min": 347.1,
       "t_real_min": 453.38,
-      "efic": 76.4
+      "efic": 76.6
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2399,9 +2406,9 @@
       "peso_tn": 7.347,
       "ubicaciones": 67.0,
       "detalle": 71.0,
-      "t_std_min": 441.96,
+      "t_std_min": 442.81,
       "t_real_min": 450.98,
-      "efic": 98.0
+      "efic": 98.2
     },
     {
       "usuario": "JESPINOZAH",
@@ -2418,9 +2425,9 @@
       "peso_tn": 8.063,
       "ubicaciones": 61.0,
       "detalle": 61.0,
-      "t_std_min": 417.3,
+      "t_std_min": 418.05,
       "t_real_min": 448.62,
-      "efic": 93.0
+      "efic": 93.2
     },
     {
       "usuario": "IDELGADOJ",
@@ -2437,9 +2444,9 @@
       "peso_tn": 5.475,
       "ubicaciones": 48.0,
       "detalle": 48.0,
-      "t_std_min": 294.39,
+      "t_std_min": 295.01,
       "t_real_min": 448.08,
-      "efic": 65.7
+      "efic": 65.8
     },
     {
       "usuario": "CJAIMEH",
@@ -2456,9 +2463,9 @@
       "peso_tn": 5.629,
       "ubicaciones": 59.0,
       "detalle": 64.0,
-      "t_std_min": 333.77,
+      "t_std_min": 334.36,
       "t_real_min": 447.2,
-      "efic": 74.6
+      "efic": 74.8
     },
     {
       "usuario": "MBELLIDOO",
@@ -2475,9 +2482,9 @@
       "peso_tn": 11.241,
       "ubicaciones": 96.0,
       "detalle": 97.0,
-      "t_std_min": 548.71,
+      "t_std_min": 549.94,
       "t_real_min": 445.98,
-      "efic": 123.0
+      "efic": 123.3
     },
     {
       "usuario": "RGUIZADOL",
@@ -2494,9 +2501,9 @@
       "peso_tn": 5.864,
       "ubicaciones": 99.0,
       "detalle": 100.0,
-      "t_std_min": 478.79,
+      "t_std_min": 479.74,
       "t_real_min": 443.27,
-      "efic": 108.0
+      "efic": 108.2
     },
     {
       "usuario": "JCONTRERASC",
@@ -2513,9 +2520,9 @@
       "peso_tn": 8.056,
       "ubicaciones": 69.0,
       "detalle": 74.0,
-      "t_std_min": 431.83,
+      "t_std_min": 432.71,
       "t_real_min": 442.73,
-      "efic": 97.5
+      "efic": 97.7
     },
     {
       "usuario": "LQUEVEDOR",
@@ -2532,9 +2539,9 @@
       "peso_tn": 4.235,
       "ubicaciones": 66.0,
       "detalle": 66.0,
-      "t_std_min": 345.01,
+      "t_std_min": 345.72,
       "t_real_min": 442.68,
-      "efic": 77.9
+      "efic": 78.1
     },
     {
       "usuario": "JCONTRERASC",
@@ -2551,9 +2558,9 @@
       "peso_tn": 6.189,
       "ubicaciones": 86.0,
       "detalle": 91.0,
-      "t_std_min": 425.29,
+      "t_std_min": 426.2,
       "t_real_min": 441.98,
-      "efic": 96.2
+      "efic": 96.4
     },
     {
       "usuario": "JBENDEZUA",
@@ -2570,9 +2577,9 @@
       "peso_tn": 1.217,
       "ubicaciones": 39.0,
       "detalle": 39.0,
-      "t_std_min": 148.14,
+      "t_std_min": 148.42,
       "t_real_min": 438.33,
-      "efic": 33.8
+      "efic": 33.9
     },
     {
       "usuario": "JSULCAS",
@@ -2589,9 +2596,9 @@
       "peso_tn": 3.259,
       "ubicaciones": 71.0,
       "detalle": 71.0,
-      "t_std_min": 307.61,
+      "t_std_min": 308.21,
       "t_real_min": 438.07,
-      "efic": 70.2
+      "efic": 70.4
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -2608,9 +2615,9 @@
       "peso_tn": 6.432,
       "ubicaciones": 71.0,
       "detalle": 72.0,
-      "t_std_min": 396.55,
+      "t_std_min": 397.44,
       "t_real_min": 437.47,
-      "efic": 90.6
+      "efic": 90.9
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2627,9 +2634,9 @@
       "peso_tn": 5.557,
       "ubicaciones": 92.0,
       "detalle": 112.0,
-      "t_std_min": 456.62,
+      "t_std_min": 457.46,
       "t_real_min": 437.18,
-      "efic": 104.4
+      "efic": 104.6
     },
     {
       "usuario": "JSULCAS",
@@ -2639,16 +2646,16 @@
       "horas": 7.28,
       "tareas": 9,
       "cajas": 953.0,
-      "cajas_sueltas": 845.0,
-      "pallets": 1.0,
-      "unidades_productivas": 846.0,
+      "cajas_sueltas": 809.0,
+      "pallets": 2.0,
+      "unidades_productivas": 811.0,
       "volumen_m3": 10.57,
       "peso_tn": 4.382,
       "ubicaciones": 71.0,
       "detalle": 115.0,
-      "t_std_min": 343.15,
+      "t_std_min": 343.91,
       "t_real_min": 436.82,
-      "efic": 78.6
+      "efic": 78.7
     },
     {
       "usuario": "JRIVERAH",
@@ -2665,9 +2672,9 @@
       "peso_tn": 5.883,
       "ubicaciones": 73.0,
       "detalle": 80.0,
-      "t_std_min": 373.09,
+      "t_std_min": 373.82,
       "t_real_min": 434.75,
-      "efic": 85.8
+      "efic": 86.0
     },
     {
       "usuario": "LQUEVEDOR",
@@ -2684,9 +2691,9 @@
       "peso_tn": 3.423,
       "ubicaciones": 64.0,
       "detalle": 64.0,
-      "t_std_min": 328.21,
+      "t_std_min": 328.85,
       "t_real_min": 434.6,
-      "efic": 75.5
+      "efic": 75.7
     },
     {
       "usuario": "LQUEVEDOR",
@@ -2703,9 +2710,9 @@
       "peso_tn": 4.31,
       "ubicaciones": 60.0,
       "detalle": 62.0,
-      "t_std_min": 333.36,
+      "t_std_min": 333.96,
       "t_real_min": 434.55,
-      "efic": 76.7
+      "efic": 76.9
     },
     {
       "usuario": "RGUIZADOL",
@@ -2722,9 +2729,9 @@
       "peso_tn": 5.142,
       "ubicaciones": 72.0,
       "detalle": 77.0,
-      "t_std_min": 360.9,
+      "t_std_min": 361.65,
       "t_real_min": 432.45,
-      "efic": 83.5
+      "efic": 83.6
     },
     {
       "usuario": "JCARDENASBA",
@@ -2741,9 +2748,9 @@
       "peso_tn": 5.642,
       "ubicaciones": 123.0,
       "detalle": 166.0,
-      "t_std_min": 511.96,
+      "t_std_min": 512.81,
       "t_real_min": 429.68,
-      "efic": 119.1
+      "efic": 119.3
     },
     {
       "usuario": "GBAUTISTAT",
@@ -2760,9 +2767,9 @@
       "peso_tn": 5.04,
       "ubicaciones": 57.0,
       "detalle": 58.0,
-      "t_std_min": 357.54,
+      "t_std_min": 358.36,
       "t_real_min": 429.17,
-      "efic": 83.3
+      "efic": 83.5
     },
     {
       "usuario": "CCASTRO",
@@ -2779,9 +2786,9 @@
       "peso_tn": 13.858,
       "ubicaciones": 58.0,
       "detalle": 58.0,
-      "t_std_min": 614.62,
+      "t_std_min": 615.8,
       "t_real_min": 424.93,
-      "efic": 144.6
+      "efic": 144.9
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2798,9 +2805,9 @@
       "peso_tn": 6.57,
       "ubicaciones": 70.0,
       "detalle": 70.0,
-      "t_std_min": 384.49,
+      "t_std_min": 385.32,
       "t_real_min": 424.58,
-      "efic": 90.6
+      "efic": 90.8
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2817,9 +2824,9 @@
       "peso_tn": 7.111,
       "ubicaciones": 49.0,
       "detalle": 52.0,
-      "t_std_min": 332.68,
+      "t_std_min": 333.45,
       "t_real_min": 423.4,
-      "efic": 78.6
+      "efic": 78.8
     },
     {
       "usuario": "MCARILLO",
@@ -2836,9 +2843,9 @@
       "peso_tn": 2.788,
       "ubicaciones": 49.0,
       "detalle": 56.0,
-      "t_std_min": 201.17,
+      "t_std_min": 201.52,
       "t_real_min": 422.03,
-      "efic": 47.7
+      "efic": 47.8
     },
     {
       "usuario": "CCELESTINO",
@@ -2848,16 +2855,16 @@
       "horas": 7.021,
       "tareas": 10,
       "cajas": 1244.0,
-      "cajas_sueltas": 739.0,
-      "pallets": 6.0,
-      "unidades_productivas": 745.0,
+      "cajas_sueltas": 865.0,
+      "pallets": 4.0,
+      "unidades_productivas": 869.0,
       "volumen_m3": 13.065,
       "peso_tn": 6.134,
       "ubicaciones": 56.0,
       "detalle": 56.0,
-      "t_std_min": 325.43,
+      "t_std_min": 326.15,
       "t_real_min": 421.28,
-      "efic": 77.2
+      "efic": 77.4
     },
     {
       "usuario": "JRIVERAH",
@@ -2874,9 +2881,9 @@
       "peso_tn": 8.021,
       "ubicaciones": 128.0,
       "detalle": 192.0,
-      "t_std_min": 644.97,
+      "t_std_min": 646.28,
       "t_real_min": 420.17,
-      "efic": 153.5
+      "efic": 153.8
     },
     {
       "usuario": "IDELGADOJ",
@@ -2893,9 +2900,9 @@
       "peso_tn": 13.071,
       "ubicaciones": 122.0,
       "detalle": 128.0,
-      "t_std_min": 632.27,
+      "t_std_min": 633.62,
       "t_real_min": 419.25,
-      "efic": 150.8
+      "efic": 151.1
     },
     {
       "usuario": "CCELESTINO",
@@ -2912,9 +2919,9 @@
       "peso_tn": 5.887,
       "ubicaciones": 50.0,
       "detalle": 49.0,
-      "t_std_min": 339.58,
+      "t_std_min": 340.29,
       "t_real_min": 418.35,
-      "efic": 81.2
+      "efic": 81.3
     },
     {
       "usuario": "NCAMACHOJ",
@@ -2931,9 +2938,9 @@
       "peso_tn": 3.359,
       "ubicaciones": 70.0,
       "detalle": 70.0,
-      "t_std_min": 309.46,
+      "t_std_min": 310.05,
       "t_real_min": 412.68,
-      "efic": 75.0
+      "efic": 75.1
     },
     {
       "usuario": "AMIRANDAT",
@@ -2943,16 +2950,16 @@
       "horas": 6.852,
       "tareas": 17,
       "cajas": 1827.0,
-      "cajas_sueltas": 1402.0,
-      "pallets": 5.0,
-      "unidades_productivas": 1407.0,
+      "cajas_sueltas": 1317.0,
+      "pallets": 6.0,
+      "unidades_productivas": 1323.0,
       "volumen_m3": 23.021,
       "peso_tn": 10.22,
       "ubicaciones": 112.0,
       "detalle": 112.0,
-      "t_std_min": 587.76,
+      "t_std_min": 589.08,
       "t_real_min": 411.12,
-      "efic": 143.0
+      "efic": 143.3
     },
     {
       "usuario": "JSULCAS",
@@ -2969,9 +2976,9 @@
       "peso_tn": 5.349,
       "ubicaciones": 85.0,
       "detalle": 85.0,
-      "t_std_min": 396.42,
+      "t_std_min": 397.3,
       "t_real_min": 410.93,
-      "efic": 96.5
+      "efic": 96.7
     },
     {
       "usuario": "JCHAVARRIM",
@@ -2988,9 +2995,9 @@
       "peso_tn": 7.218,
       "ubicaciones": 50.0,
       "detalle": 51.0,
-      "t_std_min": 361.88,
+      "t_std_min": 362.62,
       "t_real_min": 410.45,
-      "efic": 88.2
+      "efic": 88.3
     },
     {
       "usuario": "JESPINOZAH",
@@ -3000,16 +3007,16 @@
       "horas": 6.786,
       "tareas": 15,
       "cajas": 1838.0,
-      "cajas_sueltas": 1236.0,
-      "pallets": 7.0,
-      "unidades_productivas": 1243.0,
+      "cajas_sueltas": 1426.0,
+      "pallets": 4.0,
+      "unidades_productivas": 1430.0,
       "volumen_m3": 18.122,
       "peso_tn": 7.492,
       "ubicaciones": 144.0,
       "detalle": 230.0,
-      "t_std_min": 653.98,
+      "t_std_min": 655.36,
       "t_real_min": 407.17,
-      "efic": 160.6
+      "efic": 161.0
     },
     {
       "usuario": "CJAIMEH",
@@ -3026,9 +3033,9 @@
       "peso_tn": 5.712,
       "ubicaciones": 74.0,
       "detalle": 76.0,
-      "t_std_min": 410.86,
+      "t_std_min": 411.75,
       "t_real_min": 405.35,
-      "efic": 101.4
+      "efic": 101.6
     },
     {
       "usuario": "JCHAVARRIM",
@@ -3045,9 +3052,9 @@
       "peso_tn": 6.257,
       "ubicaciones": 70.0,
       "detalle": 72.0,
-      "t_std_min": 361.97,
+      "t_std_min": 362.69,
       "t_real_min": 405.02,
-      "efic": 89.4
+      "efic": 89.6
     },
     {
       "usuario": "JCHILINGANOA",
@@ -3064,9 +3071,9 @@
       "peso_tn": 3.518,
       "ubicaciones": 37.0,
       "detalle": 37.0,
-      "t_std_min": 183.38,
+      "t_std_min": 183.72,
       "t_real_min": 403.23,
-      "efic": 45.5
+      "efic": 45.6
     },
     {
       "usuario": "MCARILLO",
@@ -3083,9 +3090,9 @@
       "peso_tn": 4.553,
       "ubicaciones": 35.0,
       "detalle": 37.0,
-      "t_std_min": 261.4,
+      "t_std_min": 262.02,
       "t_real_min": 399.42,
-      "efic": 65.4
+      "efic": 65.6
     },
     {
       "usuario": "FLARAQ",
@@ -3102,9 +3109,9 @@
       "peso_tn": 6.186,
       "ubicaciones": 91.0,
       "detalle": 91.0,
-      "t_std_min": 484.53,
+      "t_std_min": 485.61,
       "t_real_min": 398.98,
-      "efic": 121.4
+      "efic": 121.7
     },
     {
       "usuario": "JESPINOZAH",
@@ -3121,9 +3128,28 @@
       "peso_tn": 7.273,
       "ubicaciones": 44.0,
       "detalle": 44.0,
-      "t_std_min": 315.77,
+      "t_std_min": 316.38,
       "t_real_min": 398.08,
-      "efic": 79.3
+      "efic": 79.5
+    },
+    {
+      "usuario": "JESPINOZAH",
+      "dia": "2026-11-18",
+      "cargo": "OPERARIO ALMACEN UNILEVER",
+      "turno": "3° TURNO",
+      "horas": 6.63,
+      "tareas": 15,
+      "cajas": 1574.0,
+      "cajas_sueltas": 1263.0,
+      "pallets": 4.0,
+      "unidades_productivas": 1267.0,
+      "volumen_m3": 17.585,
+      "peso_tn": 7.557,
+      "ubicaciones": 45.0,
+      "detalle": 46.0,
+      "t_std_min": 368.06,
+      "t_real_min": 397.8,
+      "efic": 92.5
     },
     {
       "usuario": "JESPINOZAH",
@@ -3140,9 +3166,9 @@
       "peso_tn": 7.026,
       "ubicaciones": 54.0,
       "detalle": 61.0,
-      "t_std_min": 301.22,
+      "t_std_min": 301.81,
       "t_real_min": 397.5,
-      "efic": 75.8
+      "efic": 75.9
     },
     {
       "usuario": "RGUIZADOL",
@@ -3159,9 +3185,9 @@
       "peso_tn": 1.732,
       "ubicaciones": 64.0,
       "detalle": 61.0,
-      "t_std_min": 218.03,
+      "t_std_min": 218.43,
       "t_real_min": 395.22,
-      "efic": 55.2
+      "efic": 55.3
     },
     {
       "usuario": "CCELESTINO",
@@ -3178,9 +3204,9 @@
       "peso_tn": 2.79,
       "ubicaciones": 35.0,
       "detalle": 34.0,
-      "t_std_min": 175.86,
+      "t_std_min": 176.27,
       "t_real_min": 394.0,
-      "efic": 44.6
+      "efic": 44.7
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3197,9 +3223,9 @@
       "peso_tn": 5.413,
       "ubicaciones": 42.0,
       "detalle": 42.0,
-      "t_std_min": 262.89,
+      "t_std_min": 263.5,
       "t_real_min": 391.45,
-      "efic": 67.2
+      "efic": 67.3
     },
     {
       "usuario": "ACARRIONA",
@@ -3216,9 +3242,9 @@
       "peso_tn": 3.402,
       "ubicaciones": 44.0,
       "detalle": 45.0,
-      "t_std_min": 258.42,
+      "t_std_min": 259.05,
       "t_real_min": 389.1,
-      "efic": 66.4
+      "efic": 66.6
     },
     {
       "usuario": "CCASTRO",
@@ -3235,9 +3261,9 @@
       "peso_tn": 7.306,
       "ubicaciones": 89.0,
       "detalle": 101.0,
-      "t_std_min": 444.57,
+      "t_std_min": 445.48,
       "t_real_min": 387.37,
-      "efic": 114.8
+      "efic": 115.0
     },
     {
       "usuario": "EGUTIERREZA",
@@ -3254,9 +3280,9 @@
       "peso_tn": 7.402,
       "ubicaciones": 101.0,
       "detalle": 111.0,
-      "t_std_min": 537.42,
+      "t_std_min": 538.51,
       "t_real_min": 383.2,
-      "efic": 140.2
+      "efic": 140.5
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3273,9 +3299,28 @@
       "peso_tn": 4.853,
       "ubicaciones": 76.0,
       "detalle": 90.0,
-      "t_std_min": 345.35,
+      "t_std_min": 346.02,
       "t_real_min": 381.95,
-      "efic": 90.4
+      "efic": 90.6
+    },
+    {
+      "usuario": "JCHAVARRIM",
+      "dia": "2026-11-18",
+      "cargo": "OPERARIO ALMACEN UNILEVER",
+      "turno": "3° TURNO",
+      "horas": 6.291,
+      "tareas": 11,
+      "cajas": 1402.0,
+      "cajas_sueltas": 1327.0,
+      "pallets": 1.0,
+      "unidades_productivas": 1328.0,
+      "volumen_m3": 15.889,
+      "peso_tn": 7.615,
+      "ubicaciones": 49.0,
+      "detalle": 50.0,
+      "t_std_min": 325.05,
+      "t_real_min": 377.47,
+      "efic": 86.1
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3292,9 +3337,9 @@
       "peso_tn": 5.568,
       "ubicaciones": 79.0,
       "detalle": 91.0,
-      "t_std_min": 335.5,
+      "t_std_min": 336.21,
       "t_real_min": 377.27,
-      "efic": 88.9
+      "efic": 89.1
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -3311,9 +3356,9 @@
       "peso_tn": 3.835,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 240.8,
+      "t_std_min": 241.2,
       "t_real_min": 373.82,
-      "efic": 64.4
+      "efic": 64.5
     },
     {
       "usuario": "RGUIZADOL",
@@ -3330,9 +3375,9 @@
       "peso_tn": 2.397,
       "ubicaciones": 34.0,
       "detalle": 30.0,
-      "t_std_min": 172.56,
+      "t_std_min": 172.81,
       "t_real_min": 372.78,
-      "efic": 46.3
+      "efic": 46.4
     },
     {
       "usuario": "JSULCAS",
@@ -3349,9 +3394,9 @@
       "peso_tn": 5.508,
       "ubicaciones": 51.0,
       "detalle": 51.0,
-      "t_std_min": 320.75,
+      "t_std_min": 321.42,
       "t_real_min": 371.95,
-      "efic": 86.2
+      "efic": 86.4
     },
     {
       "usuario": "YCASO",
@@ -3368,9 +3413,9 @@
       "peso_tn": 1.561,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 157.49,
+      "t_std_min": 157.81,
       "t_real_min": 368.42,
-      "efic": 42.7
+      "efic": 42.8
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -3387,9 +3432,9 @@
       "peso_tn": 4.136,
       "ubicaciones": 46.0,
       "detalle": 46.0,
-      "t_std_min": 271.51,
+      "t_std_min": 272.07,
       "t_real_min": 368.35,
-      "efic": 73.7
+      "efic": 73.9
     },
     {
       "usuario": "JESPINOZAH",
@@ -3406,9 +3451,9 @@
       "peso_tn": 6.129,
       "ubicaciones": 78.0,
       "detalle": 84.0,
-      "t_std_min": 449.73,
+      "t_std_min": 450.6,
       "t_real_min": 365.42,
-      "efic": 123.1
+      "efic": 123.3
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -3425,9 +3470,9 @@
       "peso_tn": 6.481,
       "ubicaciones": 75.0,
       "detalle": 88.0,
-      "t_std_min": 364.92,
+      "t_std_min": 365.68,
       "t_real_min": 360.18,
-      "efic": 101.3
+      "efic": 101.5
     },
     {
       "usuario": "JCHAVARRIM",
@@ -3444,9 +3489,28 @@
       "peso_tn": 3.194,
       "ubicaciones": 80.0,
       "detalle": 81.0,
-      "t_std_min": 322.11,
+      "t_std_min": 322.78,
       "t_real_min": 358.03,
-      "efic": 90.0
+      "efic": 90.2
+    },
+    {
+      "usuario": "CJAIMEH",
+      "dia": "2026-11-18",
+      "cargo": "OPERARIO ALMACEN UNILEVER",
+      "turno": "3° TURNO",
+      "horas": 5.954,
+      "tareas": 20,
+      "cajas": 2432.0,
+      "cajas_sueltas": 1004.0,
+      "pallets": 13.0,
+      "unidades_productivas": 1017.0,
+      "volumen_m3": 29.046,
+      "peso_tn": 14.093,
+      "ubicaciones": 32.0,
+      "detalle": 32.0,
+      "t_std_min": 426.82,
+      "t_real_min": 357.22,
+      "efic": 119.5
     },
     {
       "usuario": "JESPINOZAH",
@@ -3463,9 +3527,9 @@
       "peso_tn": 4.537,
       "ubicaciones": 107.0,
       "detalle": 109.0,
-      "t_std_min": 448.55,
+      "t_std_min": 449.49,
       "t_real_min": 356.1,
-      "efic": 126.0
+      "efic": 126.2
     },
     {
       "usuario": "JESPINOZAH",
@@ -3482,9 +3546,9 @@
       "peso_tn": 5.535,
       "ubicaciones": 88.0,
       "detalle": 90.0,
-      "t_std_min": 416.34,
+      "t_std_min": 417.22,
       "t_real_min": 355.93,
-      "efic": 117.0
+      "efic": 117.2
     },
     {
       "usuario": "CJAIMEH",
@@ -3501,9 +3565,9 @@
       "peso_tn": 6.837,
       "ubicaciones": 44.0,
       "detalle": 44.0,
-      "t_std_min": 296.36,
+      "t_std_min": 296.94,
       "t_real_min": 355.78,
-      "efic": 83.3
+      "efic": 83.5
     },
     {
       "usuario": "JBOCANEG",
@@ -3520,9 +3584,9 @@
       "peso_tn": 6.051,
       "ubicaciones": 115.0,
       "detalle": 116.0,
-      "t_std_min": 516.79,
+      "t_std_min": 517.97,
       "t_real_min": 355.32,
-      "efic": 145.4
+      "efic": 145.8
     },
     {
       "usuario": "JCONTRERASC",
@@ -3539,9 +3603,9 @@
       "peso_tn": 7.912,
       "ubicaciones": 32.0,
       "detalle": 32.0,
-      "t_std_min": 316.75,
+      "t_std_min": 317.39,
       "t_real_min": 353.48,
-      "efic": 89.6
+      "efic": 89.8
     },
     {
       "usuario": "JCHAVARRIM",
@@ -3558,9 +3622,9 @@
       "peso_tn": 4.603,
       "ubicaciones": 62.0,
       "detalle": 65.0,
-      "t_std_min": 297.32,
+      "t_std_min": 297.93,
       "t_real_min": 353.0,
-      "efic": 84.2
+      "efic": 84.4
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3577,9 +3641,9 @@
       "peso_tn": 6.518,
       "ubicaciones": 33.0,
       "detalle": 34.0,
-      "t_std_min": 255.4,
+      "t_std_min": 255.94,
       "t_real_min": 351.1,
-      "efic": 72.7
+      "efic": 72.9
     },
     {
       "usuario": "MBELLIDOO",
@@ -3596,9 +3660,9 @@
       "peso_tn": 8.664,
       "ubicaciones": 51.0,
       "detalle": 51.0,
-      "t_std_min": 389.13,
+      "t_std_min": 389.98,
       "t_real_min": 347.75,
-      "efic": 111.9
+      "efic": 112.1
     },
     {
       "usuario": "DRIVERAZ",
@@ -3615,9 +3679,9 @@
       "peso_tn": 4.11,
       "ubicaciones": 35.0,
       "detalle": 35.0,
-      "t_std_min": 210.08,
+      "t_std_min": 210.57,
       "t_real_min": 344.27,
-      "efic": 61.0
+      "efic": 61.2
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -3634,9 +3698,9 @@
       "peso_tn": 7.619,
       "ubicaciones": 58.0,
       "detalle": 59.0,
-      "t_std_min": 351.93,
+      "t_std_min": 352.62,
       "t_real_min": 344.02,
-      "efic": 102.3
+      "efic": 102.5
     },
     {
       "usuario": "MCARILLO",
@@ -3653,9 +3717,9 @@
       "peso_tn": 2.843,
       "ubicaciones": 20.0,
       "detalle": 20.0,
-      "t_std_min": 168.78,
+      "t_std_min": 169.05,
       "t_real_min": 342.2,
-      "efic": 49.3
+      "efic": 49.4
     },
     {
       "usuario": "MCARILLO",
@@ -3672,9 +3736,9 @@
       "peso_tn": 5.003,
       "ubicaciones": 64.0,
       "detalle": 73.0,
-      "t_std_min": 311.01,
+      "t_std_min": 311.62,
       "t_real_min": 340.13,
-      "efic": 91.4
+      "efic": 91.6
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3691,9 +3755,9 @@
       "peso_tn": 5.591,
       "ubicaciones": 52.0,
       "detalle": 56.0,
-      "t_std_min": 307.66,
+      "t_std_min": 308.29,
       "t_real_min": 339.52,
-      "efic": 90.6
+      "efic": 90.8
     },
     {
       "usuario": "MLAZONM",
@@ -3710,9 +3774,9 @@
       "peso_tn": 4.132,
       "ubicaciones": 46.0,
       "detalle": 46.0,
-      "t_std_min": 313.44,
+      "t_std_min": 314.29,
       "t_real_min": 339.03,
-      "efic": 92.5
+      "efic": 92.7
     },
     {
       "usuario": "CCELESTINO",
@@ -3729,9 +3793,9 @@
       "peso_tn": 4.535,
       "ubicaciones": 67.0,
       "detalle": 69.0,
-      "t_std_min": 287.06,
+      "t_std_min": 287.59,
       "t_real_min": 338.12,
-      "efic": 84.9
+      "efic": 85.1
     },
     {
       "usuario": "LQUEVEDOR",
@@ -3748,9 +3812,9 @@
       "peso_tn": 6.471,
       "ubicaciones": 67.0,
       "detalle": 68.0,
-      "t_std_min": 347.96,
+      "t_std_min": 348.68,
       "t_real_min": 332.75,
-      "efic": 104.6
+      "efic": 104.8
     },
     {
       "usuario": "EGUTIERREZA",
@@ -3767,9 +3831,9 @@
       "peso_tn": 7.375,
       "ubicaciones": 68.0,
       "detalle": 88.0,
-      "t_std_min": 443.72,
+      "t_std_min": 444.5,
       "t_real_min": 330.38,
-      "efic": 134.3
+      "efic": 134.5
     },
     {
       "usuario": "JRIVERAH",
@@ -3786,9 +3850,9 @@
       "peso_tn": 3.11,
       "ubicaciones": 78.0,
       "detalle": 93.0,
-      "t_std_min": 329.72,
+      "t_std_min": 330.29,
       "t_real_min": 330.32,
-      "efic": 99.8
+      "efic": 100.0
     },
     {
       "usuario": "RGUIZADOL",
@@ -3805,9 +3869,9 @@
       "peso_tn": 5.178,
       "ubicaciones": 56.0,
       "detalle": 59.0,
-      "t_std_min": 316.86,
+      "t_std_min": 317.38,
       "t_real_min": 328.57,
-      "efic": 96.4
+      "efic": 96.6
     },
     {
       "usuario": "CCELESTINO",
@@ -3824,9 +3888,9 @@
       "peso_tn": 5.616,
       "ubicaciones": 49.0,
       "detalle": 50.0,
-      "t_std_min": 330.29,
+      "t_std_min": 331.0,
       "t_real_min": 324.53,
-      "efic": 101.8
+      "efic": 102.0
     },
     {
       "usuario": "EGUTIERREZA",
@@ -3843,9 +3907,9 @@
       "peso_tn": 4.464,
       "ubicaciones": 89.0,
       "detalle": 92.0,
-      "t_std_min": 385.41,
+      "t_std_min": 386.14,
       "t_real_min": 323.53,
-      "efic": 119.1
+      "efic": 119.3
     },
     {
       "usuario": "JCHILINGANOA",
@@ -3855,16 +3919,16 @@
       "horas": 5.358,
       "tareas": 12,
       "cajas": 1046.0,
-      "cajas_sueltas": 905.0,
-      "pallets": 2.0,
-      "unidades_productivas": 907.0,
+      "cajas_sueltas": 689.0,
+      "pallets": 6.0,
+      "unidades_productivas": 695.0,
       "volumen_m3": 18.283,
       "peso_tn": 6.817,
       "ubicaciones": 25.0,
       "detalle": 22.0,
-      "t_std_min": 254.04,
+      "t_std_min": 254.72,
       "t_real_min": 321.47,
-      "efic": 79.0
+      "efic": 79.2
     },
     {
       "usuario": "JCHAVARRIM",
@@ -3881,9 +3945,9 @@
       "peso_tn": 6.076,
       "ubicaciones": 36.0,
       "detalle": 36.0,
-      "t_std_min": 274.1,
+      "t_std_min": 274.71,
       "t_real_min": 321.18,
-      "efic": 85.3
+      "efic": 85.5
     },
     {
       "usuario": "EGUTIERREZA",
@@ -3900,9 +3964,9 @@
       "peso_tn": 12.125,
       "ubicaciones": 46.0,
       "detalle": 46.0,
-      "t_std_min": 480.47,
+      "t_std_min": 481.26,
       "t_real_min": 315.35,
-      "efic": 152.4
+      "efic": 152.6
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -3919,9 +3983,9 @@
       "peso_tn": 4.472,
       "ubicaciones": 57.0,
       "detalle": 57.0,
-      "t_std_min": 308.01,
+      "t_std_min": 308.77,
       "t_real_min": 314.88,
-      "efic": 97.8
+      "efic": 98.1
     },
     {
       "usuario": "GBAUTISTAT",
@@ -3938,9 +4002,9 @@
       "peso_tn": 4.689,
       "ubicaciones": 68.0,
       "detalle": 68.0,
-      "t_std_min": 338.67,
+      "t_std_min": 339.41,
       "t_real_min": 313.82,
-      "efic": 107.9
+      "efic": 108.2
     },
     {
       "usuario": "RGUIZADOL",
@@ -3957,9 +4021,9 @@
       "peso_tn": 2.539,
       "ubicaciones": 78.0,
       "detalle": 78.0,
-      "t_std_min": 298.62,
+      "t_std_min": 299.17,
       "t_real_min": 313.48,
-      "efic": 95.3
+      "efic": 95.4
     },
     {
       "usuario": "IDELGADOJ",
@@ -3976,9 +4040,9 @@
       "peso_tn": 8.594,
       "ubicaciones": 53.0,
       "detalle": 53.0,
-      "t_std_min": 416.62,
+      "t_std_min": 417.51,
       "t_real_min": 310.92,
-      "efic": 134.0
+      "efic": 134.3
     },
     {
       "usuario": "NCAMACHOJ",
@@ -3995,9 +4059,9 @@
       "peso_tn": 3.742,
       "ubicaciones": 62.0,
       "detalle": 63.0,
-      "t_std_min": 337.91,
+      "t_std_min": 338.52,
       "t_real_min": 309.65,
-      "efic": 109.1
+      "efic": 109.3
     },
     {
       "usuario": "JCARDENASBA",
@@ -4014,9 +4078,9 @@
       "peso_tn": 5.176,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 261.1,
+      "t_std_min": 261.53,
       "t_real_min": 306.13,
-      "efic": 85.3
+      "efic": 85.4
     },
     {
       "usuario": "MCARILLO",
@@ -4033,9 +4097,9 @@
       "peso_tn": 5.278,
       "ubicaciones": 53.0,
       "detalle": 55.0,
-      "t_std_min": 297.37,
+      "t_std_min": 297.96,
       "t_real_min": 305.28,
-      "efic": 97.4
+      "efic": 97.6
     },
     {
       "usuario": "JRIVERAH",
@@ -4052,9 +4116,9 @@
       "peso_tn": 8.405,
       "ubicaciones": 32.0,
       "detalle": 32.0,
-      "t_std_min": 302.11,
+      "t_std_min": 302.78,
       "t_real_min": 299.9,
-      "efic": 100.7
+      "efic": 101.0
     },
     {
       "usuario": "AMIRANDAT",
@@ -4071,9 +4135,9 @@
       "peso_tn": 12.321,
       "ubicaciones": 83.0,
       "detalle": 84.0,
-      "t_std_min": 570.09,
+      "t_std_min": 571.3,
       "t_real_min": 295.43,
-      "efic": 193.0
+      "efic": 193.4
     },
     {
       "usuario": "KYAPIASA",
@@ -4090,9 +4154,9 @@
       "peso_tn": 7.898,
       "ubicaciones": 111.0,
       "detalle": 112.0,
-      "t_std_min": 495.85,
+      "t_std_min": 496.82,
       "t_real_min": 295.28,
-      "efic": 167.9
+      "efic": 168.3
     },
     {
       "usuario": "MBELLIDOO",
@@ -4109,9 +4173,9 @@
       "peso_tn": 3.494,
       "ubicaciones": 135.0,
       "detalle": 153.0,
-      "t_std_min": 526.88,
+      "t_std_min": 527.96,
       "t_real_min": 292.08,
-      "efic": 180.4
+      "efic": 180.8
     },
     {
       "usuario": "CGONZAE",
@@ -4128,9 +4192,9 @@
       "peso_tn": 3.376,
       "ubicaciones": 54.0,
       "detalle": 55.0,
-      "t_std_min": 262.84,
+      "t_std_min": 263.43,
       "t_real_min": 290.73,
-      "efic": 90.4
+      "efic": 90.6
     },
     {
       "usuario": "MICHPASA",
@@ -4147,9 +4211,9 @@
       "peso_tn": 5.547,
       "ubicaciones": 85.0,
       "detalle": 85.0,
-      "t_std_min": 416.33,
+      "t_std_min": 417.25,
       "t_real_min": 289.8,
-      "efic": 143.7
+      "efic": 144.0
     },
     {
       "usuario": "EGUTIERREZA",
@@ -4166,9 +4230,9 @@
       "peso_tn": 6.34,
       "ubicaciones": 52.0,
       "detalle": 53.0,
-      "t_std_min": 314.0,
+      "t_std_min": 314.7,
       "t_real_min": 286.75,
-      "efic": 109.5
+      "efic": 109.7
     },
     {
       "usuario": "CGONZAE",
@@ -4185,9 +4249,9 @@
       "peso_tn": 3.481,
       "ubicaciones": 33.0,
       "detalle": 33.0,
-      "t_std_min": 175.36,
+      "t_std_min": 175.74,
       "t_real_min": 286.33,
-      "efic": 61.2
+      "efic": 61.4
     },
     {
       "usuario": "EGUTIERREZA",
@@ -4204,9 +4268,9 @@
       "peso_tn": 7.527,
       "ubicaciones": 52.0,
       "detalle": 52.0,
-      "t_std_min": 409.06,
+      "t_std_min": 409.89,
       "t_real_min": 282.32,
-      "efic": 144.9
+      "efic": 145.2
     },
     {
       "usuario": "JCONTRERASC",
@@ -4223,9 +4287,9 @@
       "peso_tn": 2.861,
       "ubicaciones": 86.0,
       "detalle": 88.0,
-      "t_std_min": 322.64,
+      "t_std_min": 323.3,
       "t_real_min": 281.23,
-      "efic": 114.7
+      "efic": 115.0
     },
     {
       "usuario": "CSEMPERT",
@@ -4242,9 +4306,9 @@
       "peso_tn": 5.607,
       "ubicaciones": 79.0,
       "detalle": 81.0,
-      "t_std_min": 397.84,
+      "t_std_min": 398.66,
       "t_real_min": 280.52,
-      "efic": 141.8
+      "efic": 142.1
     },
     {
       "usuario": "WTASAYCOG",
@@ -4261,9 +4325,9 @@
       "peso_tn": 2.697,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 144.05,
+      "t_std_min": 144.32,
       "t_real_min": 277.28,
-      "efic": 51.9
+      "efic": 52.0
     },
     {
       "usuario": "MBELLIDOO",
@@ -4280,9 +4344,9 @@
       "peso_tn": 2.933,
       "ubicaciones": 83.0,
       "detalle": 87.0,
-      "t_std_min": 352.2,
+      "t_std_min": 352.85,
       "t_real_min": 275.12,
-      "efic": 128.0
+      "efic": 128.3
     },
     {
       "usuario": "EGUTIERREZA",
@@ -4299,9 +4363,9 @@
       "peso_tn": 5.509,
       "ubicaciones": 55.0,
       "detalle": 55.0,
-      "t_std_min": 304.73,
+      "t_std_min": 305.33,
       "t_real_min": 274.33,
-      "efic": 111.1
+      "efic": 111.3
     },
     {
       "usuario": "JVALDIVIAS",
@@ -4318,9 +4382,9 @@
       "peso_tn": 0.439,
       "ubicaciones": 85.0,
       "detalle": 88.0,
-      "t_std_min": 263.98,
+      "t_std_min": 264.51,
       "t_real_min": 272.97,
-      "efic": 96.7
+      "efic": 96.9
     },
     {
       "usuario": "JCONTRERASC",
@@ -4337,9 +4401,9 @@
       "peso_tn": 2.599,
       "ubicaciones": 105.0,
       "detalle": 126.0,
-      "t_std_min": 388.09,
+      "t_std_min": 388.89,
       "t_real_min": 272.82,
-      "efic": 142.3
+      "efic": 142.5
     },
     {
       "usuario": "MCARILLO",
@@ -4356,9 +4420,9 @@
       "peso_tn": 2.551,
       "ubicaciones": 28.0,
       "detalle": 28.0,
-      "t_std_min": 189.64,
+      "t_std_min": 189.88,
       "t_real_min": 272.22,
-      "efic": 69.7
+      "efic": 69.8
     },
     {
       "usuario": "JBENDEZUA",
@@ -4375,28 +4439,9 @@
       "peso_tn": 6.898,
       "ubicaciones": 48.0,
       "detalle": 48.0,
-      "t_std_min": 295.15,
+      "t_std_min": 295.7,
       "t_real_min": 271.65,
-      "efic": 108.7
-    },
-    {
-      "usuario": "JESPINOZAH",
-      "dia": "2026-11-18",
-      "cargo": "OPERARIO ALMACEN UNILEVER",
-      "turno": "3° TURNO",
-      "horas": 4.527,
-      "tareas": 13,
-      "cajas": 1388.0,
-      "cajas_sueltas": 1077.0,
-      "pallets": 4.0,
-      "unidades_productivas": 1081.0,
-      "volumen_m3": 15.893,
-      "peso_tn": 7.065,
-      "ubicaciones": 31.0,
-      "detalle": 32.0,
-      "t_std_min": 296.95,
-      "t_real_min": 271.63,
-      "efic": 109.3
+      "efic": 108.9
     },
     {
       "usuario": "CCASTRO",
@@ -4413,9 +4458,9 @@
       "peso_tn": 3.765,
       "ubicaciones": 128.0,
       "detalle": 148.0,
-      "t_std_min": 453.34,
+      "t_std_min": 454.19,
       "t_real_min": 271.35,
-      "efic": 167.1
+      "efic": 167.4
     },
     {
       "usuario": "CCASTRO",
@@ -4432,9 +4477,9 @@
       "peso_tn": 10.315,
       "ubicaciones": 63.0,
       "detalle": 63.0,
-      "t_std_min": 527.55,
+      "t_std_min": 528.5,
       "t_real_min": 271.18,
-      "efic": 194.5
+      "efic": 194.9
     },
     {
       "usuario": "FLARAQ",
@@ -4451,9 +4496,9 @@
       "peso_tn": 2.034,
       "ubicaciones": 43.0,
       "detalle": 43.0,
-      "t_std_min": 182.64,
+      "t_std_min": 183.04,
       "t_real_min": 269.7,
-      "efic": 67.7
+      "efic": 67.9
     },
     {
       "usuario": "CCELESTINO",
@@ -4470,9 +4515,9 @@
       "peso_tn": 4.786,
       "ubicaciones": 19.0,
       "detalle": 19.0,
-      "t_std_min": 172.25,
+      "t_std_min": 172.58,
       "t_real_min": 264.53,
-      "efic": 65.1
+      "efic": 65.2
     },
     {
       "usuario": "EGUTIERREZA",
@@ -4489,9 +4534,9 @@
       "peso_tn": 9.602,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 417.36,
+      "t_std_min": 418.03,
       "t_real_min": 264.4,
-      "efic": 157.9
+      "efic": 158.1
     },
     {
       "usuario": "LQUEVEDOR",
@@ -4508,28 +4553,9 @@
       "peso_tn": 5.201,
       "ubicaciones": 35.0,
       "detalle": 35.0,
-      "t_std_min": 226.29,
+      "t_std_min": 226.75,
       "t_real_min": 259.78,
-      "efic": 87.1
-    },
-    {
-      "usuario": "CJAIMEH",
-      "dia": "2026-11-18",
-      "cargo": "OPERARIO ALMACEN UNILEVER",
-      "turno": "3° TURNO",
-      "horas": 4.303,
-      "tareas": 19,
-      "cajas": 2326.0,
-      "cajas_sueltas": 898.0,
-      "pallets": 13.0,
-      "unidades_productivas": 911.0,
-      "volumen_m3": 27.715,
-      "peso_tn": 13.308,
-      "ubicaciones": 29.0,
-      "detalle": 29.0,
-      "t_std_min": 401.26,
-      "t_real_min": 258.17,
-      "efic": 155.4
+      "efic": 87.3
     },
     {
       "usuario": "MHUAMANI",
@@ -4546,28 +4572,9 @@
       "peso_tn": 3.109,
       "ubicaciones": 75.0,
       "detalle": 75.0,
-      "t_std_min": 293.16,
+      "t_std_min": 293.69,
       "t_real_min": 256.68,
-      "efic": 114.2
-    },
-    {
-      "usuario": "JCHAVARRIM",
-      "dia": "2026-11-18",
-      "cargo": "OPERARIO ALMACEN UNILEVER",
-      "turno": "3° TURNO",
-      "horas": 4.276,
-      "tareas": 10,
-      "cajas": 1234.0,
-      "cajas_sueltas": 1159.0,
-      "pallets": 1.0,
-      "unidades_productivas": 1160.0,
-      "volumen_m3": 13.978,
-      "peso_tn": 6.682,
-      "ubicaciones": 34.0,
-      "detalle": 35.0,
-      "t_std_min": 263.77,
-      "t_real_min": 256.53,
-      "efic": 102.8
+      "efic": 114.4
     },
     {
       "usuario": "CCASTRO",
@@ -4584,9 +4591,9 @@
       "peso_tn": 6.695,
       "ubicaciones": 92.0,
       "detalle": 94.0,
-      "t_std_min": 467.27,
+      "t_std_min": 468.31,
       "t_real_min": 254.22,
-      "efic": 183.8
+      "efic": 184.2
     },
     {
       "usuario": "CSEMPERT",
@@ -4603,9 +4610,9 @@
       "peso_tn": 2.678,
       "ubicaciones": 34.0,
       "detalle": 34.0,
-      "t_std_min": 161.97,
+      "t_std_min": 162.32,
       "t_real_min": 254.25,
-      "efic": 63.7
+      "efic": 63.8
     },
     {
       "usuario": "JSULCAS",
@@ -4622,9 +4629,9 @@
       "peso_tn": 2.974,
       "ubicaciones": 42.0,
       "detalle": 43.0,
-      "t_std_min": 207.42,
+      "t_std_min": 207.77,
       "t_real_min": 254.0,
-      "efic": 81.7
+      "efic": 81.8
     },
     {
       "usuario": "JCHILINGANOA",
@@ -4641,9 +4648,9 @@
       "peso_tn": 3.007,
       "ubicaciones": 29.0,
       "detalle": 29.0,
-      "t_std_min": 180.47,
+      "t_std_min": 180.81,
       "t_real_min": 253.8,
-      "efic": 71.1
+      "efic": 71.2
     },
     {
       "usuario": "CJAIMEH",
@@ -4660,9 +4667,9 @@
       "peso_tn": 4.581,
       "ubicaciones": 107.0,
       "detalle": 129.0,
-      "t_std_min": 440.21,
+      "t_std_min": 441.16,
       "t_real_min": 253.18,
-      "efic": 173.9
+      "efic": 174.2
     },
     {
       "usuario": "OHUAYTAL",
@@ -4679,9 +4686,9 @@
       "peso_tn": 1.885,
       "ubicaciones": 28.0,
       "detalle": 28.0,
-      "t_std_min": 141.14,
+      "t_std_min": 141.39,
       "t_real_min": 252.02,
-      "efic": 56.0
+      "efic": 56.1
     },
     {
       "usuario": "IDELGADOJ",
@@ -4698,9 +4705,9 @@
       "peso_tn": 6.018,
       "ubicaciones": 65.0,
       "detalle": 65.0,
-      "t_std_min": 375.73,
+      "t_std_min": 376.67,
       "t_real_min": 251.95,
-      "efic": 149.1
+      "efic": 149.5
     },
     {
       "usuario": "JRIVERAH",
@@ -4717,9 +4724,9 @@
       "peso_tn": 4.822,
       "ubicaciones": 97.0,
       "detalle": 97.0,
-      "t_std_min": 431.89,
+      "t_std_min": 432.69,
       "t_real_min": 251.23,
-      "efic": 171.9
+      "efic": 172.2
     },
     {
       "usuario": "JCONTRERASC",
@@ -4736,9 +4743,9 @@
       "peso_tn": 6.931,
       "ubicaciones": 23.0,
       "detalle": 23.0,
-      "t_std_min": 235.83,
+      "t_std_min": 236.37,
       "t_real_min": 248.62,
-      "efic": 94.9
+      "efic": 95.1
     },
     {
       "usuario": "JESPINOZAH",
@@ -4755,9 +4762,9 @@
       "peso_tn": 5.325,
       "ubicaciones": 85.0,
       "detalle": 92.0,
-      "t_std_min": 388.24,
+      "t_std_min": 389.07,
       "t_real_min": 246.47,
-      "efic": 157.5
+      "efic": 157.9
     },
     {
       "usuario": "NCAMACHOJ",
@@ -4774,9 +4781,9 @@
       "peso_tn": 1.08,
       "ubicaciones": 40.0,
       "detalle": 40.0,
-      "t_std_min": 179.61,
+      "t_std_min": 179.98,
       "t_real_min": 242.73,
-      "efic": 74.0
+      "efic": 74.1
     },
     {
       "usuario": "JSANTAMARIA",
@@ -4793,9 +4800,9 @@
       "peso_tn": 13.167,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 544.89,
+      "t_std_min": 546.28,
       "t_real_min": 241.72,
-      "efic": 225.4
+      "efic": 226.0
     },
     {
       "usuario": "LQUEVEDOR",
@@ -4812,9 +4819,9 @@
       "peso_tn": 3.427,
       "ubicaciones": 65.0,
       "detalle": 76.0,
-      "t_std_min": 266.65,
+      "t_std_min": 267.19,
       "t_real_min": 239.5,
-      "efic": 111.3
+      "efic": 111.6
     },
     {
       "usuario": "JBOCANEG",
@@ -4831,9 +4838,9 @@
       "peso_tn": 4.532,
       "ubicaciones": 43.0,
       "detalle": 43.0,
-      "t_std_min": 223.37,
+      "t_std_min": 223.84,
       "t_real_min": 239.33,
-      "efic": 93.3
+      "efic": 93.5
     },
     {
       "usuario": "JRIVERAH",
@@ -4850,7 +4857,7 @@
       "peso_tn": 0.681,
       "ubicaciones": 10.0,
       "detalle": 13.0,
-      "t_std_min": 45.75,
+      "t_std_min": 45.85,
       "t_real_min": 232.42,
       "efic": 19.7
     },
@@ -4869,9 +4876,9 @@
       "peso_tn": 0.873,
       "ubicaciones": 11.0,
       "detalle": 11.0,
-      "t_std_min": 45.39,
+      "t_std_min": 45.49,
       "t_real_min": 232.42,
-      "efic": 19.5
+      "efic": 19.6
     },
     {
       "usuario": "LQUEVEDOR",
@@ -4888,9 +4895,9 @@
       "peso_tn": 2.565,
       "ubicaciones": 60.0,
       "detalle": 62.0,
-      "t_std_min": 248.39,
+      "t_std_min": 248.92,
       "t_real_min": 226.37,
-      "efic": 109.7
+      "efic": 110.0
     },
     {
       "usuario": "ACARRIONA",
@@ -4907,9 +4914,9 @@
       "peso_tn": 2.344,
       "ubicaciones": 50.0,
       "detalle": 49.0,
-      "t_std_min": 199.87,
+      "t_std_min": 200.24,
       "t_real_min": 226.05,
-      "efic": 88.4
+      "efic": 88.6
     },
     {
       "usuario": "JCHILINGANOA",
@@ -4926,9 +4933,9 @@
       "peso_tn": 1.385,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 87.06,
+      "t_std_min": 87.27,
       "t_real_min": 225.87,
-      "efic": 38.5
+      "efic": 38.6
     },
     {
       "usuario": "WTASAYCOG",
@@ -4945,7 +4952,7 @@
       "peso_tn": 0.906,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 68.59,
+      "t_std_min": 68.78,
       "t_real_min": 225.15,
       "efic": 30.5
     },
@@ -4964,9 +4971,9 @@
       "peso_tn": 3.02,
       "ubicaciones": 36.0,
       "detalle": 39.0,
-      "t_std_min": 203.03,
+      "t_std_min": 203.47,
       "t_real_min": 225.15,
-      "efic": 90.2
+      "efic": 90.4
     },
     {
       "usuario": "DRIVERAZ",
@@ -4983,9 +4990,9 @@
       "peso_tn": 2.703,
       "ubicaciones": 21.0,
       "detalle": 22.0,
-      "t_std_min": 177.94,
+      "t_std_min": 178.21,
       "t_real_min": 221.0,
-      "efic": 80.5
+      "efic": 80.6
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -5002,9 +5009,9 @@
       "peso_tn": 4.039,
       "ubicaciones": 52.0,
       "detalle": 69.0,
-      "t_std_min": 247.62,
+      "t_std_min": 248.21,
       "t_real_min": 220.28,
-      "efic": 112.4
+      "efic": 112.7
     },
     {
       "usuario": "MICHPASA",
@@ -5021,9 +5028,9 @@
       "peso_tn": 14.674,
       "ubicaciones": 58.0,
       "detalle": 59.0,
-      "t_std_min": 679.78,
+      "t_std_min": 680.79,
       "t_real_min": 214.17,
-      "efic": 317.4
+      "efic": 317.9
     },
     {
       "usuario": "JRIVERAH",
@@ -5040,9 +5047,9 @@
       "peso_tn": 13.017,
       "ubicaciones": 25.0,
       "detalle": 25.0,
-      "t_std_min": 352.64,
+      "t_std_min": 353.51,
       "t_real_min": 212.98,
-      "efic": 165.6
+      "efic": 166.0
     },
     {
       "usuario": "AMIRANDAT",
@@ -5059,9 +5066,9 @@
       "peso_tn": 5.512,
       "ubicaciones": 63.0,
       "detalle": 63.0,
-      "t_std_min": 349.09,
+      "t_std_min": 349.91,
       "t_real_min": 212.47,
-      "efic": 164.3
+      "efic": 164.7
     },
     {
       "usuario": "AMIRANDAT",
@@ -5078,9 +5085,9 @@
       "peso_tn": 3.111,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 150.18,
+      "t_std_min": 150.52,
       "t_real_min": 212.48,
-      "efic": 70.7
+      "efic": 70.8
     },
     {
       "usuario": "MICHPASA",
@@ -5097,9 +5104,9 @@
       "peso_tn": 3.128,
       "ubicaciones": 85.0,
       "detalle": 88.0,
-      "t_std_min": 340.75,
+      "t_std_min": 341.44,
       "t_real_min": 211.22,
-      "efic": 161.3
+      "efic": 161.7
     },
     {
       "usuario": "WTASAYCOG",
@@ -5116,9 +5123,9 @@
       "peso_tn": 0.68,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 148.05,
+      "t_std_min": 148.39,
       "t_real_min": 209.35,
-      "efic": 70.7
+      "efic": 70.9
     },
     {
       "usuario": "MICHPASA",
@@ -5135,9 +5142,9 @@
       "peso_tn": 0.948,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 136.89,
+      "t_std_min": 137.18,
       "t_real_min": 207.23,
-      "efic": 66.1
+      "efic": 66.2
     },
     {
       "usuario": "CCELESTINO",
@@ -5154,9 +5161,9 @@
       "peso_tn": 4.109,
       "ubicaciones": 42.0,
       "detalle": 44.0,
-      "t_std_min": 241.56,
+      "t_std_min": 242.07,
       "t_real_min": 206.87,
-      "efic": 116.8
+      "efic": 117.0
     },
     {
       "usuario": "JBENDEZUA",
@@ -5173,9 +5180,9 @@
       "peso_tn": 26.178,
       "ubicaciones": 49.0,
       "detalle": 49.0,
-      "t_std_min": 983.17,
+      "t_std_min": 984.87,
       "t_real_min": 202.35,
-      "efic": 485.9
+      "efic": 486.7
     },
     {
       "usuario": "CSEMPERT",
@@ -5192,9 +5199,9 @@
       "peso_tn": 0.64,
       "ubicaciones": 31.0,
       "detalle": 30.0,
-      "t_std_min": 123.62,
+      "t_std_min": 123.85,
       "t_real_min": 202.02,
-      "efic": 61.2
+      "efic": 61.3
     },
     {
       "usuario": "JCARDENASBA",
@@ -5211,9 +5218,9 @@
       "peso_tn": 7.999,
       "ubicaciones": 27.0,
       "detalle": 27.0,
-      "t_std_min": 247.39,
+      "t_std_min": 247.95,
       "t_real_min": 201.85,
-      "efic": 122.6
+      "efic": 122.8
     },
     {
       "usuario": "JSULCAS",
@@ -5230,9 +5237,9 @@
       "peso_tn": 1.68,
       "ubicaciones": 62.0,
       "detalle": 62.0,
-      "t_std_min": 260.64,
+      "t_std_min": 261.16,
       "t_real_min": 188.2,
-      "efic": 138.5
+      "efic": 138.8
     },
     {
       "usuario": "RGUIZADOL",
@@ -5249,9 +5256,9 @@
       "peso_tn": 2.144,
       "ubicaciones": 59.0,
       "detalle": 58.0,
-      "t_std_min": 250.89,
+      "t_std_min": 251.47,
       "t_real_min": 187.15,
-      "efic": 134.1
+      "efic": 134.4
     },
     {
       "usuario": "AMIRANDAT",
@@ -5268,9 +5275,9 @@
       "peso_tn": 4.967,
       "ubicaciones": 65.0,
       "detalle": 67.0,
-      "t_std_min": 301.76,
+      "t_std_min": 302.39,
       "t_real_min": 186.2,
-      "efic": 162.1
+      "efic": 162.4
     },
     {
       "usuario": "JCHILINGANOA",
@@ -5287,9 +5294,9 @@
       "peso_tn": 2.054,
       "ubicaciones": 22.0,
       "detalle": 23.0,
-      "t_std_min": 127.58,
+      "t_std_min": 127.8,
       "t_real_min": 184.82,
-      "efic": 69.0
+      "efic": 69.1
     },
     {
       "usuario": "MCARILLO",
@@ -5306,9 +5313,9 @@
       "peso_tn": 2.141,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 108.33,
+      "t_std_min": 108.52,
       "t_real_min": 182.87,
-      "efic": 59.2
+      "efic": 59.3
     },
     {
       "usuario": "RZEVALLO",
@@ -5325,9 +5332,9 @@
       "peso_tn": 2.97,
       "ubicaciones": 51.0,
       "detalle": 51.0,
-      "t_std_min": 245.51,
+      "t_std_min": 246.02,
       "t_real_min": 181.12,
-      "efic": 135.6
+      "efic": 135.8
     },
     {
       "usuario": "FLOPEZT",
@@ -5344,9 +5351,9 @@
       "peso_tn": 0.343,
       "ubicaciones": 44.0,
       "detalle": 44.0,
-      "t_std_min": 195.1,
+      "t_std_min": 195.63,
       "t_real_min": 177.98,
-      "efic": 109.6
+      "efic": 109.9
     },
     {
       "usuario": "MHUAMANI",
@@ -5363,9 +5370,9 @@
       "peso_tn": 5.914,
       "ubicaciones": 20.0,
       "detalle": 21.0,
-      "t_std_min": 175.48,
+      "t_std_min": 175.95,
       "t_real_min": 176.52,
-      "efic": 99.4
+      "efic": 99.7
     },
     {
       "usuario": "CSEMPERT",
@@ -5382,9 +5389,9 @@
       "peso_tn": 2.458,
       "ubicaciones": 33.0,
       "detalle": 33.0,
-      "t_std_min": 186.34,
+      "t_std_min": 186.78,
       "t_real_min": 174.22,
-      "efic": 107.0
+      "efic": 107.2
     },
     {
       "usuario": "JCHILINGANOA",
@@ -5401,9 +5408,9 @@
       "peso_tn": 0.893,
       "ubicaciones": 34.0,
       "detalle": 35.0,
-      "t_std_min": 116.48,
+      "t_std_min": 116.68,
       "t_real_min": 170.15,
-      "efic": 68.5
+      "efic": 68.6
     },
     {
       "usuario": "MBELLIDOO",
@@ -5420,9 +5427,9 @@
       "peso_tn": 2.914,
       "ubicaciones": 12.0,
       "detalle": 12.0,
-      "t_std_min": 130.69,
+      "t_std_min": 131.02,
       "t_real_min": 167.97,
-      "efic": 77.8
+      "efic": 78.0
     },
     {
       "usuario": "JBOCANEG",
@@ -5439,9 +5446,9 @@
       "peso_tn": 9.991,
       "ubicaciones": 19.0,
       "detalle": 19.0,
-      "t_std_min": 412.0,
+      "t_std_min": 412.71,
       "t_real_min": 167.02,
-      "efic": 246.7
+      "efic": 247.1
     },
     {
       "usuario": "MHUAMANI",
@@ -5458,9 +5465,9 @@
       "peso_tn": 1.06,
       "ubicaciones": 28.0,
       "detalle": 31.0,
-      "t_std_min": 133.56,
+      "t_std_min": 133.83,
       "t_real_min": 164.33,
-      "efic": 81.3
+      "efic": 81.4
     },
     {
       "usuario": "MICHPASA",
@@ -5477,9 +5484,9 @@
       "peso_tn": 4.028,
       "ubicaciones": 55.0,
       "detalle": 55.0,
-      "t_std_min": 256.05,
+      "t_std_min": 256.58,
       "t_real_min": 164.03,
-      "efic": 156.1
+      "efic": 156.4
     },
     {
       "usuario": "MLAZONM",
@@ -5496,9 +5503,9 @@
       "peso_tn": 1.888,
       "ubicaciones": 27.0,
       "detalle": 28.0,
-      "t_std_min": 109.67,
+      "t_std_min": 109.9,
       "t_real_min": 164.07,
-      "efic": 66.8
+      "efic": 67.0
     },
     {
       "usuario": "JCHAVARRIM",
@@ -5515,9 +5522,9 @@
       "peso_tn": 4.85,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 203.52,
+      "t_std_min": 203.95,
       "t_real_min": 162.45,
-      "efic": 125.3
+      "efic": 125.5
     },
     {
       "usuario": "IDELGADOJ",
@@ -5534,9 +5541,9 @@
       "peso_tn": 4.506,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 166.42,
+      "t_std_min": 166.73,
       "t_real_min": 160.93,
-      "efic": 103.4
+      "efic": 103.6
     },
     {
       "usuario": "CCASTRO",
@@ -5553,9 +5560,9 @@
       "peso_tn": 9.674,
       "ubicaciones": 20.0,
       "detalle": 20.0,
-      "t_std_min": 327.71,
+      "t_std_min": 328.22,
       "t_real_min": 160.4,
-      "efic": 204.3
+      "efic": 204.6
     },
     {
       "usuario": "DRIVERAZ",
@@ -5572,9 +5579,9 @@
       "peso_tn": 4.784,
       "ubicaciones": 24.0,
       "detalle": 28.0,
-      "t_std_min": 175.11,
+      "t_std_min": 175.48,
       "t_real_min": 159.92,
-      "efic": 109.5
+      "efic": 109.7
     },
     {
       "usuario": "KYAPIASA",
@@ -5591,9 +5598,9 @@
       "peso_tn": 1.839,
       "ubicaciones": 41.0,
       "detalle": 41.0,
-      "t_std_min": 153.32,
+      "t_std_min": 153.61,
       "t_real_min": 158.83,
-      "efic": 96.5
+      "efic": 96.7
     },
     {
       "usuario": "ACARRIONA",
@@ -5610,9 +5617,9 @@
       "peso_tn": 2.069,
       "ubicaciones": 11.0,
       "detalle": 11.0,
-      "t_std_min": 95.78,
+      "t_std_min": 96.01,
       "t_real_min": 155.33,
-      "efic": 61.7
+      "efic": 61.8
     },
     {
       "usuario": "JSANTAMARIA",
@@ -5629,9 +5636,9 @@
       "peso_tn": 2.975,
       "ubicaciones": 54.0,
       "detalle": 56.0,
-      "t_std_min": 251.9,
+      "t_std_min": 252.44,
       "t_real_min": 153.8,
-      "efic": 163.8
+      "efic": 164.1
     },
     {
       "usuario": "JBENDEZUA",
@@ -5648,9 +5655,9 @@
       "peso_tn": 14.268,
       "ubicaciones": 39.0,
       "detalle": 40.0,
-      "t_std_min": 693.46,
+      "t_std_min": 694.69,
       "t_real_min": 152.28,
-      "efic": 455.4
+      "efic": 456.2
     },
     {
       "usuario": "JRIVERAH",
@@ -5667,9 +5674,9 @@
       "peso_tn": 1.691,
       "ubicaciones": 77.0,
       "detalle": 76.0,
-      "t_std_min": 260.09,
+      "t_std_min": 260.55,
       "t_real_min": 151.08,
-      "efic": 172.1
+      "efic": 172.5
     },
     {
       "usuario": "JSULCAS",
@@ -5686,9 +5693,9 @@
       "peso_tn": 1.088,
       "ubicaciones": 15.0,
       "detalle": 15.0,
-      "t_std_min": 59.67,
+      "t_std_min": 59.79,
       "t_real_min": 144.0,
-      "efic": 41.4
+      "efic": 41.5
     },
     {
       "usuario": "RZEVALLO",
@@ -5705,9 +5712,9 @@
       "peso_tn": 2.154,
       "ubicaciones": 41.0,
       "detalle": 41.0,
-      "t_std_min": 192.57,
+      "t_std_min": 193.0,
       "t_real_min": 141.12,
-      "efic": 136.5
+      "efic": 136.8
     },
     {
       "usuario": "JBENDEZUA",
@@ -5724,9 +5731,9 @@
       "peso_tn": 19.237,
       "ubicaciones": 36.0,
       "detalle": 37.0,
-      "t_std_min": 649.15,
+      "t_std_min": 650.2,
       "t_real_min": 139.7,
-      "efic": 464.7
+      "efic": 465.4
     },
     {
       "usuario": "JESPINOZAH",
@@ -5743,9 +5750,9 @@
       "peso_tn": 3.948,
       "ubicaciones": 11.0,
       "detalle": 11.0,
-      "t_std_min": 156.08,
+      "t_std_min": 156.42,
       "t_real_min": 136.12,
-      "efic": 114.7
+      "efic": 114.9
     },
     {
       "usuario": "YGOMEZQ",
@@ -5762,9 +5769,9 @@
       "peso_tn": 1.78,
       "ubicaciones": 25.0,
       "detalle": 24.0,
-      "t_std_min": 140.8,
+      "t_std_min": 141.16,
       "t_real_min": 133.05,
-      "efic": 105.8
+      "efic": 106.1
     },
     {
       "usuario": "JSANTAMARIA",
@@ -5781,9 +5788,9 @@
       "peso_tn": 19.344,
       "ubicaciones": 22.0,
       "detalle": 22.0,
-      "t_std_min": 533.79,
+      "t_std_min": 534.69,
       "t_real_min": 127.4,
-      "efic": 419.0
+      "efic": 419.7
     },
     {
       "usuario": "JBENDEZUA",
@@ -5800,9 +5807,9 @@
       "peso_tn": 7.06,
       "ubicaciones": 57.0,
       "detalle": 57.0,
-      "t_std_min": 350.18,
+      "t_std_min": 351.01,
       "t_real_min": 125.15,
-      "efic": 279.8
+      "efic": 280.5
     },
     {
       "usuario": "CGONZAE",
@@ -5819,9 +5826,9 @@
       "peso_tn": 2.541,
       "ubicaciones": 20.0,
       "detalle": 20.0,
-      "t_std_min": 129.85,
+      "t_std_min": 130.19,
       "t_real_min": 122.55,
-      "efic": 106.0
+      "efic": 106.2
     },
     {
       "usuario": "JJIMENEZR",
@@ -5838,9 +5845,9 @@
       "peso_tn": 2.389,
       "ubicaciones": 61.0,
       "detalle": 61.0,
-      "t_std_min": 250.06,
+      "t_std_min": 250.53,
       "t_real_min": 122.17,
-      "efic": 204.7
+      "efic": 205.1
     },
     {
       "usuario": "CCELESTINO",
@@ -5857,9 +5864,9 @@
       "peso_tn": 2.914,
       "ubicaciones": 8.0,
       "detalle": 8.0,
-      "t_std_min": 104.32,
+      "t_std_min": 104.58,
       "t_real_min": 120.45,
-      "efic": 86.6
+      "efic": 86.8
     },
     {
       "usuario": "JBENDEZUA",
@@ -5876,9 +5883,9 @@
       "peso_tn": 20.819,
       "ubicaciones": 28.0,
       "detalle": 28.0,
-      "t_std_min": 639.5,
+      "t_std_min": 640.35,
       "t_real_min": 119.1,
-      "efic": 536.9
+      "efic": 537.7
     },
     {
       "usuario": "JRIVERAH",
@@ -5895,9 +5902,9 @@
       "peso_tn": 0.886,
       "ubicaciones": 12.0,
       "detalle": 12.0,
-      "t_std_min": 54.47,
+      "t_std_min": 54.57,
       "t_real_min": 119.12,
-      "efic": 45.7
+      "efic": 45.8
     },
     {
       "usuario": "GBAUTISTAT",
@@ -5914,9 +5921,9 @@
       "peso_tn": 11.719,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 212.41,
+      "t_std_min": 212.9,
       "t_real_min": 118.15,
-      "efic": 179.8
+      "efic": 180.2
     },
     {
       "usuario": "LQUEVEDOR",
@@ -5933,9 +5940,9 @@
       "peso_tn": 2.099,
       "ubicaciones": 6.0,
       "detalle": 6.0,
-      "t_std_min": 106.58,
+      "t_std_min": 106.82,
       "t_real_min": 117.77,
-      "efic": 90.5
+      "efic": 90.7
     },
     {
       "usuario": "JCONTRERASC",
@@ -5952,9 +5959,9 @@
       "peso_tn": 5.192,
       "ubicaciones": 15.0,
       "detalle": 17.0,
-      "t_std_min": 224.62,
+      "t_std_min": 225.18,
       "t_real_min": 113.73,
-      "efic": 197.5
+      "efic": 198.0
     },
     {
       "usuario": "GQUISPE",
@@ -5971,9 +5978,9 @@
       "peso_tn": 10.691,
       "ubicaciones": 30.0,
       "detalle": 30.0,
-      "t_std_min": 542.13,
+      "t_std_min": 543.3,
       "t_real_min": 110.82,
-      "efic": 489.2
+      "efic": 490.3
     },
     {
       "usuario": "ACARRIONA",
@@ -5990,9 +5997,9 @@
       "peso_tn": 1.758,
       "ubicaciones": 11.0,
       "detalle": 11.0,
-      "t_std_min": 78.37,
+      "t_std_min": 78.56,
       "t_real_min": 110.25,
-      "efic": 71.1
+      "efic": 71.3
     },
     {
       "usuario": "DVILLALOBOSM",
@@ -6009,9 +6016,9 @@
       "peso_tn": 1.088,
       "ubicaciones": 38.0,
       "detalle": 37.0,
-      "t_std_min": 198.39,
+      "t_std_min": 198.93,
       "t_real_min": 107.75,
-      "efic": 184.1
+      "efic": 184.6
     },
     {
       "usuario": "GQUISPE",
@@ -6028,9 +6035,9 @@
       "peso_tn": 4.541,
       "ubicaciones": 16.0,
       "detalle": 16.0,
-      "t_std_min": 244.44,
+      "t_std_min": 244.69,
       "t_real_min": 104.12,
-      "efic": 234.8
+      "efic": 235.0
     },
     {
       "usuario": "JBENDEZUA",
@@ -6047,9 +6054,9 @@
       "peso_tn": 18.644,
       "ubicaciones": 34.0,
       "detalle": 34.0,
-      "t_std_min": 664.91,
+      "t_std_min": 666.56,
       "t_real_min": 101.77,
-      "efic": 653.4
+      "efic": 655.0
     },
     {
       "usuario": "JBENDEZUA",
@@ -6066,9 +6073,9 @@
       "peso_tn": 17.524,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 603.59,
+      "t_std_min": 604.88,
       "t_real_min": 101.52,
-      "efic": 594.6
+      "efic": 595.8
     },
     {
       "usuario": "JSANTAMARIA",
@@ -6085,9 +6092,9 @@
       "peso_tn": 2.164,
       "ubicaciones": 28.0,
       "detalle": 28.0,
-      "t_std_min": 147.4,
+      "t_std_min": 147.71,
       "t_real_min": 99.13,
-      "efic": 148.7
+      "efic": 149.0
     },
     {
       "usuario": "JJIMENEZR",
@@ -6104,9 +6111,9 @@
       "peso_tn": 3.217,
       "ubicaciones": 45.0,
       "detalle": 45.0,
-      "t_std_min": 227.78,
+      "t_std_min": 228.19,
       "t_real_min": 97.62,
-      "efic": 233.3
+      "efic": 233.8
     },
     {
       "usuario": "CGONZAE",
@@ -6123,9 +6130,9 @@
       "peso_tn": 1.518,
       "ubicaciones": 10.0,
       "detalle": 10.0,
-      "t_std_min": 63.75,
+      "t_std_min": 63.89,
       "t_real_min": 96.53,
-      "efic": 66.0
+      "efic": 66.2
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -6142,9 +6149,9 @@
       "peso_tn": 5.913,
       "ubicaciones": 15.0,
       "detalle": 15.0,
-      "t_std_min": 253.51,
+      "t_std_min": 254.09,
       "t_real_min": 96.22,
-      "efic": 263.5
+      "efic": 264.1
     },
     {
       "usuario": "MICHPASA",
@@ -6161,9 +6168,9 @@
       "peso_tn": 1.542,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 156.13,
+      "t_std_min": 156.45,
       "t_real_min": 95.33,
-      "efic": 163.8
+      "efic": 164.1
     },
     {
       "usuario": "LROLDAN",
@@ -6180,9 +6187,9 @@
       "peso_tn": 4.814,
       "ubicaciones": 10.0,
       "detalle": 3.0,
-      "t_std_min": 163.18,
+      "t_std_min": 163.72,
       "t_real_min": 93.8,
-      "efic": 174.0
+      "efic": 174.5
     },
     {
       "usuario": "MICHPASA",
@@ -6199,9 +6206,9 @@
       "peso_tn": 6.342,
       "ubicaciones": 45.0,
       "detalle": 45.0,
-      "t_std_min": 347.93,
+      "t_std_min": 348.79,
       "t_real_min": 93.27,
-      "efic": 373.0
+      "efic": 374.0
     },
     {
       "usuario": "AMIRANDAT",
@@ -6218,9 +6225,9 @@
       "peso_tn": 0.788,
       "ubicaciones": 12.0,
       "detalle": 12.0,
-      "t_std_min": 52.68,
+      "t_std_min": 52.78,
       "t_real_min": 86.93,
-      "efic": 60.6
+      "efic": 60.7
     },
     {
       "usuario": "RZEVALLO",
@@ -6237,9 +6244,9 @@
       "peso_tn": 0.894,
       "ubicaciones": 15.0,
       "detalle": 15.0,
-      "t_std_min": 59.54,
+      "t_std_min": 59.66,
       "t_real_min": 86.78,
-      "efic": 68.6
+      "efic": 68.7
     },
     {
       "usuario": "MICHPASA",
@@ -6256,7 +6263,7 @@
       "peso_tn": 0.344,
       "ubicaciones": 1.0,
       "detalle": 1.0,
-      "t_std_min": 23.08,
+      "t_std_min": 23.12,
       "t_real_min": 85.63,
       "efic": 27.0
     },
@@ -6275,9 +6282,9 @@
       "peso_tn": 2.857,
       "ubicaciones": 10.0,
       "detalle": 10.0,
-      "t_std_min": 114.23,
+      "t_std_min": 114.49,
       "t_real_min": 84.72,
-      "efic": 134.8
+      "efic": 135.1
     },
     {
       "usuario": "RHUALLPART",
@@ -6294,9 +6301,9 @@
       "peso_tn": 0.0,
       "ubicaciones": 3.0,
       "detalle": 2.0,
-      "t_std_min": 46.83,
+      "t_std_min": 46.99,
       "t_real_min": 83.68,
-      "efic": 56.0
+      "efic": 56.2
     },
     {
       "usuario": "EGUTIERREZA",
@@ -6313,9 +6320,9 @@
       "peso_tn": 1.278,
       "ubicaciones": 19.0,
       "detalle": 19.0,
-      "t_std_min": 96.89,
+      "t_std_min": 97.06,
       "t_real_min": 83.4,
-      "efic": 116.2
+      "efic": 116.4
     },
     {
       "usuario": "RGUIZADOL",
@@ -6332,9 +6339,9 @@
       "peso_tn": 2.117,
       "ubicaciones": 5.0,
       "detalle": 5.0,
-      "t_std_min": 85.8,
+      "t_std_min": 85.99,
       "t_real_min": 83.38,
-      "efic": 102.9
+      "efic": 103.1
     },
     {
       "usuario": "JSANTAMARIA",
@@ -6351,9 +6358,9 @@
       "peso_tn": 0.488,
       "ubicaciones": 22.0,
       "detalle": 22.0,
-      "t_std_min": 81.37,
+      "t_std_min": 81.52,
       "t_real_min": 83.1,
-      "efic": 97.9
+      "efic": 98.1
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -6370,9 +6377,9 @@
       "peso_tn": 0.704,
       "ubicaciones": 18.0,
       "detalle": 18.0,
-      "t_std_min": 67.34,
+      "t_std_min": 67.48,
       "t_real_min": 82.73,
-      "efic": 81.4
+      "efic": 81.6
     },
     {
       "usuario": "JBENDEZUA",
@@ -6389,9 +6396,9 @@
       "peso_tn": 12.205,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 365.87,
+      "t_std_min": 366.5,
       "t_real_min": 82.6,
-      "efic": 442.9
+      "efic": 443.7
     },
     {
       "usuario": "MICHPASA",
@@ -6408,9 +6415,9 @@
       "peso_tn": 0.839,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 85.92,
+      "t_std_min": 86.08,
       "t_real_min": 82.48,
-      "efic": 104.2
+      "efic": 104.4
     },
     {
       "usuario": "MLAZONM",
@@ -6427,9 +6434,9 @@
       "peso_tn": 1.215,
       "ubicaciones": 12.0,
       "detalle": 12.0,
-      "t_std_min": 64.34,
+      "t_std_min": 64.5,
       "t_real_min": 81.87,
-      "efic": 78.6
+      "efic": 78.8
     },
     {
       "usuario": "DRIVERAZ",
@@ -6446,9 +6453,9 @@
       "peso_tn": 0.598,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 66.12,
+      "t_std_min": 66.22,
       "t_real_min": 80.98,
-      "efic": 81.6
+      "efic": 81.8
     },
     {
       "usuario": "JBRICENOC",
@@ -6465,9 +6472,9 @@
       "peso_tn": 0.339,
       "ubicaciones": 3.0,
       "detalle": 2.0,
-      "t_std_min": 32.95,
+      "t_std_min": 33.07,
       "t_real_min": 76.72,
-      "efic": 43.0
+      "efic": 43.1
     },
     {
       "usuario": "GQUISPE",
@@ -6484,9 +6491,9 @@
       "peso_tn": 1.955,
       "ubicaciones": 15.0,
       "detalle": 15.0,
-      "t_std_min": 106.61,
+      "t_std_min": 106.79,
       "t_real_min": 75.58,
-      "efic": 141.0
+      "efic": 141.3
     },
     {
       "usuario": "GQUISPE",
@@ -6503,9 +6510,9 @@
       "peso_tn": 0.963,
       "ubicaciones": 44.0,
       "detalle": 60.0,
-      "t_std_min": 170.18,
+      "t_std_min": 170.47,
       "t_real_min": 72.88,
-      "efic": 233.5
+      "efic": 233.9
     },
     {
       "usuario": "JJIMENEZR",
@@ -6522,9 +6529,9 @@
       "peso_tn": 0.571,
       "ubicaciones": 17.0,
       "detalle": 17.0,
-      "t_std_min": 73.96,
+      "t_std_min": 74.07,
       "t_real_min": 71.33,
-      "efic": 103.7
+      "efic": 103.8
     },
     {
       "usuario": "KYAURIO",
@@ -6541,9 +6548,9 @@
       "peso_tn": 0.738,
       "ubicaciones": 10.0,
       "detalle": 10.0,
-      "t_std_min": 68.91,
+      "t_std_min": 69.1,
       "t_real_min": 71.1,
-      "efic": 96.9
+      "efic": 97.2
     },
     {
       "usuario": "CSEMPERT",
@@ -6560,9 +6567,9 @@
       "peso_tn": 1.388,
       "ubicaciones": 16.0,
       "detalle": 16.0,
-      "t_std_min": 81.05,
+      "t_std_min": 81.22,
       "t_real_min": 69.82,
-      "efic": 116.1
+      "efic": 116.3
     },
     {
       "usuario": "JBARRIENTOSA",
@@ -6579,9 +6586,9 @@
       "peso_tn": 0.45,
       "ubicaciones": 16.0,
       "detalle": 34.0,
-      "t_std_min": 67.65,
+      "t_std_min": 67.76,
       "t_real_min": 69.8,
-      "efic": 96.9
+      "efic": 97.1
     },
     {
       "usuario": "CSEMPERT",
@@ -6598,9 +6605,9 @@
       "peso_tn": 0.786,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 56.12,
+      "t_std_min": 56.24,
       "t_real_min": 69.05,
-      "efic": 81.3
+      "efic": 81.4
     },
     {
       "usuario": "CGONZAE",
@@ -6617,9 +6624,9 @@
       "peso_tn": 1.462,
       "ubicaciones": 18.0,
       "detalle": 18.0,
-      "t_std_min": 92.11,
+      "t_std_min": 92.27,
       "t_real_min": 67.95,
-      "efic": 135.6
+      "efic": 135.8
     },
     {
       "usuario": "CGONZAE",
@@ -6636,9 +6643,9 @@
       "peso_tn": 1.361,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 83.96,
+      "t_std_min": 84.17,
       "t_real_min": 67.72,
-      "efic": 124.0
+      "efic": 124.3
     },
     {
       "usuario": "CSEMPERT",
@@ -6655,9 +6662,9 @@
       "peso_tn": 0.451,
       "ubicaciones": 3.0,
       "detalle": 3.0,
-      "t_std_min": 35.63,
+      "t_std_min": 35.67,
       "t_real_min": 61.7,
-      "efic": 57.7
+      "efic": 57.8
     },
     {
       "usuario": "RALMEIDAO",
@@ -6674,9 +6681,9 @@
       "peso_tn": 0.715,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 54.23,
+      "t_std_min": 54.34,
       "t_real_min": 59.27,
-      "efic": 91.5
+      "efic": 91.7
     },
     {
       "usuario": "JSANTAMARIA",
@@ -6693,9 +6700,9 @@
       "peso_tn": 3.205,
       "ubicaciones": 28.0,
       "detalle": 29.0,
-      "t_std_min": 150.16,
+      "t_std_min": 150.47,
       "t_real_min": 58.68,
-      "efic": 255.9
+      "efic": 256.4
     },
     {
       "usuario": "GQUISPE",
@@ -6712,9 +6719,9 @@
       "peso_tn": 2.238,
       "ubicaciones": 25.0,
       "detalle": 25.0,
-      "t_std_min": 210.52,
+      "t_std_min": 211.19,
       "t_real_min": 56.38,
-      "efic": 373.4
+      "efic": 374.6
     },
     {
       "usuario": "GQUISPE",
@@ -6731,9 +6738,9 @@
       "peso_tn": 3.438,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 163.35,
+      "t_std_min": 163.59,
       "t_real_min": 55.28,
-      "efic": 295.5
+      "efic": 295.9
     },
     {
       "usuario": "JSANTAMARIA",
@@ -6750,9 +6757,9 @@
       "peso_tn": 6.862,
       "ubicaciones": 8.0,
       "detalle": 8.0,
-      "t_std_min": 188.1,
+      "t_std_min": 188.44,
       "t_real_min": 52.43,
-      "efic": 358.7
+      "efic": 359.4
     },
     {
       "usuario": "GQUISPE",
@@ -6769,9 +6776,9 @@
       "peso_tn": 3.341,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 152.75,
+      "t_std_min": 153.05,
       "t_real_min": 49.85,
-      "efic": 306.4
+      "efic": 307.0
     },
     {
       "usuario": "DVILLALOBOSM",
@@ -6788,9 +6795,9 @@
       "peso_tn": 2.114,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 85.82,
+      "t_std_min": 85.98,
       "t_real_min": 46.8,
-      "efic": 183.4
+      "efic": 183.7
     },
     {
       "usuario": "JBENDEZUA",
@@ -6807,9 +6814,9 @@
       "peso_tn": 6.059,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 265.7,
+      "t_std_min": 266.25,
       "t_real_min": 38.17,
-      "efic": 696.2
+      "efic": 697.6
     },
     {
       "usuario": "JVALDIVIAS",
@@ -6826,9 +6833,9 @@
       "peso_tn": 0.595,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 55.08,
+      "t_std_min": 55.19,
       "t_real_min": 37.92,
-      "efic": 145.3
+      "efic": 145.6
     },
     {
       "usuario": "CGONZAE",
@@ -6845,9 +6852,9 @@
       "peso_tn": 0.039,
       "ubicaciones": 9.0,
       "detalle": 9.0,
-      "t_std_min": 37.82,
+      "t_std_min": 37.92,
       "t_real_min": 37.47,
-      "efic": 100.9
+      "efic": 101.2
     },
     {
       "usuario": "DVILLALOBOSM",
@@ -6864,9 +6871,9 @@
       "peso_tn": 0.269,
       "ubicaciones": 6.0,
       "detalle": 6.0,
-      "t_std_min": 42.49,
+      "t_std_min": 42.62,
       "t_real_min": 34.97,
-      "efic": 121.5
+      "efic": 121.9
     },
     {
       "usuario": "JSANTAMARIA",
@@ -6883,9 +6890,9 @@
       "peso_tn": 0.901,
       "ubicaciones": 7.0,
       "detalle": 7.0,
-      "t_std_min": 36.72,
+      "t_std_min": 36.8,
       "t_real_min": 33.28,
-      "efic": 110.3
+      "efic": 110.6
     },
     {
       "usuario": "KYAPIASA",
@@ -6902,9 +6909,9 @@
       "peso_tn": 5.497,
       "ubicaciones": 6.0,
       "detalle": 6.0,
-      "t_std_min": 119.22,
+      "t_std_min": 119.51,
       "t_real_min": 28.0,
-      "efic": 425.8
+      "efic": 426.8
     },
     {
       "usuario": "JBENDEZUA",
@@ -6921,9 +6928,9 @@
       "peso_tn": 0.494,
       "ubicaciones": 6.0,
       "detalle": 6.0,
-      "t_std_min": 32.87,
+      "t_std_min": 32.95,
       "t_real_min": 26.53,
-      "efic": 123.9
+      "efic": 124.2
     },
     {
       "usuario": "YLOARTEH",
@@ -6940,9 +6947,9 @@
       "peso_tn": 0.478,
       "ubicaciones": 1.0,
       "detalle": 1.0,
-      "t_std_min": 19.04,
+      "t_std_min": 19.09,
       "t_real_min": 25.85,
-      "efic": 73.7
+      "efic": 73.8
     },
     {
       "usuario": "CVIGOD",
@@ -6959,9 +6966,9 @@
       "peso_tn": 0.874,
       "ubicaciones": 8.0,
       "detalle": 9.0,
-      "t_std_min": 68.91,
+      "t_std_min": 69.01,
       "t_real_min": 24.9,
-      "efic": 276.7
+      "efic": 277.2
     },
     {
       "usuario": "AHINOSTROZAC",
@@ -6978,9 +6985,9 @@
       "peso_tn": 0.139,
       "ubicaciones": 4.0,
       "detalle": 4.0,
-      "t_std_min": 24.37,
+      "t_std_min": 24.44,
       "t_real_min": 21.78,
-      "efic": 111.9
+      "efic": 112.2
     },
     {
       "usuario": "DRIVERAZ",
@@ -6997,9 +7004,9 @@
       "peso_tn": 0.452,
       "ubicaciones": 3.0,
       "detalle": 3.0,
-      "t_std_min": 31.33,
+      "t_std_min": 31.38,
       "t_real_min": 21.33,
-      "efic": 146.9
+      "efic": 147.1
     },
     {
       "usuario": "JSANTAMARIA",
@@ -7016,9 +7023,9 @@
       "peso_tn": 5.382,
       "ubicaciones": 5.0,
       "detalle": 5.0,
-      "t_std_min": 101.58,
+      "t_std_min": 101.82,
       "t_real_min": 21.32,
-      "efic": 476.5
+      "efic": 477.7
     },
     {
       "usuario": "LTORRES",
@@ -7035,9 +7042,9 @@
       "peso_tn": 0.646,
       "ubicaciones": 1.0,
       "detalle": 1.0,
-      "t_std_min": 31.63,
+      "t_std_min": 31.66,
       "t_real_min": 17.5,
-      "efic": 180.8
+      "efic": 180.9
     },
     {
       "usuario": "EGUTIERREZA",
@@ -7054,9 +7061,9 @@
       "peso_tn": 1.078,
       "ubicaciones": 3.0,
       "detalle": 3.0,
-      "t_std_min": 39.21,
+      "t_std_min": 39.31,
       "t_real_min": 14.87,
-      "efic": 263.7
+      "efic": 264.4
     },
     {
       "usuario": "FLOPEZT",
@@ -7073,9 +7080,9 @@
       "peso_tn": 0.42,
       "ubicaciones": 2.0,
       "detalle": 2.0,
-      "t_std_min": 21.36,
+      "t_std_min": 21.41,
       "t_real_min": 4.77,
-      "efic": 448.0
+      "efic": 449.2
     },
     {
       "usuario": "RHUALLPART",
@@ -7092,9 +7099,9 @@
       "peso_tn": 0.0,
       "ubicaciones": 1.0,
       "detalle": 0.0,
-      "t_std_min": 14.45,
+      "t_std_min": 14.5,
       "t_real_min": 1.93,
-      "efic": 747.2
+      "efic": 750.2
     },
     {
       "usuario": "DRIVERAZ",
@@ -7111,9 +7118,9 @@
       "peso_tn": 0.644,
       "ubicaciones": 1.0,
       "detalle": 1.0,
-      "t_std_min": 20.1,
+      "t_std_min": 20.15,
       "t_real_min": 0.45,
-      "efic": 4467.6
+      "efic": 4478.2
     },
     {
       "usuario": "NPARIONAT",
@@ -7130,9 +7137,9 @@
       "peso_tn": 1.208,
       "ubicaciones": 2.0,
       "detalle": 0.0,
-      "t_std_min": 28.89,
+      "t_std_min": 29.01,
       "t_real_min": 0.28,
-      "efic": 10197.4
+      "efic": 10237.6
     }
   ]
 }
