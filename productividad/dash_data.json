@@ -2,27 +2,27 @@
   "meta": {
     "rango_fechas": [
       "2026-11-01",
-      "2026-11-23"
+      "2026-11-24"
     ],
     "personas": 56,
-    "dias": 21,
+    "dias": 22,
     "tareas_total": 3618,
-    "tareas_elegibles": 3525,
-    "tareas_excepcion": 93,
-    "horas_totales": 2131.48,
+    "tareas_elegibles": 3526,
+    "tareas_excepcion": 92,
+    "horas_totales": 2132.35,
     "umbral_pallet_cajas_por_ubic": 60.0,
     "modelo_estandar": {
-      "a": 11.5217,
+      "a": 11.5215,
       "b": 0.04692,
       "c": 2.7918,
       "r2": 0.307,
       "operarios_eval": 56,
-      "tareas_eval": 3525,
+      "tareas_eval": 3526,
       "formula": "t_estandar(min) = a + b*unidades + c*visitas",
       "nota": "100% = promedio de la operacion. Limitacion: sobreestima tareas muy cortas (eficiencias extremas con muchas tareas chicas).",
       "rango_efic_persona": [
         35.4,
-        10103.6
+        10103.5
       ]
     },
     "cobertura": {
@@ -45,32 +45,32 @@
   },
   "comparativo": {
     "metodo_jefes_global": {
-      "cajas_hr": 258.17,
-      "horas": 2131.482,
-      "tareas": 3525,
+      "cajas_hr": 258.24,
+      "horas": 2132.35,
+      "tareas": 3526,
       "nota": "Forma actual de los jefes: cuenta toda caja por igual (los pallets completos inflan la tasa)."
     },
     "metodo_nuevo": {
       "detalle_pick": {
-        "cajas_hr": 170.87,
-        "horas": 1829.832,
-        "tareas": 2353,
-        "pct_horas": 85.8
+        "cajas_hr": 170.99,
+        "horas": 1830.701,
+        "tareas": 2354,
+        "pct_horas": 85.9
       },
       "pallet_move": {
         "pallets_hr": 5.89,
         "cajas_hr": 787.76,
         "horas": 301.649,
         "tareas": 1172,
-        "pct_horas": 14.2
+        "pct_horas": 14.1
       },
       "nota": "Normaliza la unidad de medida (estandar 3PL/WMS): el picking de detalle se mide en cajas/h REAL (sin distorsion de pallets) y el movimiento de pallet en pallets/h (1 pallet = 1 ubicacion)."
     }
   },
   "mix": {
-    "cajas_sueltas": 421329.0,
+    "cajas_sueltas": 421702.0,
     "cajas_equiv_pallet": 128964.0,
-    "total_equiv": 550293.0,
+    "total_equiv": 550666.0,
     "pct_cajas": 76.6,
     "pct_pallets": 23.4,
     "pallets": 1055.0
@@ -80,13 +80,13 @@
       "familia": "HPC",
       "cajas_sueltas": 301152.0,
       "cajas": 395658.0,
-      "pct": 71.5
+      "pct": 71.4
     },
     {
       "familia": "AEROSOLES",
-      "cajas_sueltas": 95826.0,
-      "cajas": 120794.0,
-      "pct": 22.7
+      "cajas_sueltas": 96199.0,
+      "cajas": 121167.0,
+      "pct": 22.8
     },
     {
       "familia": "HC",
@@ -1541,6 +1541,13 @@
       "familia": "HPC",
       "cajas_sueltas": 10612.0,
       "cajas": 18582.0
+    },
+    {
+      "dia": "2026-11-24",
+      "turno": "1° TURNO",
+      "familia": "AEROSOLES",
+      "cajas_sueltas": 373.0,
+      "cajas": 373.0
     }
   ],
   "celdas": [
@@ -1578,7 +1585,7 @@
       "peso_tn": 8.064,
       "ubicaciones": 74.0,
       "detalle": 75.0,
-      "t_std_min": 476.64,
+      "t_std_min": 476.63,
       "t_real_min": 892.95,
       "efic": 53.4
     },
@@ -1654,7 +1661,7 @@
       "peso_tn": 6.736,
       "ubicaciones": 67.0,
       "detalle": 78.0,
-      "t_std_min": 430.14,
+      "t_std_min": 430.13,
       "t_real_min": 758.5,
       "efic": 56.7
     },
@@ -1692,7 +1699,7 @@
       "peso_tn": 9.015,
       "ubicaciones": 97.0,
       "detalle": 102.0,
-      "t_std_min": 595.69,
+      "t_std_min": 595.68,
       "t_real_min": 714.72,
       "efic": 83.3
     },
@@ -1749,7 +1756,7 @@
       "peso_tn": 10.733,
       "ubicaciones": 104.0,
       "detalle": 124.0,
-      "t_std_min": 644.84,
+      "t_std_min": 644.83,
       "t_real_min": 688.57,
       "efic": 93.6
     },
@@ -1825,7 +1832,7 @@
       "peso_tn": 10.262,
       "ubicaciones": 98.0,
       "detalle": 109.0,
-      "t_std_min": 527.78,
+      "t_std_min": 527.77,
       "t_real_min": 647.68,
       "efic": 81.5
     },
@@ -1882,7 +1889,7 @@
       "peso_tn": 9.06,
       "ubicaciones": 70.0,
       "detalle": 70.0,
-      "t_std_min": 482.88,
+      "t_std_min": 482.87,
       "t_real_min": 597.92,
       "efic": 80.8
     },
@@ -1977,7 +1984,7 @@
       "peso_tn": 5.986,
       "ubicaciones": 101.0,
       "detalle": 103.0,
-      "t_std_min": 493.17,
+      "t_std_min": 493.16,
       "t_real_min": 564.57,
       "efic": 87.4
     },
@@ -2034,7 +2041,7 @@
       "peso_tn": 9.501,
       "ubicaciones": 83.0,
       "detalle": 87.0,
-      "t_std_min": 514.67,
+      "t_std_min": 514.66,
       "t_real_min": 551.63,
       "efic": 93.3
     },
@@ -2129,7 +2136,7 @@
       "peso_tn": 6.596,
       "ubicaciones": 141.0,
       "detalle": 150.0,
-      "t_std_min": 646.93,
+      "t_std_min": 646.92,
       "t_real_min": 533.45,
       "efic": 121.3
     },
@@ -2224,7 +2231,7 @@
       "peso_tn": 7.294,
       "ubicaciones": 71.0,
       "detalle": 74.0,
-      "t_std_min": 376.66,
+      "t_std_min": 376.65,
       "t_real_min": 524.23,
       "efic": 71.8
     },
@@ -2490,7 +2497,7 @@
       "peso_tn": 6.287,
       "ubicaciones": 61.0,
       "detalle": 61.0,
-      "t_std_min": 400.34,
+      "t_std_min": 400.33,
       "t_real_min": 482.7,
       "efic": 82.9
     },
@@ -2566,7 +2573,7 @@
       "peso_tn": 4.262,
       "ubicaciones": 52.0,
       "detalle": 52.0,
-      "t_std_min": 309.77,
+      "t_std_min": 309.76,
       "t_real_min": 476.92,
       "efic": 65.0
     },
@@ -2680,7 +2687,7 @@
       "peso_tn": 10.298,
       "ubicaciones": 133.0,
       "detalle": 135.0,
-      "t_std_min": 654.38,
+      "t_std_min": 654.37,
       "t_real_min": 474.47,
       "efic": 137.9
     },
@@ -2737,7 +2744,7 @@
       "peso_tn": 10.327,
       "ubicaciones": 100.0,
       "detalle": 138.0,
-      "t_std_min": 625.02,
+      "t_std_min": 625.01,
       "t_real_min": 472.1,
       "efic": 132.4
     },
@@ -2794,7 +2801,7 @@
       "peso_tn": 7.303,
       "ubicaciones": 126.0,
       "detalle": 146.0,
-      "t_std_min": 586.52,
+      "t_std_min": 586.51,
       "t_real_min": 469.38,
       "efic": 125.0
     },
@@ -2832,7 +2839,7 @@
       "peso_tn": 6.889,
       "ubicaciones": 70.0,
       "detalle": 73.0,
-      "t_std_min": 436.09,
+      "t_std_min": 436.08,
       "t_real_min": 468.63,
       "efic": 93.1
     },
@@ -2851,7 +2858,7 @@
       "peso_tn": 5.545,
       "ubicaciones": 72.0,
       "detalle": 71.0,
-      "t_std_min": 349.94,
+      "t_std_min": 349.93,
       "t_real_min": 466.37,
       "efic": 75.0
     },
@@ -3022,7 +3029,7 @@
       "peso_tn": 6.237,
       "ubicaciones": 70.0,
       "detalle": 71.0,
-      "t_std_min": 418.26,
+      "t_std_min": 418.25,
       "t_real_min": 459.38,
       "efic": 91.0
     },
@@ -3155,7 +3162,7 @@
       "peso_tn": 7.634,
       "ubicaciones": 69.0,
       "detalle": 72.0,
-      "t_std_min": 424.53,
+      "t_std_min": 424.52,
       "t_real_min": 448.85,
       "efic": 94.6
     },
@@ -3231,7 +3238,7 @@
       "peso_tn": 5.477,
       "ubicaciones": 78.0,
       "detalle": 82.0,
-      "t_std_min": 402.35,
+      "t_std_min": 402.34,
       "t_real_min": 446.32,
       "efic": 90.1
     },
@@ -3250,7 +3257,7 @@
       "peso_tn": 11.241,
       "ubicaciones": 96.0,
       "detalle": 97.0,
-      "t_std_min": 555.66,
+      "t_std_min": 555.65,
       "t_real_min": 445.98,
       "efic": 124.6
     },
@@ -3269,7 +3276,7 @@
       "peso_tn": 7.898,
       "ubicaciones": 84.0,
       "detalle": 84.0,
-      "t_std_min": 469.9,
+      "t_std_min": 469.89,
       "t_real_min": 445.43,
       "efic": 105.5
     },
@@ -3326,7 +3333,7 @@
       "peso_tn": 4.235,
       "ubicaciones": 66.0,
       "detalle": 66.0,
-      "t_std_min": 350.08,
+      "t_std_min": 350.07,
       "t_real_min": 442.68,
       "efic": 79.1
     },
@@ -3554,7 +3561,7 @@
       "peso_tn": 7.845,
       "ubicaciones": 72.0,
       "detalle": 78.0,
-      "t_std_min": 444.12,
+      "t_std_min": 444.11,
       "t_real_min": 436.82,
       "efic": 101.7
     },
@@ -3592,7 +3599,7 @@
       "peso_tn": 5.883,
       "ubicaciones": 73.0,
       "detalle": 80.0,
-      "t_std_min": 379.1,
+      "t_std_min": 379.09,
       "t_real_min": 434.75,
       "efic": 87.2
     },
@@ -3687,7 +3694,7 @@
       "peso_tn": 5.142,
       "ubicaciones": 72.0,
       "detalle": 77.0,
-      "t_std_min": 365.94,
+      "t_std_min": 365.93,
       "t_real_min": 432.45,
       "efic": 84.6
     },
@@ -3744,7 +3751,7 @@
       "peso_tn": 5.04,
       "ubicaciones": 57.0,
       "detalle": 58.0,
-      "t_std_min": 362.38,
+      "t_std_min": 362.37,
       "t_real_min": 429.17,
       "efic": 84.4
     },
@@ -3915,7 +3922,7 @@
       "peso_tn": 6.134,
       "ubicaciones": 56.0,
       "detalle": 56.0,
-      "t_std_min": 329.93,
+      "t_std_min": 329.92,
       "t_real_min": 421.28,
       "efic": 78.3
     },
@@ -4010,7 +4017,7 @@
       "peso_tn": 5.267,
       "ubicaciones": 92.0,
       "detalle": 93.0,
-      "t_std_min": 439.23,
+      "t_std_min": 439.22,
       "t_real_min": 415.17,
       "efic": 105.8
     },
@@ -4029,7 +4036,7 @@
       "peso_tn": 6.411,
       "ubicaciones": 62.0,
       "detalle": 62.0,
-      "t_std_min": 352.05,
+      "t_std_min": 352.04,
       "t_real_min": 413.82,
       "efic": 85.1
     },
@@ -4048,7 +4055,7 @@
       "peso_tn": 3.359,
       "ubicaciones": 70.0,
       "detalle": 70.0,
-      "t_std_min": 313.78,
+      "t_std_min": 313.77,
       "t_real_min": 412.68,
       "efic": 76.0
     },
@@ -4067,7 +4074,7 @@
       "peso_tn": 16.527,
       "ubicaciones": 38.0,
       "detalle": 39.0,
-      "t_std_min": 513.56,
+      "t_std_min": 513.55,
       "t_real_min": 412.13,
       "efic": 124.6
     },
@@ -4390,7 +4397,7 @@
       "peso_tn": 7.273,
       "ubicaciones": 44.0,
       "detalle": 44.0,
-      "t_std_min": 322.61,
+      "t_std_min": 322.6,
       "t_real_min": 398.08,
       "efic": 81.0
     },
@@ -4580,7 +4587,7 @@
       "peso_tn": 7.306,
       "ubicaciones": 89.0,
       "detalle": 101.0,
-      "t_std_min": 450.8,
+      "t_std_min": 450.79,
       "t_real_min": 387.37,
       "efic": 116.4
     },
@@ -4637,7 +4644,7 @@
       "peso_tn": 4.788,
       "ubicaciones": 80.0,
       "detalle": 82.0,
-      "t_std_min": 348.48,
+      "t_std_min": 348.47,
       "t_real_min": 378.68,
       "efic": 92.0
     },
@@ -4656,7 +4663,7 @@
       "peso_tn": 6.36,
       "ubicaciones": 73.0,
       "detalle": 78.0,
-      "t_std_min": 416.71,
+      "t_std_min": 416.7,
       "t_real_min": 377.7,
       "efic": 110.3
     },
@@ -4675,7 +4682,7 @@
       "peso_tn": 5.568,
       "ubicaciones": 79.0,
       "detalle": 91.0,
-      "t_std_min": 338.65,
+      "t_std_min": 338.64,
       "t_real_min": 377.27,
       "efic": 89.8
     },
@@ -4732,7 +4739,7 @@
       "peso_tn": 6.562,
       "ubicaciones": 57.0,
       "detalle": 59.0,
-      "t_std_min": 328.99,
+      "t_std_min": 328.98,
       "t_real_min": 373.4,
       "efic": 88.1
     },
@@ -4808,7 +4815,7 @@
       "peso_tn": 4.136,
       "ubicaciones": 46.0,
       "detalle": 46.0,
-      "t_std_min": 275.92,
+      "t_std_min": 275.91,
       "t_real_min": 368.35,
       "efic": 74.9
     },
@@ -4903,7 +4910,7 @@
       "peso_tn": 6.481,
       "ubicaciones": 75.0,
       "detalle": 88.0,
-      "t_std_min": 369.53,
+      "t_std_min": 369.52,
       "t_real_min": 360.18,
       "efic": 102.6
     },
@@ -5036,7 +5043,7 @@
       "peso_tn": 6.051,
       "ubicaciones": 115.0,
       "detalle": 116.0,
-      "t_std_min": 520.53,
+      "t_std_min": 520.52,
       "t_real_min": 355.32,
       "efic": 146.5
     },
@@ -5055,7 +5062,7 @@
       "peso_tn": 7.912,
       "ubicaciones": 32.0,
       "detalle": 32.0,
-      "t_std_min": 324.35,
+      "t_std_min": 324.34,
       "t_real_min": 353.48,
       "efic": 91.8
     },
@@ -5283,7 +5290,7 @@
       "peso_tn": 6.471,
       "ubicaciones": 67.0,
       "detalle": 68.0,
-      "t_std_min": 353.06,
+      "t_std_min": 353.05,
       "t_real_min": 332.75,
       "efic": 106.1
     },
@@ -5378,7 +5385,7 @@
       "peso_tn": 4.464,
       "ubicaciones": 89.0,
       "detalle": 92.0,
-      "t_std_min": 390.92,
+      "t_std_min": 390.91,
       "t_real_min": 323.53,
       "efic": 120.8
     },
@@ -5397,7 +5404,7 @@
       "peso_tn": 6.076,
       "ubicaciones": 36.0,
       "detalle": 36.0,
-      "t_std_min": 278.88,
+      "t_std_min": 278.87,
       "t_real_min": 321.18,
       "efic": 86.8
     },
@@ -5568,7 +5575,7 @@
       "peso_tn": 5.176,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 268.01,
+      "t_std_min": 268.0,
       "t_real_min": 306.13,
       "efic": 87.5
     },
@@ -5587,7 +5594,7 @@
       "peso_tn": 5.278,
       "ubicaciones": 53.0,
       "detalle": 55.0,
-      "t_std_min": 302.5,
+      "t_std_min": 302.49,
       "t_real_min": 305.28,
       "efic": 99.1
     },
@@ -5644,7 +5651,7 @@
       "peso_tn": 12.321,
       "ubicaciones": 83.0,
       "detalle": 84.0,
-      "t_std_min": 580.18,
+      "t_std_min": 580.17,
       "t_real_min": 295.43,
       "efic": 196.4
     },
@@ -5834,7 +5841,7 @@
       "peso_tn": 5.619,
       "ubicaciones": 101.0,
       "detalle": 103.0,
-      "t_std_min": 484.0,
+      "t_std_min": 483.99,
       "t_real_min": 283.18,
       "efic": 170.9
     },
@@ -5929,7 +5936,7 @@
       "peso_tn": 2.697,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 146.83,
+      "t_std_min": 146.82,
       "t_real_min": 277.28,
       "efic": 53.0
     },
@@ -6233,7 +6240,7 @@
       "peso_tn": 9.602,
       "ubicaciones": 31.0,
       "detalle": 31.0,
-      "t_std_min": 431.57,
+      "t_std_min": 431.56,
       "t_real_min": 264.4,
       "efic": 163.2
     },
@@ -6252,7 +6259,7 @@
       "peso_tn": 5.201,
       "ubicaciones": 35.0,
       "detalle": 35.0,
-      "t_std_min": 230.45,
+      "t_std_min": 230.44,
       "t_real_min": 259.78,
       "efic": 88.7
     },
@@ -6290,7 +6297,7 @@
       "peso_tn": 6.695,
       "ubicaciones": 92.0,
       "detalle": 94.0,
-      "t_std_min": 472.32,
+      "t_std_min": 472.31,
       "t_real_min": 254.22,
       "efic": 185.8
     },
@@ -6860,7 +6867,7 @@
       "peso_tn": 13.017,
       "ubicaciones": 25.0,
       "detalle": 25.0,
-      "t_std_min": 359.18,
+      "t_std_min": 359.17,
       "t_real_min": 212.98,
       "efic": 168.6
     },
@@ -7240,7 +7247,7 @@
       "peso_tn": 2.458,
       "ubicaciones": 33.0,
       "detalle": 33.0,
-      "t_std_min": 188.29,
+      "t_std_min": 188.28,
       "t_real_min": 174.22,
       "efic": 108.1
     },
@@ -7297,7 +7304,7 @@
       "peso_tn": 9.991,
       "ubicaciones": 19.0,
       "detalle": 19.0,
-      "t_std_min": 426.32,
+      "t_std_min": 426.31,
       "t_real_min": 167.02,
       "efic": 255.3
     },
@@ -7601,7 +7608,7 @@
       "peso_tn": 2.154,
       "ubicaciones": 41.0,
       "detalle": 41.0,
-      "t_std_min": 194.27,
+      "t_std_min": 194.26,
       "t_real_min": 141.12,
       "efic": 137.7
     },
@@ -7658,7 +7665,7 @@
       "peso_tn": 11.986,
       "ubicaciones": 14.0,
       "detalle": 14.0,
-      "t_std_min": 375.64,
+      "t_std_min": 375.63,
       "t_real_min": 138.85,
       "efic": 270.5
     },
@@ -7829,9 +7836,9 @@
       "peso_tn": 2.541,
       "ubicaciones": 20.0,
       "detalle": 20.0,
-      "t_std_min": 130.95,
+      "t_std_min": 130.94,
       "t_real_min": 122.55,
-      "efic": 106.9
+      "efic": 106.8
     },
     {
       "usuario": "JJIMENEZR",
@@ -7924,7 +7931,7 @@
       "peso_tn": 11.719,
       "ubicaciones": 13.0,
       "detalle": 13.0,
-      "t_std_min": 217.25,
+      "t_std_min": 217.24,
       "t_real_min": 118.15,
       "efic": 183.9
     },
@@ -8057,7 +8064,7 @@
       "peso_tn": 1.088,
       "ubicaciones": 38.0,
       "detalle": 37.0,
-      "t_std_min": 198.85,
+      "t_std_min": 198.84,
       "t_real_min": 107.75,
       "efic": 184.5
     },
@@ -8095,7 +8102,7 @@
       "peso_tn": 18.644,
       "ubicaciones": 34.0,
       "detalle": 34.0,
-      "t_std_min": 678.28,
+      "t_std_min": 678.27,
       "t_real_min": 101.77,
       "efic": 666.5
     },
@@ -8114,7 +8121,7 @@
       "peso_tn": 17.524,
       "ubicaciones": 38.0,
       "detalle": 38.0,
-      "t_std_min": 618.93,
+      "t_std_min": 618.92,
       "t_real_min": 101.52,
       "efic": 609.7
     },
@@ -8266,7 +8273,7 @@
       "peso_tn": 6.342,
       "ubicaciones": 45.0,
       "detalle": 45.0,
-      "t_std_min": 352.44,
+      "t_std_min": 352.43,
       "t_real_min": 93.27,
       "efic": 377.9
     },
@@ -8342,7 +8349,7 @@
       "peso_tn": 0.894,
       "ubicaciones": 15.0,
       "detalle": 15.0,
-      "t_std_min": 60.16,
+      "t_std_min": 60.15,
       "t_real_min": 86.78,
       "efic": 69.3
     },
@@ -8494,7 +8501,7 @@
       "peso_tn": 12.205,
       "ubicaciones": 24.0,
       "detalle": 24.0,
-      "t_std_min": 378.08,
+      "t_std_min": 378.07,
       "t_real_min": 82.6,
       "efic": 457.7
     },
@@ -8931,9 +8938,28 @@
       "peso_tn": 6.862,
       "ubicaciones": 8.0,
       "detalle": 8.0,
-      "t_std_min": 194.51,
+      "t_std_min": 194.5,
       "t_real_min": 52.43,
       "efic": 371.0
+    },
+    {
+      "usuario": "MCARILLO",
+      "dia": "2026-11-24",
+      "cargo": "OPERARIO ALMACEN UNILEVER",
+      "turno": "1° TURNO",
+      "horas": 0.868,
+      "tareas": 1,
+      "cajas": 373.0,
+      "cajas_sueltas": 373.0,
+      "pallets": 0.0,
+      "unidades_productivas": 373.0,
+      "volumen_m3": 1.911,
+      "peso_tn": 0.662,
+      "ubicaciones": 8.0,
+      "detalle": 8.0,
+      "t_std_min": 51.36,
+      "t_real_min": 52.08,
+      "efic": 98.6
     },
     {
       "usuario": "GQUISPE",
@@ -9484,7 +9510,7 @@
       "detalle": 0.0,
       "t_std_min": 14.31,
       "t_real_min": 1.93,
-      "efic": 740.4
+      "efic": 740.3
     },
     {
       "usuario": "DRIVERAZ",
@@ -9522,7 +9548,7 @@
       "detalle": 0.0,
       "t_std_min": 28.63,
       "t_real_min": 0.28,
-      "efic": 10103.6
+      "efic": 10103.5
     }
   ]
 }
